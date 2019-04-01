@@ -1,0 +1,1 @@
+Unzip this file in the bin directory (with the exe)
