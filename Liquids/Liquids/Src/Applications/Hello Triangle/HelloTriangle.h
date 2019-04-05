@@ -18,6 +18,7 @@ namespace app
 		Shader *m_Shader;
 		Renderer renderer;
 		glm::mat4 projMatrix;
+		glm::vec4 color;
 
 	public:
 		HelloTriangle();

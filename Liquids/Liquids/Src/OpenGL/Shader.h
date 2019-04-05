@@ -34,7 +34,7 @@ public:
 	void SetUniformLightArray(const std::string& name, Light lights[],unsigned int size);
 	void SetUniformLightClass(const std::string& name, LightClass& lights);
 	void SetUniformVec3(const std::string& name, glm::vec3 vec);
-
+	void SetUniformVec4(const std::string& name, glm::vec4 vec);
 
 private:
 	ShaderProgramSource ParseShader(const std::string& filepath);

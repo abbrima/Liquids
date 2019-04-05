@@ -31,11 +31,15 @@ namespace app
 	void HelloTriangle::OnUpdate() {
 		projMatrix = glm::ortho(-(float)glfwWindowWidth / 2, (float)glfwWindowWidth / 2,
 			-(float)glfwWindowHeight / 2, (float)glfwWindowHeight / 2);
+		color.x = glm::sin(currentTime);
+		color.y = glm::cos(currentTime);
+		color.z = color.x*color.y;
+		color.w = 1.0f;
 	}
 	void HelloTriangle::OnRender() {
 		m_Shader->Bind();
 		m_Shader->SetUniformMat4f("u_MVP", projMatrix);
-		m_Shader->SetUniform4f("u_Color", 0.4f, 1.0f, 0.4f, 1.0f);
+		m_Shader->SetUniformVec4("u_Color", color);
 		renderer.DrawTriangles(*m_VA, *m_IB, *m_Shader);
 	}
 	void HelloTriangle::OnImGuiRender() {
