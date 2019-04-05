@@ -1,6 +1,6 @@
 #pragma once
 
-#include "VertexBuffer.h"
+#include "OpenGL/VertexBuffer.h"
 
 class VertexBufferLayout;
 class VertexArray

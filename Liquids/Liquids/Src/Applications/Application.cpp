@@ -1,18 +1,18 @@
-#include "Test.h"
+#include "Application.h"
 #include "imgui/imgui.h"
-namespace test
+namespace app
 {
-	TestMenu::TestMenu(Test*& currentTestPointer)
-		:m_CurrentTest(currentTestPointer)
+	ApplicationMenu::ApplicationMenu(Application*& currentApplicationPointer)
+		:m_CurrentApplication(currentApplicationPointer)
 	{
 
 	}
-	void TestMenu::OnImGuiRender()
+	void ApplicationMenu::OnImGuiRender()
 	{
-		for (auto& test : m_Tests)
+		for (auto& app : m_Applications)
 		{
-			if (ImGui::Button(test.first.c_str()))
-				m_CurrentTest = test.second();
+			if (ImGui::Button(app.first.c_str()))
+				m_CurrentApplication = app.second();
 		}
 	}
 }

@@ -1,4 +1,4 @@
-#include "Lights.h"
+#include "Tools/Lights.h"
 void LightClass::AddLight(Light light, std::string Identifier)
 {
 	lights[Identifier].second=true;

@@ -1,9 +1,9 @@
 #pragma once
 
 #include <gl/glew.h> 
-#include "VertexArray.h"
-#include "IndexBuffer.h"
-#include "Shader.h"
+#include "OpenGL/VertexArray.h"
+#include "OpenGL/IndexBuffer.h"
+#include "OpenGL/Shader.h"
 
 #define ASSERT(x) if (!(x)) __debugbreak();
 #if DEBUG

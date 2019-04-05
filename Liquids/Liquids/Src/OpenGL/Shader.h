@@ -3,9 +3,8 @@
 #include <unordered_map>
 #include "glm/glm.hpp"
 #include <glm/gtc/type_ptr.hpp>
-#include "Materials.h"
-#include "Lights.h"
-#include "math_3d.h"
+#include "Tools/Materials.h"
+#include "Tools/Lights.h"
 struct ShaderProgramSource
 {
 	std::string VertexSource;
@@ -35,7 +34,6 @@ public:
 	void SetUniformLightArray(const std::string& name, Light lights[],unsigned int size);
 	void SetUniformLightClass(const std::string& name, LightClass& lights);
 	void SetUniformVec3(const std::string& name, glm::vec3 vec);
-	void SetUniformBones(const std::string& name, std::vector<Matrix4f>& matrix);
 
 
 private:

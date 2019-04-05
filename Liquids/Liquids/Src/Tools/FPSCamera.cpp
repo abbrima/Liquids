@@ -1,6 +1,6 @@
-#include "FPSCamera.h"
+#include "Tools/FPSCamera.h"
 #include "imgui/imgui.h"
-#include "MyExternals.h"
+#include "Tools/MyExternals.h"
 
 
 void FPSCamera::Update(glm::mat4& view)

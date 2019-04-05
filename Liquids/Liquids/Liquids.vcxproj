@@ -53,7 +53,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Liquids\Dep\ASSIMP\include;$(SolutionDir)Liquids\Dep\GLEW\include;$(SolutionDir)Liquids\Src\Vendor;$(SolutionDir)Liquids\Dep\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Liquids\Src\;$(SolutionDir)Liquids\Dep\ASSIMP\include;$(SolutionDir)Liquids\Dep\GLEW\include;$(SolutionDir)Liquids\Src\Vendor;$(SolutionDir)Liquids\Dep\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)Liquids\Dep\GLFW\lib;$(SolutionDir)Liquids\Dep\ASSIMP\lib;$(SolutionDir)Liquids\Dep\GLEW\lib</AdditionalLibraryDirectories>
@@ -68,7 +68,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Liquids\Dep\ASSIMP\include;$(SolutionDir)Liquids\Dep\GLEW\include;$(SolutionDir)Liquids\Src\Vendor;$(SolutionDir)Liquids\Dep\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Liquids\Src\;$(SolutionDir)Liquids\Dep\ASSIMP\include;$(SolutionDir)Liquids\Dep\GLEW\include;$(SolutionDir)Liquids\Src\Vendor;$(SolutionDir)Liquids\Dep\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -79,7 +79,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Src\Main\Application.cpp" />
+    <ClCompile Include="Src\Applications\Application.cpp" />
+    <ClCompile Include="Src\Applications\Hello Triangle\HelloTriangle.cpp" />
+    <ClCompile Include="Src\Main\EntryPoint.cpp" />
+    <ClCompile Include="Src\OpenGL\IndexBuffer.cpp" />
+    <ClCompile Include="Src\OpenGL\Renderer.cpp" />
+    <ClCompile Include="Src\OpenGL\Shader.cpp" />
+    <ClCompile Include="Src\OpenGL\Texture.cpp" />
+    <ClCompile Include="Src\OpenGL\VertexArray.cpp" />
+    <ClCompile Include="Src\OpenGL\VertexBuffer.cpp" />
+    <ClCompile Include="Src\Tools\FPSCamera.cpp" />
+    <ClCompile Include="Src\Tools\Lights.cpp" />
+    <ClCompile Include="Src\Tools\Skybox.cpp" />
     <ClCompile Include="Src\Vendor\glm\detail\glm.cpp" />
     <ClCompile Include="Src\Vendor\imgui\imgui.cpp" />
     <ClCompile Include="Src\Vendor\imgui\imgui_draw.cpp" />
@@ -93,6 +104,20 @@
     <ClInclude Include="Dep\GLEW\include\GL\wglew.h" />
     <ClInclude Include="Dep\GLFW\include\GLFW\glfw3.h" />
     <ClInclude Include="Dep\GLFW\include\GLFW\glfw3native.h" />
+    <ClInclude Include="Src\Applications\Application.h" />
+    <ClInclude Include="Src\Applications\Hello Triangle\HelloTriangle.h" />
+    <ClInclude Include="Src\OpenGL\IndexBuffer.h" />
+    <ClInclude Include="Src\OpenGL\Renderer.h" />
+    <ClInclude Include="Src\OpenGL\Shader.h" />
+    <ClInclude Include="Src\OpenGL\Texture.h" />
+    <ClInclude Include="Src\OpenGL\VertexArray.h" />
+    <ClInclude Include="Src\OpenGL\VertexBuffer.h" />
+    <ClInclude Include="Src\OpenGL\VertexBufferLayout.h" />
+    <ClInclude Include="Src\Tools\FPSCamera.h" />
+    <ClInclude Include="Src\Tools\Lights.h" />
+    <ClInclude Include="Src\Tools\Materials.h" />
+    <ClInclude Include="Src\Tools\MyExternals.h" />
+    <ClInclude Include="Src\Tools\Skybox.h" />
     <ClInclude Include="Src\Vendor\glm\common.hpp" />
     <ClInclude Include="Src\Vendor\glm\detail\compute_common.hpp" />
     <ClInclude Include="Src\Vendor\glm\detail\compute_vector_relational.hpp" />

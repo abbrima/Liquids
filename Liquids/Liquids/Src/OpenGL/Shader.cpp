@@ -1,10 +1,9 @@
-#include "Shader.h"
+#include "OpenGL/Shader.h"
 #include <iostream>
 #include <string>
 #include <fstream>
 #include <sstream>
-#include "Renderer.h"
-#include "math_3d.h"
+#include "OpenGL/Renderer.h"
 
 Shader::Shader(const std::string& filepath):m_FilePath(filepath), m_RendererID(0)
 {
@@ -114,15 +113,7 @@ void Shader::SetUniformMat4f(const std::string& name, glm::mat4 matrix,bool tran
 	else
 		GLCall(glUniformMatrix4fv(GetUniformLocation(name), 1, GL_TRUE, &matrix[0][0]));
 }
-void Shader::SetUniformBones(const std::string& name, std::vector<Matrix4f>& matrix)
-{
-	for (unsigned int i = 0; i < matrix.size(); i++)
-	{
-		std::stringstream ss;
-		ss << i;
-		glUniformMatrix4fv(GetUniformLocation(name+"["+ss.str()+"]"), 1, GL_TRUE, (const GLfloat*)matrix[i]);
-	}
-}
+
 void Shader::SetUniformMaterial(const std::string& name, Material& material)
 {
 	SetUniform3f((name + ".diffuse"), material.diffuse.x, material.diffuse.y, material.diffuse.z);

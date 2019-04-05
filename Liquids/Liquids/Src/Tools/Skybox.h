@@ -2,13 +2,13 @@
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
-#include "IndexBuffer.h"
-#include "VertexBuffer.h"
-#include "VertexBufferLayout.h"
-#include "VertexArray.h"
-#include "Shader.h"
-#include "Texture.h"
-#include "Renderer.h"
+#include "OpenGL/IndexBuffer.h"
+#include "OpenGL/VertexBuffer.h"
+#include "OpenGL/VertexBufferLayout.h"
+#include "OpenGL/VertexArray.h"
+#include "OpenGL/Shader.h"
+#include "OpenGL/Texture.h"
+#include "OpenGL/Renderer.h"
 #include <string>
 
 class Skybox
