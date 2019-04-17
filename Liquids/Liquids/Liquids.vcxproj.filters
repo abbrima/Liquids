@@ -66,6 +66,12 @@
     <ClCompile Include="Src\Applications\Hello Triangle\HelloTriangle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Applications\Liquids\Particle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\OpenGL\SSBO.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Vendor\glm\detail\_features.hpp">
@@ -870,6 +876,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Src\Applications\Hello Triangle\HelloTriangle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Applications\Liquids\Particle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\OpenGL\SSBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

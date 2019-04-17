@@ -81,10 +81,12 @@
   <ItemGroup>
     <ClCompile Include="Src\Applications\Application.cpp" />
     <ClCompile Include="Src\Applications\Hello Triangle\HelloTriangle.cpp" />
+    <ClCompile Include="Src\Applications\Liquids\Particle.cpp" />
     <ClCompile Include="Src\Main\EntryPoint.cpp" />
     <ClCompile Include="Src\OpenGL\IndexBuffer.cpp" />
     <ClCompile Include="Src\OpenGL\Renderer.cpp" />
     <ClCompile Include="Src\OpenGL\Shader.cpp" />
+    <ClCompile Include="Src\OpenGL\SSBO.cpp" />
     <ClCompile Include="Src\OpenGL\Texture.cpp" />
     <ClCompile Include="Src\OpenGL\VertexArray.cpp" />
     <ClCompile Include="Src\OpenGL\VertexBuffer.cpp" />
@@ -106,9 +108,11 @@
     <ClInclude Include="Dep\GLFW\include\GLFW\glfw3native.h" />
     <ClInclude Include="Src\Applications\Application.h" />
     <ClInclude Include="Src\Applications\Hello Triangle\HelloTriangle.h" />
+    <ClInclude Include="Src\Applications\Liquids\Particle.h" />
     <ClInclude Include="Src\OpenGL\IndexBuffer.h" />
     <ClInclude Include="Src\OpenGL\Renderer.h" />
     <ClInclude Include="Src\OpenGL\Shader.h" />
+    <ClInclude Include="Src\OpenGL\SSBO.h" />
     <ClInclude Include="Src\OpenGL\Texture.h" />
     <ClInclude Include="Src\OpenGL\VertexArray.h" />
     <ClInclude Include="Src\OpenGL\VertexBuffer.h" />

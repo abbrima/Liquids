@@ -11,7 +11,7 @@ namespace app
 			-200.0f,-100.0f,
 			0.0f,   200.0f
 		};
-		m_VB = new VertexBuffer(data.data(),sizeof(float) * data.size());
+		//m_VB = new VertexBuffer(data.data(),sizeof(float) * data.size());
 		unsigned int indicies[] = {
 			0,1,2
 		};
@@ -19,8 +19,13 @@ namespace app
 		VertexBufferLayout layout;
 		layout.Push<float>(2);
 
-		m_VA = new VertexArray();
-		m_VA->AddBuffer(*m_VB, layout);
+		//
+		ssbo = new SSBO(data.data(), data.size() * sizeof(float));
+		ssbo->SetLayout(layout);
+		//
+
+		//m_VA = new VertexArray();
+		//m_VA->AddBuffer(*m_VB, layout);
 
 		m_Shader = new Shader("Resources/Shaders/Color.shader");
 	}
@@ -40,7 +45,7 @@ namespace app
 		m_Shader->Bind();
 		m_Shader->SetUniformMat4f("u_MVP", projMatrix);
 		m_Shader->SetUniformVec4("u_Color", color);
-		renderer.DrawTriangles(*m_VA, *m_IB, *m_Shader);
+		renderer.DrawTriangles(*ssbo, *m_IB, *m_Shader);
 	}
 	void HelloTriangle::OnImGuiRender() {
 

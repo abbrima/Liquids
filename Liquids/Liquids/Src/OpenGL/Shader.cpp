@@ -166,3 +166,18 @@ int Shader::GetUniformLocation(const std::string& name)
 	m_UniformLocationCache[name] = location;
 	return location;
 }
+uint Shader::GetBlockLocation(const std::string& name)
+{
+	if (m_BlockLocationCache.find(name) != m_BlockLocationCache.end())
+		return m_BlockLocationCache[name];
+	GLCall(uint location = glGetProgramResourceIndex(m_RendererID, GL_SHADER_STORAGE_BLOCK, name.c_str()));
+	m_BlockLocationCache[name] = location;
+	return location;
+}
+void Shader::BindSSBO(SSBO& ssbo, std::string& name, uint BindingPoint)
+{
+	ssbo.Bind();
+	uint index = GetBlockLocation(name);
+	GLCall(glShaderStorageBlockBinding(m_RendererID, index, BindingPoint));
+	GLCall(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, BindingPoint, ssbo.GetID()));
+}

@@ -19,6 +19,7 @@ namespace app
 		Renderer renderer;
 		glm::mat4 projMatrix;
 		glm::vec4 color;
+		SSBO* ssbo;
 
 	public:
 		HelloTriangle();
