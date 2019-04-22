@@ -15,6 +15,7 @@ public:
 	void BindToDraw() const;
 	void Unbind() const;
 	void Write(const void* data,uint size);
+	void Append(const void* data, uint size, uint offset);
 	void* GetData();
 	void Unmap() const;
 	void SetLayout(VertexBufferLayout& l);

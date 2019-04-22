@@ -1,16 +1,33 @@
 #pragma once
 extern bool keys[350];
+extern bool mouseButtons[8];
 extern int glfwWindowHeight;
 extern int glfwWindowWidth;
 extern bool firstmouse;
 extern float xOffset;
 extern float yOffset;
+extern double xPos;
+extern double yPos;
 extern float deltaTime;
 extern double currentTime;
 extern float fov;
 
 #ifndef GLFW_KEY_UNKNOWN
 #define GLFW_KEY_UNKNOWN            -1
+
+#define GLFW_MOUSE_BUTTON_1         0
+#define GLFW_MOUSE_BUTTON_2         1
+#define GLFW_MOUSE_BUTTON_3         2
+#define GLFW_MOUSE_BUTTON_4         3
+#define GLFW_MOUSE_BUTTON_5         4
+#define GLFW_MOUSE_BUTTON_6         5
+#define GLFW_MOUSE_BUTTON_7         6
+#define GLFW_MOUSE_BUTTON_8         7
+#define GLFW_MOUSE_BUTTON_LAST      GLFW_MOUSE_BUTTON_8
+#define GLFW_MOUSE_BUTTON_LEFT      GLFW_MOUSE_BUTTON_1
+#define GLFW_MOUSE_BUTTON_RIGHT     GLFW_MOUSE_BUTTON_2
+#define GLFW_MOUSE_BUTTON_MIDDLE    GLFW_MOUSE_BUTTON_3
+
 
 /* Printable keys */
 #define GLFW_KEY_SPACE              32

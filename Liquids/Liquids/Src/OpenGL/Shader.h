@@ -10,6 +10,7 @@ struct ShaderProgramSource
 {
 	std::string VertexSource;
 	std::string FragmentSource;
+	std::string ComputeSource;
 };
 class Shader
 {
@@ -23,6 +24,7 @@ public:
 	~Shader();
 
 	void Bind()const;
+	void DispatchCompute(uint x,uint y,uint z);
 	void Unbind() const;
 
 	//set uniforms
@@ -39,12 +41,12 @@ public:
 	void SetUniformVec4(const std::string& name, glm::vec4 vec);
 
 	//set SSBO
-	void BindSSBO(SSBO& ssbo, std::string& name, uint BindingPoint);
+	void BindSSBO(SSBO& ssbo, std::string name, uint BindingPoint);
 
 private:
 	ShaderProgramSource ParseShader(const std::string& filepath);
 	unsigned int CompileShader(unsigned int type, const std::string& source);
-	unsigned int CreateShader(const std::string& vertexshader, const std::string& fragmentshader);
+	unsigned int CreateShader(const std::string& vertexshader, const std::string& fragmentshader, const std::string& computeshader);
 	int GetUniformLocation(const std::string& name);
 	uint GetBlockLocation(const std::string& name);
 };

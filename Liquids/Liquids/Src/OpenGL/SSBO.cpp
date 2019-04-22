@@ -8,7 +8,9 @@ SSBO::SSBO(const void* data, uint size)
 	GLCall(glGenBuffers(1, &m_RendererID));
 	GLCall(glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_RendererID));
 	GLCall(glBufferData(GL_SHADER_STORAGE_BUFFER, size, data, GL_DYNAMIC_DRAW));
+	Unbind();
 }
+
 SSBO::~SSBO()
 {
 	GLCall(glDeleteBuffers(1,&m_RendererID));
@@ -42,20 +44,29 @@ void SSBO::Unbind() const
 }
 void SSBO::Write(const void* data,uint size)
 {
-	GLCall(glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_RendererID));
+	Bind();
 	GLvoid* p;
 	GLCall(p = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY));
 	memcpy(p, data, size);
 	GLCall(glUnmapBuffer(GL_SHADER_STORAGE_BUFFER));
+	Unbind();
+}
+void SSBO::Append(const void* data, uint size, uint offset)
+{
+
+	Bind(); 
+	GLCall(glBufferSubData(GL_SHADER_STORAGE_BUFFER, offset, size, data));
+	Unbind();
 }
 void* SSBO::GetData()
 {
-	GLCall(glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_RendererID));
+	Bind();
 	GLvoid* p;
-	GLCall(p = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY));
+	GLCall(p = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_WRITE));
 	return p;
 }
 void SSBO::Unmap() const
 {
 	GLCall(glUnmapBuffer(GL_SHADER_STORAGE_BUFFER));
+	Unbind();
 }

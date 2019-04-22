@@ -20,11 +20,13 @@
 
 #include "Applications/Application.h"
 #include "Applications/Hello Triangle/HelloTriangle.h"
+#include "Applications/Liquids/Bowl.h"
 
 #include "Tools/MyExternals.h"
 
-double lastx, lasty; bool firstmouse = true; float xOffset, yOffset, fov, deltaTime; double currentTime;
+double lastx, lasty; bool firstmouse = true; float xOffset, yOffset, fov, deltaTime; double currentTime,xPos,yPos;
 bool keys[350];
+bool mouseButtons[8];
 int glfwWindowHeight, glfwWindowWidth;
 
 double lastframe = 0;
@@ -50,6 +52,13 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	if (action == GLFW_RELEASE)
 		keys[key] = false;
 }
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+	if (action == GLFW_PRESS)
+		mouseButtons[button] = true;
+	if (action == GLFW_RELEASE)
+		mouseButtons[button] = false;
+}
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
 	if (firstmouse)
@@ -62,13 +71,15 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	yOffset = (float)lasty - (float)ypos; // reversed since y-coordinates range from bottom to top
 	lastx = xpos;
 	lasty = ypos;
+	xPos = xpos;
+	yPos = ypos;
 }
 
 int main(void)
 {
 	if (!glfwInit())
 		return -1;
-	GLFWwindow* window = glfwCreateWindow(1024, 768, "Football Simulation", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(1024, 768, "WINDOW", NULL, NULL);
 	//GLFWwindow* window = glfwCreateWindow(1280, 1024, "My Title", glfwGetPrimaryMonitor(), NULL);
 
 
@@ -96,14 +107,16 @@ int main(void)
 		glfwSetKeyCallback(window, key_callback);
 		glfwSetCursorPosCallback(window, mouse_callback);
 		glfwSetScrollCallback(window, scroll_callback);
-
+		glfwSetMouseButtonCallback(window, mouse_button_callback);
 		
 		app::Application* currentApplication = nullptr;
 		app::ApplicationMenu* applicationMenu = new app::ApplicationMenu(currentApplication);
-		currentApplication = applicationMenu;
-
+		
+		//currentApplication = applicationMenu;
+		currentApplication = new app::Bowl();
 
 		applicationMenu->RegisterApplication<app::HelloTriangle>("Hello Triangle!");
+		applicationMenu->RegisterApplication<app::Bowl>("Bowl Test");
 
 		while (!glfwWindowShouldClose(window))
 		{
@@ -138,7 +151,6 @@ int main(void)
 				currentApplication->OnImGuiRender();
 				ImGui::End();
 			}
-
 			ImGui::Render();
 			ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 			glfwSwapBuffers(window);

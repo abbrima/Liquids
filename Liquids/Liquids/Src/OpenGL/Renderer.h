@@ -26,4 +26,5 @@ public:
 	void DrawTriangleFan(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) const;
 	void DrawQuads(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) const;
 	void DrawTriangles(SSBO& ssbo,const IndexBuffer& ib, Shader& shader) const;
+	void DrawPoints(SSBO& ssbo, Shader& shader,uint count) const;
 };

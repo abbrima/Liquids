@@ -50,6 +50,12 @@ void Renderer::DrawLines(const VertexArray& va, const IndexBuffer& ib, const Sha
 	ib.Bind();
 	GLCall(glDrawElements(GL_LINES, ib.GetCount(), GL_UNSIGNED_INT, nullptr));
 }
+void Renderer::DrawPoints(SSBO& ssbo,Shader& shader,uint count) const
+{
+	shader.Bind();
+	ssbo.BindToDraw();
+	GLCall(glDrawArrays(GL_POINTS, 0, count));
+}
 
 void Renderer::Clear() const
 {

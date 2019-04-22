@@ -4,7 +4,8 @@
 
 namespace app
 {
-	HelloTriangle::HelloTriangle()
+	HelloTriangle::HelloTriangle():
+		value(0.0f)
 	{
 		std::vector<float> data = {
 			200.0f, -100.0f,
@@ -20,13 +21,13 @@ namespace app
 		layout.Push<float>(2);
 
 		//
-		ssbo = new SSBO(data.data(), data.size() * sizeof(float));
+		ssbo = new SSBO(data.data(), (uint)data.size() * sizeof(float));
 		ssbo->SetLayout(layout);
 		//
 
 		//m_VA = new VertexArray();
 		//m_VA->AddBuffer(*m_VB, layout);
-
+		comp = new Shader("Resources/Shaders/Test.shader");
 		m_Shader = new Shader("Resources/Shaders/Color.shader");
 	}
 	HelloTriangle::~HelloTriangle()
@@ -36,18 +37,35 @@ namespace app
 	void HelloTriangle::OnUpdate() {
 		projMatrix = glm::ortho(-(float)glfwWindowWidth / 2, (float)glfwWindowWidth / 2,
 			-(float)glfwWindowHeight / 2, (float)glfwWindowHeight / 2);
-		color.x = glm::sin(currentTime);
-		color.y = glm::cos(currentTime);
+		color.x = (float)glm::sin(currentTime);
+		color.y = (float)glm::cos(currentTime);
 		color.z = color.x*color.y;
 		color.w = 1.0f;
+		/*void* data = ssbo->GetData();
+		float* ptr = (float*)data;
+		for (int i = 0; i < 6; i++)
+		{
+			*ptr += 0.1f;
+			ptr++;
+		}
+		ssbo->Unmap();*/
+		comp->BindSSBO(*ssbo, "Data", 2);
+		comp->SetUniform1f("val", value);
+		comp->DispatchCompute(3,1,1);
+
 	}
 	void HelloTriangle::OnRender() {
+		
+		
+		
 		m_Shader->Bind();
 		m_Shader->SetUniformMat4f("u_MVP", projMatrix);
 		m_Shader->SetUniformVec4("u_Color", color);
+
 		renderer.DrawTriangles(*ssbo, *m_IB, *m_Shader);
+
 	}
 	void HelloTriangle::OnImGuiRender() {
-
+		ImGui::SliderFloat("Value", &value, -1.0f, 1.0f);
 	}
 }

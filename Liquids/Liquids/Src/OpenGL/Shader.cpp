@@ -8,7 +8,7 @@
 Shader::Shader(const std::string& filepath):m_FilePath(filepath), m_RendererID(0)
 {
 	ShaderProgramSource source = ParseShader(filepath);
-	m_RendererID = CreateShader(source.VertexSource, source.FragmentSource);
+	m_RendererID = CreateShader(source.VertexSource, source.FragmentSource,source.ComputeSource);
 }
 Shader::~Shader()
 {
@@ -36,23 +36,39 @@ unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
 	}
 	return id;
 }
-unsigned int Shader::CreateShader(const std::string& vertexShader, const std::string& fragmentShader)
+unsigned int Shader::CreateShader(const std::string& vertexShader, const std::string& fragmentShader, const std::string& computeShader)
 {
 
 	unsigned int program = glCreateProgram();
-	unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
-	unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
 
-	glAttachShader(program, vs);
-	glAttachShader(program, fs);
+	if (computeShader.empty())
+	{
+		unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
+		unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
 
-	glLinkProgram(program);
-	glValidateProgram(program);
+		glAttachShader(program, vs);
+		glAttachShader(program, fs);
 
-	glDeleteShader(vs);
-	glDeleteShader(fs);
+		glLinkProgram(program);
+		glValidateProgram(program);
 
-	return program;
+		glDeleteShader(vs);
+		glDeleteShader(fs);
+
+		return program;
+	}
+	else
+	{
+		unsigned int cs = CompileShader(GL_COMPUTE_SHADER, computeShader);
+
+		glAttachShader(program, cs);
+		glLinkProgram(program);
+		glValidateProgram(program);
+
+		glDeleteShader(cs);
+		return program;
+	}
+	
 }
 
 ShaderProgramSource Shader::ParseShader(const std::string& filepath)
@@ -60,12 +76,12 @@ ShaderProgramSource Shader::ParseShader(const std::string& filepath)
 {
 	enum class ShaderType
 	{
-		NONE = -1, VERTEX = 0, FRAGMENT = 1
+		NONE = -1, VERTEX = 0, FRAGMENT = 1,COMPUTE = 2
 	};
 	ShaderType type = ShaderType::NONE;
 	std::ifstream stream(filepath);
 	std::string line;
-	std::stringstream ss[2];
+	std::stringstream ss[3];
 	while (getline(stream, line))
 	{
 		if (line.find("#shader") != std::string::npos)
@@ -74,12 +90,14 @@ ShaderProgramSource Shader::ParseShader(const std::string& filepath)
 				type = ShaderType::VERTEX;
 			else if (line.find("fragment") != std::string::npos)
 				type = ShaderType::FRAGMENT;
+			else if (line.find("compute") != std::string::npos)
+				type = ShaderType::COMPUTE;
 		}
 		else
 		{
 			ss[(int)type] << line << '\n';
 		}
-	}	return { ss[0].str() , ss[1].str() };
+	}	return { ss[0].str() , ss[1].str() ,ss[2].str()};
 
 }
 void Shader::Bind() const
@@ -89,6 +107,12 @@ void Shader::Bind() const
 void Shader::Unbind() const
 {
 	GLCall(glUseProgram(0));
+}
+void Shader::DispatchCompute(uint x , uint y ,uint z)
+{
+	Bind();
+	GLCall(glDispatchCompute(x, y, z));
+	GLCall(glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT));
 }
 void Shader::SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3)
 {
@@ -174,8 +198,9 @@ uint Shader::GetBlockLocation(const std::string& name)
 	m_BlockLocationCache[name] = location;
 	return location;
 }
-void Shader::BindSSBO(SSBO& ssbo, std::string& name, uint BindingPoint)
+void Shader::BindSSBO(SSBO& ssbo, std::string name, uint BindingPoint)
 {
+	Bind();
 	ssbo.Bind();
 	uint index = GetBlockLocation(name);
 	GLCall(glShaderStorageBlockBinding(m_RendererID, index, BindingPoint));

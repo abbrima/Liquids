@@ -36,7 +36,7 @@ Skybox::Skybox() : enable(true)
 		100.0f, -100.0f, -100.0f, 0.0f    ,  0.0f,
 		100.0f,  100.0f, -100.0f, 0.0f    ,  1.0f
 	};
-	m_VBO = new VertexBuffer(databox.data(), databox.size() * sizeof(float));
+	m_VBO = new VertexBuffer(databox.data(), (uint)databox.size() * sizeof(float));
 	VertexBufferLayout boxlayout;
 	boxlayout.Push<float>(3);
 	boxlayout.Push<float>(2);
