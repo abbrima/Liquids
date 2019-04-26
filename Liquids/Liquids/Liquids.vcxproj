@@ -46,6 +46,10 @@
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)bin\Intermediates\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)bin\Intermediates\$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -374,6 +378,23 @@
     <ClInclude Include="Src\Vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\ParticleComputes\Advection.shader" />
+    <None Include="Resources\ParticleComputes\Collision.shader" />
+    <None Include="Resources\ParticleComputes\Displacement.shader" />
+    <None Include="Resources\ParticleComputes\CellClearer.shader" />
+    <None Include="Resources\ParticleComputes\CellSorter.shader" />
+    <None Include="Resources\ParticleComputes\DensityPressure.shader" />
+    <None Include="Resources\ParticleComputes\ExternalForces.shader" />
+    <None Include="Resources\ParticleComputes\Neighbors.shader" />
+    <None Include="Resources\ParticleComputes\Viscosity.shader" />
+    <None Include="Resources\Shaders\Color.shader" />
+    <None Include="Resources\Shaders\MaterialLighting.shader" />
+    <None Include="Resources\Shaders\Model.shader" />
+    <None Include="Resources\Shaders\ModelColor.shader" />
+    <None Include="Resources\Shaders\Particle.shader" />
+    <None Include="Resources\Shaders\Test.shader" />
+    <None Include="Resources\Shaders\Texture2D.shader" />
+    <None Include="Resources\Shaders\TextureLighting.shader" />
     <None Include="Src\Vendor\glm\detail\func_common.inl" />
     <None Include="Src\Vendor\glm\detail\func_common_simd.inl" />
     <None Include="Src\Vendor\glm\detail\func_exponential.inl" />

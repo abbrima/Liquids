@@ -21,7 +21,8 @@ namespace app
 		layout.Push<float>(2);
 
 		//
-		ssbo = new SSBO(data.data(), (uint)data.size() * sizeof(float));
+		ssbo = new SSBO(NULL, (uint)data.size() * sizeof(float));
+		ssbo->Append(data.data(), data.size() * sizeof(float), 0);
 		ssbo->SetLayout(layout);
 		//
 
@@ -37,10 +38,7 @@ namespace app
 	void HelloTriangle::OnUpdate() {
 		projMatrix = glm::ortho(-(float)glfwWindowWidth / 2, (float)glfwWindowWidth / 2,
 			-(float)glfwWindowHeight / 2, (float)glfwWindowHeight / 2);
-		color.x = (float)glm::sin(currentTime);
-		color.y = (float)glm::cos(currentTime);
-		color.z = color.x*color.y;
-		color.w = 1.0f;
+		color = glm::vec4(1.0f);
 		/*void* data = ssbo->GetData();
 		float* ptr = (float*)data;
 		for (int i = 0; i < 6; i++)
@@ -63,7 +61,7 @@ namespace app
 		m_Shader->SetUniformVec4("u_Color", color);
 
 		renderer.DrawTriangles(*ssbo, *m_IB, *m_Shader);
-
+		//renderer.DrawPoints(*ssbo, *m_Shader, 3);
 	}
 	void HelloTriangle::OnImGuiRender() {
 		ImGui::SliderFloat("Value", &value, -1.0f, 1.0f);

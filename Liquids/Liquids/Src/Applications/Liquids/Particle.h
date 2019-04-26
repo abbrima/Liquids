@@ -2,9 +2,9 @@
 #include "glm/glm.hpp"
 #include <glm/gtc/type_ptr.hpp>
 #define MAX_NEIGHBORS 8
-class Particle 
+#define MAXPINC 1000
+struct Particle 
 {
-private:
 	glm::vec2 position;
 	glm::vec2 previousPosition;
 	glm::vec2 velocity;
@@ -14,7 +14,21 @@ private:
 	float nearPressure;
 	int neighbors[MAX_NEIGHBORS];
 
-public:
 	Particle(float x, float y);
-	~Particle();
+};
+struct Cell
+{
+	int n;
+	int x;
+	int y;
+	int indicies[MAXPINC];
+
+	Cell(int x, int y);
+};
+struct Bound
+{
+	glm::vec2 xLimits;
+	glm::vec2 yLimits;
+
+	Bound(float x1, float x2, float y1, float y2);
 };

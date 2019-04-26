@@ -10,9 +10,18 @@ Particle::Particle(float x, float y)
 	nearDensity = 0;
 	pressure = 0;
 	nearPressure = 0;
-	memset(neighbors, -1, MAX_NEIGHBORS);
+	memset(neighbors, -1, sizeof(int) * MAX_NEIGHBORS);
 }
-Particle::~Particle()
+Cell::Cell(int x, int y)
 {
+	this->n = 0;
+	this->x = x;
+	this->y = y;
 
+	memset(indicies, -1, MAXPINC);
+}
+Bound::Bound(float x1, float x2, float y1, float y2)
+{
+	xLimits.x = x1; xLimits.y = x2;
+	yLimits.x = y1; yLimits.y = y2;
 }
