@@ -381,8 +381,6 @@
     <None Include="Resources\ParticleComputes\Advection.shader" />
     <None Include="Resources\ParticleComputes\Collision.shader" />
     <None Include="Resources\ParticleComputes\Displacement.shader" />
-    <None Include="Resources\ParticleComputes\CellClearer.shader" />
-    <None Include="Resources\ParticleComputes\CellSorter.shader" />
     <None Include="Resources\ParticleComputes\DensityPressure.shader" />
     <None Include="Resources\ParticleComputes\ExternalForces.shader" />
     <None Include="Resources\ParticleComputes\Neighbors.shader" />

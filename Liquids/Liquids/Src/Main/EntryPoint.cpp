@@ -80,7 +80,7 @@ int main(void)
 {
 	if (!glfwInit())
 		return -1;
-	GLFWwindow* window = glfwCreateWindow(1024, 768, "WINDOW", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(1366, 768, "WINDOW", NULL, NULL);
 	//GLFWwindow* window = glfwCreateWindow(1280, 1024, "My Title", glfwGetPrimaryMonitor(), NULL);
 
 
@@ -151,6 +151,7 @@ int main(void)
 				}
 				currentApplication->OnImGuiRender();
 				ImGui::End();
+				currentApplication->FreeGuiRender();
 			}
 			ImGui::Render();
 			ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());

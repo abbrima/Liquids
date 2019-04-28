@@ -1,8 +1,7 @@
 #pragma once
 #include "glm/glm.hpp"
 #include <glm/gtc/type_ptr.hpp>
-#define MAX_NEIGHBORS 8
-#define MAXPINC 1000
+#define MAX_NEIGHBORS 128
 struct Particle 
 {
 	glm::vec2 position;
@@ -16,19 +15,7 @@ struct Particle
 
 	Particle(float x, float y);
 };
-struct Cell
+struct Output
 {
-	int n;
-	int x;
-	int y;
-	int indicies[MAXPINC];
-
-	Cell(int x, int y);
-};
-struct Bound
-{
-	glm::vec2 xLimits;
-	glm::vec2 yLimits;
-
-	Bound(float x1, float x2, float y1, float y2);
+	float deltaTime; float gravity;
 };

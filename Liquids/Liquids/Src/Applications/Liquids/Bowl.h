@@ -9,7 +9,7 @@
 #include "OpenGL/Renderer.h"
 #include "OpenGL/SSBO.h"
 #include "Applications/Liquids/Particle.h"
-#define DISPATCHSIZE 1024
+#define DISPATCHSIZE 64
 
 
 namespace app
@@ -18,9 +18,17 @@ namespace app
 	{
 	private:
 		glm::mat4 projection;
+		glm::mat4 model;
+		float kd,linVis,quadVis,gravity,timeFactor,restDensity,stiffness,nearStiffness;
 		Renderer renderer;
-		float k,gravity,restDensity,stiffness,nearStiffness,linVis,quadVis,dt,dtf,bounceCO;
 		glm::vec3 getWorldPos();
+
+		inline uint getDX() {
+			uint d = nParticles / DISPATCHSIZE;
+			if (nParticles%DISPATCHSIZE > 0)
+				d += 1;
+			return d;
+		}
 
 	//Walls
 		//Bounds are y=-300,x=-200,x=200
@@ -28,31 +36,38 @@ namespace app
 		IndexBuffer *wallIB;
 		Shader *wallShader;
 		VertexArray *wallVA;
-		SSBO* bounds;
 		void initWalls();
 		void renderWalls();
 		
 	//Particles
 		SSBO *particles;
-		SSBO *cells;
 		uint nParticles;
-		uint nCells;
-		uint sizei; uint sizej;
 
 		Shader *particleRenderer;
-		//Shader *cellClearer;
-		//Shader *cellSorter;
+	
 		Shader *neighborFinder;
+		void findNeighbors();
 		Shader *pdCalculator;
+		void calculateDP();
 		Shader *displacor;
+		void displace();
 		Shader *viscosityCalculator;
+		void calculateViscosity();
 		Shader *advector;
+		void advect();
 		Shader *externalForces;
+		void applyExternalForces();
 		Shader *collisionResolver;
+		void resolveCollisions();
+
+
 
 		void computeChanges();
 		void initParticles();
 		void renderParticles();
+
+		//test
+		SSBO *out;
 
 	public:
 		Bowl();
@@ -61,7 +76,7 @@ namespace app
 		void OnUpdate() override;
 		void OnRender() override;
 		void OnImGuiRender() override;
+		void FreeGuiRender() override;
 	};
 
-	static uint getDispatchX(int n,int size);
 }

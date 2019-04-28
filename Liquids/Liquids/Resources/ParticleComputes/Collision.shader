@@ -1,9 +1,10 @@
 #shader compute
 #version 430 core
 
-#define MAX_NEIGHBORS 8
+#define MAX_NEIGHBORS 128
 #define p particles[gl_GlobalInvocationID.x]
-#define LOCALX 1024
+#define np particles[p.neighbors[index]]
+#define LOCALX 64
 
 struct Particle {
 	vec2 position;
@@ -23,23 +24,21 @@ layout(std430, binding = 2) buffer Data
 	Particle particles[];
 };
 
-uniform float deltaTime;
-uniform float bounceCO;
+
+
 void main()
 {
-	if (p.position.y <= -300)
-	{
-		p.velocity.y = 0;
-		p.position.y = -300;
-	}
 	if (p.position.x <= -200)
 	{
-		p.velocity.x = 0;
-		p.position.x = -200;
+		p.velocity.x *= -0.001; p.position.x = -200;
 	}
 	if (p.position.x >= 200)
 	{
-		p.velocity.x = 0;
-		p.position.x = 200;
+		p.velocity.x *= -0.001; p.position.x = 200;
+	}
+	if (p.position.y <= -300)
+	{
+		p.velocity.y *= -0.001; p.position.y = -300;
 	}
 };
+

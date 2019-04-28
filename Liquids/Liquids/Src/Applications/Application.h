@@ -12,6 +12,7 @@ namespace app {
 		virtual void OnUpdate() {}
 		virtual void OnRender() {}
 		virtual void OnImGuiRender() {}
+		virtual void FreeGuiRender() {}
 	};
 
 	class ApplicationMenu : public Application

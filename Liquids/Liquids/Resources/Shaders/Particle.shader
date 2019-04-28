@@ -10,10 +10,13 @@ layout(location = 3) in vec4 stats;
 uniform mat4 u_MVP;
 uniform float radius;
 
+out vec2 VELOCITY;
+
 void main()
 {
 	gl_PointSize = radius;
 	gl_Position = u_MVP * position;
+	VELOCITY = velocity;
 };
 
 #shader fragment
@@ -21,10 +24,13 @@ void main()
 
 layout(location = 0) out vec4 color;
 
+uniform vec4 u_Color;
+
+in vec2 VELOCITY;
 
 void main()
 {
-	color = vec4(1.0, 1.0, 1.0, 1.0);
+	color = u_Color;
 };
 
 
