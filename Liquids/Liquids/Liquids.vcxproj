@@ -379,12 +379,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\ParticleComputes\Advection.shader" />
-    <None Include="Resources\ParticleComputes\Collision.shader" />
-    <None Include="Resources\ParticleComputes\Displacement.shader" />
-    <None Include="Resources\ParticleComputes\DensityPressure.shader" />
-    <None Include="Resources\ParticleComputes\ExternalForces.shader" />
-    <None Include="Resources\ParticleComputes\Neighbors.shader" />
-    <None Include="Resources\ParticleComputes\Viscosity.shader" />
+    <None Include="Resources\ParticleComputes\Gravity.shader" />
     <None Include="Resources\Shaders\Color.shader" />
     <None Include="Resources\Shaders\MaterialLighting.shader" />
     <None Include="Resources\Shaders\Model.shader" />

@@ -1,9 +1,9 @@
 #shader compute
 #version 430 core
 
-#define MAX_NEIGHBORS 128
+#define MAX_NEIGHBORS 8
 #define p particles[gl_GlobalInvocationID.x]
-#define LOCALX 64
+#define LOCALX 1024
 
 struct Particle {
 	vec2 position;
@@ -28,5 +28,5 @@ uniform float deltaTime;
 void main()
 {
 	p.prevPosition = p.position;
-	p.position += deltaTime * p.velocity;
+	p.position += p.velocity * deltaTime;
 };

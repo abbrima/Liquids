@@ -9,7 +9,7 @@
 #include "OpenGL/Renderer.h"
 #include "OpenGL/SSBO.h"
 #include "Applications/Liquids/Particle.h"
-#define DISPATCHSIZE 64
+#define DISPATCHSIZE 1024
 
 
 namespace app
@@ -18,7 +18,6 @@ namespace app
 	{
 	private:
 		glm::mat4 projection;
-		glm::mat4 model;
 		float kd,linVis,quadVis,gravity,timeFactor,restDensity,stiffness,nearStiffness;
 		Renderer renderer;
 		glm::vec3 getWorldPos();
@@ -40,34 +39,16 @@ namespace app
 		void renderWalls();
 		
 	//Particles
-		SSBO *particles;
 		uint nParticles;
-
-		Shader *particleRenderer;
-	
-		Shader *neighborFinder;
-		void findNeighbors();
-		Shader *pdCalculator;
-		void calculateDP();
-		Shader *displacor;
-		void displace();
-		Shader *viscosityCalculator;
-		void calculateViscosity();
-		Shader *advector;
-		void advect();
-		Shader *externalForces;
-		void applyExternalForces();
-		Shader *collisionResolver;
-		void resolveCollisions();
-
-
+		Shader *ParticleRenderer;
+		SSBO *particles;
 
 		void computeChanges();
 		void initParticles();
 		void renderParticles();
 
-		//test
-		SSBO *out;
+		void ApplyGravity(); Shader *Gravity;
+		void Advect();       Shader *Advection;
 
 	public:
 		Bowl();

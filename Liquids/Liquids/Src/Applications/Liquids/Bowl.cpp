@@ -10,8 +10,6 @@ namespace app
 	{
 		glEnable(GL_PROGRAM_POINT_SIZE);
 		glEnable(GL_POINT_SMOOTH);
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(-200, 0, 0));
-
 
 		initWalls();
 		initParticles();
@@ -26,22 +24,11 @@ namespace app
 		projection = glm::ortho(-(float)glfwWindowWidth / 2, (float)glfwWindowWidth / 2,
 			-(float)glfwWindowHeight / 2, (float)glfwWindowHeight / 2);
 
-		glm::vec3 worldPos = getWorldPos();
-		if (mouseButtons[GLFW_MOUSE_BUTTON_LEFT] && worldPos.x > -200 && worldPos.x < 200 && worldPos.y>-300)
+		glm::vec3 pos = getWorldPos();
+		if (pos.x > -200 && pos.x<200 && pos.y>-300 && mouseButtons[GLFW_MOUSE_BUTTON_LEFT])
 		{
-			Particle p(worldPos.x, worldPos.y);
-			particles->Append(&p, sizeof(Particle), nParticles * sizeof(Particle));
-			nParticles++;
-			particles->Append(&p, sizeof(Particle), nParticles * sizeof(Particle));
-			nParticles++;
-			particles->Append(&p, sizeof(Particle), nParticles * sizeof(Particle));
-			nParticles++;
-			//mouseButtons[GLFW_MOUSE_BUTTON_LEFT] = false;
+			particles->Append(new Particle(pos.x, pos.y), sizeof(Particle), nParticles++ * sizeof(Particle));
 		}
-
-		if (deltaTime < 0)
-			std::cout << "DELTAFUCK" << std::endl;
-
 
 		computeChanges();
 	}
@@ -59,10 +46,12 @@ namespace app
 
 		ImGui::InputFloat("Stiffness", &stiffness, 0.0f, 10000.0f);
 		ImGui::InputFloat("Near Stiffness", &nearStiffness, 0.0f, 1000.0f);
+		ImGui::SliderFloat("Gravity", &gravity,-10.0f,10.0f);
 
 	}
 	void Bowl::FreeGuiRender()
 	{
+		/*
 		ImGui::Begin("DATA");
 
 		void* p = particles->GetData();
@@ -76,22 +65,23 @@ namespace app
 		particles->Unmap();
 
 		ImGui::End();
-
+		*/
+		
 	}
 	void Bowl::initWalls()
 	{
 		std::vector<float> data = {
 			-200.0f,300.0f,   //left  upper right
-			-210.0f,300.0f,   //left  upper left
+			-220.0f,300.0f,   //left  upper left
 			-200.0f,-300.0f,  //left  lower right
-			-210.0f,-310.0f,  //left  lower left
+			-220.0f,-320.0f,  //left  lower left
 			200.0f,300.0f,    //right upper left
-			210.0f,300.0f,    //right upper right
+			220.0f,300.0f,    //right upper right
 			200.0f,-300.0f,   //right lower left
-			210.0f,-310.0f,   //right lower right
+			220.0f,-320.0f,   //right lower right
 
-			-210.0f,-300.0f,  //left  lower left upper
-			210.0f,-300.0f    //right lower right upper
+			-220.0f,-300.0f,  //left  lower left upper
+			220.0f,-300.0f    //right lower right upper
 		};
 		std::vector<unsigned int> indicies = {
 			0,1,2,1,2,8,3,8,9,3,7,9,9,4,5,4,9,6
@@ -109,49 +99,40 @@ namespace app
 	{
 		wallShader->Bind();
 		wallShader->SetUniform4f("u_Color", 0.0f, 0.0f, 0.0f, 1.0f);
-		wallShader->SetUniformMat4f("u_MVP", projection * model);
+		wallShader->SetUniformMat4f("u_MVP", projection);
 		renderer.DrawTriangles(*wallVA, *wallIB, *wallShader);
 		wallVA->Unbind();
 		wallIB->Unbind();
 	}
 	void Bowl::initParticles()
 	{
-		out = new SSBO(NULL, sizeof(Output) * 100000);
-
 		particles = new SSBO(NULL, sizeof(Particle) * 100000);
+
 		VertexBufferLayout layout;
-		layout.Push<float>(2);    //Position
-		layout.Push<float>(2);    //Previous Position
-		layout.Push<float>(2);    //Velocity
-		layout.Push<float>(4);    // pressure and density values
-
-		short neibyfour = MAX_NEIGHBORS / 4;
-		short remainder = MAX_NEIGHBORS % 4;
-
-		for (short i = 0; i < neibyfour; i++)
+		layout.Push<float>(2); 
+		layout.Push<float>(2); 		
+		layout.Push<float>(2);
+		layout.Push<float>(4);
+		int n = MAX_NEIGHBORS / 4;
+		for (int i = 0; i < n; i++)
 			layout.Push<int>(4);
-		if (remainder > 0)
-			layout.Push<int>(remainder);
+		n = MAX_NEIGHBORS % 4;
+		if (n > 0)
+			layout.Push<int>(n);
 		particles->SetLayout(layout);
 
-
-		particleRenderer = new Shader("Resources/Shaders/Particle.shader");
-		neighborFinder = new Shader("Resources/ParticleComputes/Neighbors.shader");
-		pdCalculator = new Shader("Resources/ParticleComputes/DensityPressure.shader");
-		displacor = new Shader("Resources/ParticleComputes/Displacement.shader");
-		viscosityCalculator = new Shader("Resources/ParticleComputes/Viscosity.shader");
-		advector = new Shader("Resources/ParticleComputes/Advection.shader");
-		externalForces = new Shader("Resources/ParticleComputes/ExternalForces.shader");
-		collisionResolver = new Shader("Resources/ParticleComputes/Collision.shader");
+		ParticleRenderer = new Shader("Resources/Shaders/Particle.shader");
+		Gravity = new Shader("Resources/ParticleComputes/Gravity.shader");
+		Advection = new Shader("Resources/ParticleComputes/Advection.shader");
 	}
 	void Bowl::renderParticles()
 	{
-		particleRenderer->Bind();
-		particleRenderer->SetUniformMat4f("u_MVP",projection * model);
-		particleRenderer->SetUniform4f("u_Color", 0.0, 0.0, 1.0, 1.0);
-		particleRenderer->SetUniform1f("radius", kd*1.5);
+		ParticleRenderer->Bind();
+		ParticleRenderer->SetUniformMat4f("u_MVP",projection);
+		ParticleRenderer->SetUniform4f("u_Color", 0.0, 0.0, 1.0, 1.0);
+		ParticleRenderer->SetUniform1f("radius", kd*1.5);
 
-		renderer.DrawPoints(*particles, *particleRenderer, nParticles);
+		renderer.DrawPoints(*particles, *ParticleRenderer, nParticles);
 	}
 
 	glm::vec3 Bowl::getWorldPos()
@@ -163,68 +144,27 @@ namespace app
 		//    glm::mat4 ProjectView = GlobalProjection * GlobalView;
 		glm::mat4 inv = glm::inverse(projection);
 		glm::vec4 worldpos = inv * screenPos;
-		worldpos.x += 200;
 		return glm::vec3(worldpos);
 	}
 
 	void Bowl::computeChanges()
 	{
-		applyExternalForces();
-		calculateViscosity();
-		advect();
-		findNeighbors();
-		calculateDP();
-		displace();
-		resolveCollisions();
+		ApplyGravity();
+		Advect();
 	}
-	void Bowl::calculateDP()
+	void Bowl::ApplyGravity()
 	{
-		pdCalculator->BindSSBO(*particles, "Data", 2);
-		pdCalculator->SetUniform1f("restDensity", restDensity);
-		pdCalculator->SetUniform1f("stiffness", stiffness);
-		pdCalculator->SetUniform1f("nearStiffness", nearStiffness);
-		pdCalculator->SetUniform1f("k", kd);
-		pdCalculator->DispatchCompute(getDX(), 1, 1);
+		Gravity->BindSSBO(*particles, "Data", 2);
+		Gravity->SetUniform1f("gravity", gravity);
+		Gravity->SetUniform1f("deltaTime", deltaTime * timeFactor);
+
+		Gravity->DispatchCompute(getDX(), 1, 1);
 	}
-	void Bowl::findNeighbors()
+	void Bowl::Advect()
 	{
-		neighborFinder->BindSSBO(*particles, "Data", 2);
-		neighborFinder->SetUniform1f("k", kd);
-		neighborFinder->SetUniform1i("nParticles", nParticles);
-		neighborFinder->DispatchCompute(getDX(), 1, 1);
-	}
-	void Bowl::calculateViscosity()
-	{
-		viscosityCalculator->BindSSBO(*particles, "Data", 2);
-		viscosityCalculator->SetUniform1f("k", kd);
-		viscosityCalculator->SetUniform1f("linVis", linVis);
-		viscosityCalculator->SetUniform1f("quadVis", quadVis);
-		viscosityCalculator->SetUniform1f("deltaTime", timeFactor * deltaTime);
-		viscosityCalculator->DispatchCompute(getDX(), 1, 1);
-	}
-	void Bowl::advect()
-	{
-		advector->BindSSBO(*particles, "Data", 2);
-		advector->SetUniform1f("deltaTime", timeFactor* deltaTime);
-		advector->DispatchCompute(getDX(), 1, 1);
-	}
-	void Bowl::applyExternalForces()
-	{
-		externalForces->BindSSBO(*particles, "Data", 2);
-		externalForces->SetUniform1f("gravity", gravity);
-		externalForces->SetUniform1f("deltaTime", timeFactor* deltaTime);
-		externalForces->DispatchCompute(getDX(), 1, 1);
-	}
-	void Bowl::displace()
-	{
-		displacor->BindSSBO(*particles, "Data", 2);
-		displacor->SetUniform1f("deltaTime", timeFactor * deltaTime);
-		displacor->SetUniform1f("k", kd);
-		displacor->DispatchCompute(getDX(),1,1);
-	}
-	void Bowl::resolveCollisions()
-	{
-		collisionResolver->BindSSBO(*particles,"Data",2);
-		collisionResolver->DispatchCompute(getDX(), 1, 1);
+		Advection->BindSSBO(*particles, "Data", 2);
+		Advection->SetUniform1f("deltaTime", deltaTime * timeFactor);
+
+		Advection->DispatchCompute(getDX(), 1, 1);
 	}
 }
