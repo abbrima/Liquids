@@ -4,16 +4,17 @@
 namespace app
 {
 	PipeTest::PipeTest() :
-		nParticles(0), timeFactor(0.01f), kd(0.01f), stiffness(50),
+		nParticles(0),nPipes(0),timeFactor(0.005f), kd(0.01f), stiffness(50),
 		nearStiffness(50), restDensity(0.1), gravity(-0.98f),
-		linVis(0.1), quadVis(0.2)
+		linVis(0.1), quadVis(0.2),lineWidth(20.f)
 	{
 		projection = glm::ortho(-1, 1, -1, 1);
 		glEnable(GL_PROGRAM_POINT_SIZE);
 		glEnable(GL_POINT_SMOOTH);
-
+		glEnable(GL_LINE_SMOOTH);
 
 		initParticles();
+		initPipes();
 	}
 	void PipeTest::initParticles()
 	{
@@ -43,6 +44,43 @@ namespace app
 		externalForces = new Shader("Resources/ParticleComputes/ExternalForces.shader");
 		collisionResolver = new Shader("Resources/ParticleComputes/Collision.shader");
 	}
+	void PipeTest::initPipes()
+	{
+		pipes = new SSBO(nullptr, sizeof(Pipe)*MAX_PIPES);
+
+		pipeRenderer = new Shader("Resources/Shaders/Color.shader");
+		Pipe* arr[MAX_PIPES];
+		arr[nPipes] = new Pipe(1.f, 5.f, -0.5f, -0.5f, 1.f);
+		arr[nPipes++]->setConstraints(-1.f, -1.f, 1.f, 1.f);
+		arr[nPipes] = new Pipe(1.f, 5.f, -0.4f, -0.4f, 1.f);
+		arr[nPipes++]->setConstraints(-1.f, -1.f, 1.f, 1.f);
+		for (uint i = 0; i < nPipes; i++)
+		{
+			pipes->Append(arr[i], sizeof(Pipe), i * sizeof(Pipe));
+			VertexBufferLayout layout;
+			layout.Push<float>(2);
+			std::vector<float> points;
+			points.clear();
+			bool lasty = false;
+			for (float x = arr[i]->lowX; x <= arr[i]->highX; x += 0.01)
+			{
+				float y = arr[i]->f(x);
+				if (y < -1)
+					continue;
+				if (y > 1 && lasty)
+					break;
+				if (y > 1 && !lasty)
+					lasty = true;
+				points.push_back(x);
+				points.push_back(y);
+			}
+			pipesVB[i] = new VertexBuffer(points.data(), sizeof(float)*points.size());
+			pipesVA[i] = new VertexArray();
+			pipesVA[i]->AddBuffer(*(pipesVB[i]), layout);
+			pipesVB[i]->Unbind();
+			pipesVA[i]->Unbind();
+		}
+	}
 	PipeTest::~PipeTest()
 	{
 
@@ -70,6 +108,7 @@ namespace app
 		ImGui::InputFloat("Rest Density: ", &restDensity);
 		ImGui::SliderFloat("linVis: ", &linVis, 0.0f, 1.0f);
 		ImGui::SliderFloat("quadVis: ", &quadVis, 0.0f, 1.0f);
+		ImGui::SliderFloat("Pipe Thickness", &lineWidth, 5.0f, 40.f);
 	}
 	void PipeTest::FreeGuiRender()
 	{
@@ -79,8 +118,9 @@ namespace app
 	{
 		GLCall(glClearColor(0.7, 0.7, 0.7, 1.0));
 		GLCall(glClear(GL_COLOR_BUFFER_BIT));
-		
+		glLineWidth(1.0f);
 		renderParticles();
+		renderPipes();
 	}
 	void PipeTest::renderParticles()
 	{
@@ -90,6 +130,20 @@ namespace app
 		particleRenderer->SetUniform1f("radius", 15);
 
 		renderer.DrawPoints(*particles, *particleRenderer, nParticles);
+	}
+	void PipeTest::renderPipes()
+	{
+		glLineWidth(lineWidth);
+		pipeRenderer->Bind();
+		pipeRenderer->SetUniformMat4f("u_MVP", projection);
+		pipeRenderer->SetUniform4f("u_Color", 1.0, 1.0, 1.0, 1.0);
+		for (uint i = 0; i < nPipes; i++)
+		{
+			renderer.DrawLineStrip(*(pipesVA[i]), *pipeRenderer,
+				((pipesVB[i]->GetSize()) / (sizeof(float)*2)));
+			pipesVA[i]->Unbind();
+			pipesVB[i]->Unbind();
+		}
 	}
 	void PipeTest::computeChanges()
 	{
@@ -149,6 +203,8 @@ namespace app
 	void PipeTest::resolveCollisions()
 	{
 		collisionResolver->BindSSBO(*particles, "Data", 2);
+		collisionResolver->BindSSBO(*pipes, "Pipes", 3);
+		collisionResolver->SetUniform1i("nPipes", nPipes);
 		collisionResolver->DispatchCompute(getDX(), 1, 1);
 	}
 }

@@ -29,6 +29,12 @@ void Renderer::DrawTriangles(SSBO& ssbo, const IndexBuffer& ib, Shader& shader) 
 	ib.Bind();
 	GLCall(glDrawElements(GL_TRIANGLES, ib.GetCount(), GL_UNSIGNED_INT, nullptr));
 }
+void Renderer::DrawLineStrip(const VertexArray& va, Shader& shader, uint count) const
+{
+	va.Bind();
+	shader.Bind();
+	GLCall(glDrawArrays(GL_LINE_STRIP, 0, count));
+}
 void Renderer::DrawTriangleFan(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) const
 {
 	shader.Bind();

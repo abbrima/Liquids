@@ -11,8 +11,10 @@
 #include "OpenGL/Renderer.h"
 #include "OpenGL/SSBO.h"
 #include "Applications/Liquids/Particle.h"
+#include "Applications/PipeTest/Pipe.h"
 #define DISPATCHSIZE 128
 #define MAX_PARTICLES 100000
+#define MAX_PIPES 20
 
 namespace app
 {
@@ -45,7 +47,7 @@ namespace app
 		uint nParticles;
 
 		float kd, stiffness, nearStiffness, restDensity, 
-			linVis, quadVis, gravity, timeFactor;
+			linVis,lineWidth, quadVis, gravity, timeFactor;
 
 		Shader *particleRenderer;
 
@@ -69,6 +71,16 @@ namespace app
 
 		void computeChanges();
 		void renderParticles();
+
+		void initPipes();
+		void renderPipes();
+
+		uint nPipes;
+		SSBO *pipes;
+		VertexBuffer* pipesVB[MAX_PIPES];
+		VertexArray* pipesVA[MAX_PIPES];
+		Shader *pipeRenderer;
+
 
 	public:
 		PipeTest();

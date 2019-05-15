@@ -39,4 +39,5 @@ public:
 	void DrawQuads(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) const;
 	void DrawTriangles(SSBO& ssbo,const IndexBuffer& ib, Shader& shader) const;
 	void DrawPoints(SSBO& ssbo, Shader& shader,uint count) const;
+	void DrawLineStrip(const VertexArray& va, Shader& shader, uint count) const;
 };
