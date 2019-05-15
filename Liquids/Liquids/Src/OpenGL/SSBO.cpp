@@ -22,6 +22,7 @@ void SSBO::Bind() const
 void SSBO::BindToDraw() const
 {
 	GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_RendererID));
+	
 	const auto& elements = layout->GetElements();
 	unsigned int offset = 0;
 	for (unsigned int i = 0; i < elements.size(); i++)
@@ -53,7 +54,6 @@ void SSBO::Write(const void* data,uint size)
 }
 void SSBO::Append(const void* data, uint size, uint offset)
 {
-
 	Bind(); 
 	GLCall(glBufferSubData(GL_SHADER_STORAGE_BUFFER, offset, size, data));
 	Unbind();
@@ -65,6 +65,7 @@ void* SSBO::GetData()
 	GLCall(p = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_WRITE));
 	return p;
 }
+
 void SSBO::Unmap() const
 {
 	GLCall(glUnmapBuffer(GL_SHADER_STORAGE_BUFFER));

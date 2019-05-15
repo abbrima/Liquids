@@ -3,8 +3,10 @@
 
 #define MAX_NEIGHBORS 32
 #define p particles[gl_GlobalInvocationID.x]
-#define o outputs[gl_GlobalInvocationID.x]
 #define LOCALX 128
+
+layout(local_size_x = LOCALX, local_size_y = 1, local_size_z = 1) in;
+
 
 struct Particle {
 	vec2 position;
@@ -16,18 +18,11 @@ struct Particle {
 	float nearPressure;
 	int neighbors[MAX_NEIGHBORS];
 };
-struct Output {
-	float deltaTime;
-	float gravity;
-};
-
-layout(local_size_x = LOCALX, local_size_y = 1, local_size_z = 1) in;
 
 layout(std430, binding = 2) buffer Data
 {
 	Particle particles[];
 };
-
 
 uniform float gravity;
 uniform float deltaTime;

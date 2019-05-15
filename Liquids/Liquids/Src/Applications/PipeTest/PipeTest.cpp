@@ -17,13 +17,14 @@ namespace app
 	}
 	void PipeTest::initParticles()
 	{
-		particles = new SSBO(NULL, sizeof(Particle) * MAX_PARTICLES);
+		particles = new SSBO(nullptr, sizeof(Particle) * MAX_PARTICLES);
+		
 		VertexBufferLayout layout;
 		layout.Push<float>(2);    //Position
 		layout.Push<float>(2);    //Previous Position
 		layout.Push<float>(2);    //Velocity
 		layout.Push<float>(4);    // pressure and density values
-
+		
 		short neibyfour = MAX_NEIGHBORS / 4;
 		short remainder = MAX_NEIGHBORS % 4;
 
@@ -72,12 +73,13 @@ namespace app
 	}
 	void PipeTest::FreeGuiRender()
 	{
-
+		
 	}
 	void PipeTest::OnRender()
 	{
 		GLCall(glClearColor(0.7, 0.7, 0.7, 1.0));
 		GLCall(glClear(GL_COLOR_BUFFER_BIT));
+		
 		renderParticles();
 	}
 	void PipeTest::renderParticles()

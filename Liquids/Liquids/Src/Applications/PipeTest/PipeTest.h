@@ -44,7 +44,8 @@ namespace app
 		SSBO *particles;
 		uint nParticles;
 
-		float kd, stiffness, nearStiffness, restDensity, linVis, quadVis, gravity, timeFactor;
+		float kd, stiffness, nearStiffness, restDensity, 
+			linVis, quadVis, gravity, timeFactor;
 
 		Shader *particleRenderer;
 
@@ -68,7 +69,6 @@ namespace app
 
 		void computeChanges();
 		void renderParticles();
-
 
 	public:
 		PipeTest();
