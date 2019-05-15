@@ -1,9 +1,9 @@
 #shader compute
 #version 430 core
 
-#define MAX_NEIGHBORS 128
+#define MAX_NEIGHBORS 32
 #define p particles[gl_GlobalInvocationID.x]
-#define LOCALX 64
+#define LOCALX 128
 
 struct Particle {
 	vec2 position;

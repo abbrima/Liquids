@@ -1,7 +1,7 @@
 #pragma once
 #include "glm/glm.hpp"
 #include <glm/gtc/type_ptr.hpp>
-#define MAX_NEIGHBORS 128
+#define MAX_NEIGHBORS 32
 struct Particle 
 {
 	glm::vec2 position;
@@ -14,8 +14,5 @@ struct Particle
 	int neighbors[MAX_NEIGHBORS];
 
 	Particle(float x, float y);
-};
-struct Output
-{
-	float deltaTime; float gravity;
+	Particle(float x, float y, float vx, float vy);
 };

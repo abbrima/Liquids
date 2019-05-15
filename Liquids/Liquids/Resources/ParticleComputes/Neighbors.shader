@@ -1,9 +1,9 @@
 #shader compute
 #version 430 core
 
-#define MAX_NEIGHBORS 128
+#define MAX_NEIGHBORS 32
 #define p particles[gl_GlobalInvocationID.x]
-#define LOCALX 64
+#define LOCALX 128
 
 struct Particle {
 	vec2 position;
@@ -27,23 +27,25 @@ uniform float k;
 uniform int nParticles;
 
 
-float kernel(vec2 p1, vec2 p2);
-
 void main()
 {
 	int index = 0;
-	for (int i = 0; i < nParticles; i++)
+	for (uint i = 0; i < nParticles; i++)
 	{
-		float a = kernel(p.position, particles[i].position);
-		if (a > 0 && a < 1 && i != gl_GlobalInvocationID.x && index < MAX_NEIGHBORS)
-			p.neighbors[index++] = i;
+		if (index >= MAX_NEIGHBORS)
+			break;
+		if (i == gl_GlobalInvocationID.x)
+			continue;
+		float d = length(p.position - particles[i].position);
+		if (d <= k)
+		{
+			p.neighbors[index] = int(i);
+			index++;
+		}
 	}
 	while (index < MAX_NEIGHBORS)
-		p.neighbors[index++] = -1;
-
+	{
+		p.neighbors[index] = -1;
+		index++;
+	}
 };
-float kernel(vec2 p1, vec2 p2)
-{
-	float distance = length(p1 - p2);
-	return 1 - (distance / k);
-}

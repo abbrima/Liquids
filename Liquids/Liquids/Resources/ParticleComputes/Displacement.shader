@@ -1,10 +1,10 @@
 #shader compute
 #version 430 core
 
-#define MAX_NEIGHBORS 128
+#define MAX_NEIGHBORS 32
 #define p particles[gl_GlobalInvocationID.x]
 #define np particles[p.neighbors[index]]
-#define LOCALX 64
+#define LOCALX 128
 
 struct Particle {
 	vec2 position;
@@ -27,21 +27,27 @@ layout(std430, binding = 2) buffer Data
 uniform float k;
 uniform float deltaTime;
 
+float kernel(vec2 v);
 
 void main()
 {
-	vec2 pDisplace = vec2(0, 0),displacement;
-	vec2 v; float a;
-	int index = 0;
-	while (p.neighbors[index] != -1 && index < MAX_NEIGHBORS) {
-		v = np.position - p.position;
-		a = 1 - (v.length() / k);
-		displacement = deltaTime * deltaTime * (p.pressure * a + p.nearPressure * a * a) * normalize(v);
-		np.position += displacement / 2;
-		pDisplace -= displacement / 2;
-		index++;
+	vec2 pDisplace = vec2(0, 0);
+	for (uint index = 0; index < MAX_NEIGHBORS; index++)
+	{
+		if (p.neighbors[index] == -1)
+			break;
+		vec2 v = np.position - p.position;
+		float a = kernel(v);
+		if (a < 1 && a >= 0)
+		{
+			vec2 dis = pow(deltaTime, 2) * (p.pressure * a + p.nearPressure * pow(a, 2)) * normalize(v);
+			np.position += dis * 0.5;
+			pDisplace -= dis * 0.5;
+		}
 	}
-	barrier();
 	p.position += pDisplace;
 };
 
+float kernel(vec2 v) {
+	return 1 - (length(v) / k);
+}

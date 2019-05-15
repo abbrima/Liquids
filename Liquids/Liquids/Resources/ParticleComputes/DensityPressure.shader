@@ -1,10 +1,10 @@
 #shader compute
 #version 430 core
 
-#define MAX_NEIGHBORS 128
+#define MAX_NEIGHBORS 32
 #define p particles[gl_GlobalInvocationID.x]
 #define np particles[p.neighbors[index]]
-#define LOCALX 64
+#define LOCALX 128
 
 struct Particle {
 	vec2 position;
@@ -29,25 +29,27 @@ uniform float restDensity;
 uniform float stiffness;
 uniform float nearStiffness;
 
-float kernel(float distance);
+float kernel(vec2 p1,vec2 p2);
 
 void main()
 {
-	float density = 0, nearDensity = 0;
-	int index = 0;
-	while (p.neighbors[index] != -1 && index < MAX_NEIGHBORS)
+	float density = 0.f,nearDensity=0.f;
+	for (uint index = 0; index < MAX_NEIGHBORS; index++)
 	{
-		float a = kernel(length(p.position - np.position));
+		if (p.neighbors[index] == -1)
+			break;
+		float a = kernel(p.position, np.position);
 		density += a * a;
 		nearDensity += a * a*a;
-		index++;
 	}
-	p.density = density;
-	p.nearDensity = nearDensity;
-	p.pressure = (p.density - restDensity)*stiffness;
-	p.nearPressure = p.nearDensity * nearStiffness;
+	p.density = density; p.nearDensity = nearDensity;
+
+	//try taking positive pressures only
+	p.pressure = stiffness * (density - restDensity);
+	p.nearPressure = nearStiffness * nearDensity;
 }
-float kernel(float distance)
+float kernel(vec2 p1,vec2 p2)
 {
+	float distance = length(p1 - p2);
 	return 1 - (distance / k);
 }

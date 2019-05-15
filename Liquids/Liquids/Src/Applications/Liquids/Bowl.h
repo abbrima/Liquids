@@ -9,8 +9,8 @@
 #include "OpenGL/Renderer.h"
 #include "OpenGL/SSBO.h"
 #include "Applications/Liquids/Particle.h"
-#define DISPATCHSIZE 64
-
+#define DISPATCHSIZE 128
+#define MAX_PARTICLES 100000
 
 namespace app
 {   
@@ -18,8 +18,6 @@ namespace app
 	{
 	private:
 		glm::mat4 projection;
-		glm::mat4 model;
-		float kd,linVis,quadVis,gravity,timeFactor,restDensity,stiffness,nearStiffness;
 		Renderer renderer;
 		glm::vec3 getWorldPos();
 
@@ -30,18 +28,11 @@ namespace app
 			return d;
 		}
 
-	//Walls
-		//Bounds are y=-300,x=-200,x=200
-		VertexBuffer *wallVB;
-		IndexBuffer *wallIB;
-		Shader *wallShader;
-		VertexArray *wallVA;
-		void initWalls();
-		void renderWalls();
-		
 	//Particles
 		SSBO *particles;
 		uint nParticles;
+
+		float kd, stiffness, nearStiffness, restDensity, linVis, quadVis,gravity,timeFactor;
 
 		Shader *particleRenderer;
 	
@@ -65,10 +56,10 @@ namespace app
 		void computeChanges();
 		void initParticles();
 		void renderParticles();
-
-		//test
-		SSBO *out;
-
+		void emitLeft();
+		void emitCenter();
+		void emitRight();
+		
 	public:
 		Bowl();
 		~Bowl();

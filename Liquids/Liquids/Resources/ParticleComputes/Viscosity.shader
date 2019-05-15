@@ -1,10 +1,10 @@
 #shader compute
 #version 430 core
 
-#define MAX_NEIGHBORS 128
+#define MAX_NEIGHBORS 32
 #define p particles[gl_GlobalInvocationID.x]
 #define np particles[p.neighbors[index]]
-#define LOCALX 64
+#define LOCALX 128
 
 struct Particle {
 	vec2 position;
@@ -33,24 +33,22 @@ float kernel(float distance);
 
 void main()
 {
-	int index = 0;
-	vec2 rij, impulse;
-	float u, a;
-	while (p.neighbors[index] != -1 && index < MAX_NEIGHBORS)
+	for (uint index = 0; index < MAX_NEIGHBORS; index++)
 	{
-		rij = np.position - p.position;
-		u = dot(p.velocity - np.velocity, normalize(rij));
-		if (u > 0.0)
+		if (p.neighbors[index] == -1)
+			break;
+		vec2 v = np.position - p.position;
+		if (length(v) > 0)
 		{
-			a = kernel(rij.length());
-			if (a > 0)
+			float u = dot(p.velocity - np.velocity, normalize(v));
+			if (u > 0.f && u<1.f)
 			{
-				impulse = deltaTime * a * (linVis * u + quadVis * u * u) * normalize(rij);
-				p.velocity -= impulse / 2; np.velocity += impulse / 2;
+				float a = kernel(length(v));
+				vec2 impulse = deltaTime * a * (linVis*u + quadVis * pow(u, 2)) * normalize(v);
+				p.velocity -= impulse * 0.5f;
+				np.velocity += impulse * 0.5f;
 			}
 		}
-		
-		index++;
 	}
 };
 

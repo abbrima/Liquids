@@ -1,10 +1,10 @@
 #shader compute
 #version 430 core
 
-#define MAX_NEIGHBORS 128
+#define MAX_NEIGHBORS 32
 #define p particles[gl_GlobalInvocationID.x]
 #define np particles[p.neighbors[index]]
-#define LOCALX 64
+#define LOCALX 128
 
 struct Particle {
 	vec2 position;
@@ -24,21 +24,29 @@ layout(std430, binding = 2) buffer Data
 	Particle particles[];
 };
 
-
+#define dampeningFactor 0.3f
 
 void main()
 {
-	if (p.position.x <= -200)
+	if (p.position.x < -1)
 	{
-		p.velocity.x *= -0.001; p.position.x = -200;
+		p.position.x = -1;
+		p.velocity = reflect(p.velocity, vec2(1, 0)) * dampeningFactor;
 	}
-	if (p.position.x >= 200)
+	if (p.position.x > 1)
 	{
-		p.velocity.x *= -0.001; p.position.x = 200;
+		p.position.x = 1;
+		p.velocity = reflect(p.velocity, vec2(-1, 0)) * dampeningFactor;
 	}
-	if (p.position.y <= -300)
+	if (p.position.y > 1)
 	{
-		p.velocity.y *= -0.001; p.position.y = -300;
+		p.position.y = 1;
+		p.velocity = reflect(p.velocity, vec2(0, -1)) * dampeningFactor;
+	}
+	if (p.position.y < -1)
+	{
+		p.position.y = -1;
+		p.velocity = reflect(p.velocity, vec2(0, 1)) * dampeningFactor;
 	}
 };
 
