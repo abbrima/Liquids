@@ -21,6 +21,7 @@
 #include "Applications/Application.h"
 #include "Applications/Hello Triangle/HelloTriangle.h"
 #include "Applications/Liquids/Bowl.h"
+#include "Applications/PipeTest/PipeTest.h"
 
 #include "Tools/MyExternals.h"
 
@@ -114,10 +115,11 @@ int main(void)
 		app::ApplicationMenu* applicationMenu = new app::ApplicationMenu(currentApplication);
 		
 		//currentApplication = applicationMenu;
-		currentApplication = new app::Bowl();
+		currentApplication = new app::PipeTest();
 
 		applicationMenu->RegisterApplication<app::HelloTriangle>("Hello Triangle!");
 		applicationMenu->RegisterApplication<app::Bowl>("Bowl Test");
+		applicationMenu->RegisterApplication<app::PipeTest>("Pipe Test");
 
 		while (!glfwWindowShouldClose(window))
 		{
