@@ -75,6 +75,9 @@
     <ClCompile Include="Src\Applications\Liquids\Bowl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Applications\PipeTest\PipeTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Vendor\glm\detail\_features.hpp">
@@ -888,6 +891,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Src\Applications\Liquids\Bowl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Applications\PipeTest\PipeTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
