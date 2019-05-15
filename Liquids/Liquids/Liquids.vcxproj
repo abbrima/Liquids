@@ -87,6 +87,7 @@
     <ClCompile Include="Src\Applications\Hello Triangle\HelloTriangle.cpp" />
     <ClCompile Include="Src\Applications\Liquids\Bowl.cpp" />
     <ClCompile Include="Src\Applications\Liquids\Particle.cpp" />
+    <ClCompile Include="Src\Applications\PipeTest\Pipe.cpp" />
     <ClCompile Include="Src\Applications\PipeTest\PipeTest.cpp" />
     <ClCompile Include="Src\Main\EntryPoint.cpp" />
     <ClCompile Include="Src\OpenGL\IndexBuffer.cpp" />
@@ -116,6 +117,7 @@
     <ClInclude Include="Src\Applications\Hello Triangle\HelloTriangle.h" />
     <ClInclude Include="Src\Applications\Liquids\Bowl.h" />
     <ClInclude Include="Src\Applications\Liquids\Particle.h" />
+    <ClInclude Include="Src\Applications\PipeTest\Pipe.h" />
     <ClInclude Include="Src\Applications\PipeTest\PipeTest.h" />
     <ClInclude Include="Src\OpenGL\IndexBuffer.h" />
     <ClInclude Include="Src\OpenGL\Renderer.h" />
