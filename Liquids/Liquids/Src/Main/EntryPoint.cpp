@@ -20,8 +20,7 @@
 
 #include "Applications/Application.h"
 #include "Applications/Hello Triangle/HelloTriangle.h"
-#include "Applications/Liquids/Bowl.h"
-#include "Applications/PipeTest/PipeTest.h"
+#include "Applications/PipeTest/Liq.h"
 
 #include "Tools/MyExternals.h"
 
@@ -115,11 +114,10 @@ int main(void)
 		app::ApplicationMenu* applicationMenu = new app::ApplicationMenu(currentApplication);
 		
 		//currentApplication = applicationMenu;
-		currentApplication = new app::PipeTest();
+		currentApplication = new app::Liq();
 
 		applicationMenu->RegisterApplication<app::HelloTriangle>("Hello Triangle!");
-		applicationMenu->RegisterApplication<app::Bowl>("Bowl Test");
-		applicationMenu->RegisterApplication<app::PipeTest>("Pipe Test");
+		applicationMenu->RegisterApplication<app::Liq>("Pipe Test");
 
 		while (!glfwWindowShouldClose(window))
 		{

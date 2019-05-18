@@ -66,19 +66,16 @@
     <ClCompile Include="Src\Applications\Hello Triangle\HelloTriangle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Applications\Liquids\Particle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Src\OpenGL\SSBO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Applications\Liquids\Bowl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Applications\PipeTest\PipeTest.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Applications\PipeTest\Pipe.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Applications\PipeTest\Particle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Applications\PipeTest\Liq.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -887,19 +884,16 @@
     <ClInclude Include="Src\Applications\Hello Triangle\HelloTriangle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Applications\Liquids\Particle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Src\OpenGL\SSBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Applications\Liquids\Bowl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Applications\PipeTest\PipeTest.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Applications\PipeTest\Pipe.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Applications\PipeTest\Particle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Applications\PipeTest\Liq.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1305,12 +1299,8 @@
     <None Include="Resources\Shaders\MaterialLighting.shader" />
     <None Include="Resources\Shaders\Model.shader" />
     <None Include="Resources\Shaders\ModelColor.shader" />
-    <None Include="Resources\ParticleComputes\Neighbors.shader" />
-    <None Include="Resources\ParticleComputes\DensityPressure.shader" />
-    <None Include="Resources\ParticleComputes\Displacement.shader" />
-    <None Include="Resources\ParticleComputes\Viscosity.shader" />
-    <None Include="Resources\ParticleComputes\Advection.shader" />
-    <None Include="Resources\ParticleComputes\ExternalForces.shader" />
-    <None Include="Resources\ParticleComputes\Collision.shader" />
+    <None Include="Resources\ParticleComputes\DP.shader" />
+    <None Include="Resources\ParticleComputes\Forces.shader" />
+    <None Include="Resources\ParticleComputes\Integration.shader" />
   </ItemGroup>
 </Project>

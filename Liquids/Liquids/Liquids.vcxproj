@@ -85,10 +85,9 @@
   <ItemGroup>
     <ClCompile Include="Src\Applications\Application.cpp" />
     <ClCompile Include="Src\Applications\Hello Triangle\HelloTriangle.cpp" />
-    <ClCompile Include="Src\Applications\Liquids\Bowl.cpp" />
-    <ClCompile Include="Src\Applications\Liquids\Particle.cpp" />
+    <ClCompile Include="Src\Applications\PipeTest\Liq.cpp" />
+    <ClCompile Include="Src\Applications\PipeTest\Particle.cpp" />
     <ClCompile Include="Src\Applications\PipeTest\Pipe.cpp" />
-    <ClCompile Include="Src\Applications\PipeTest\PipeTest.cpp" />
     <ClCompile Include="Src\Main\EntryPoint.cpp" />
     <ClCompile Include="Src\OpenGL\IndexBuffer.cpp" />
     <ClCompile Include="Src\OpenGL\Renderer.cpp" />
@@ -115,10 +114,9 @@
     <ClInclude Include="Dep\GLFW\include\GLFW\glfw3native.h" />
     <ClInclude Include="Src\Applications\Application.h" />
     <ClInclude Include="Src\Applications\Hello Triangle\HelloTriangle.h" />
-    <ClInclude Include="Src\Applications\Liquids\Bowl.h" />
-    <ClInclude Include="Src\Applications\Liquids\Particle.h" />
+    <ClInclude Include="Src\Applications\PipeTest\Liq.h" />
+    <ClInclude Include="Src\Applications\PipeTest\Particle.h" />
     <ClInclude Include="Src\Applications\PipeTest\Pipe.h" />
-    <ClInclude Include="Src\Applications\PipeTest\PipeTest.h" />
     <ClInclude Include="Src\OpenGL\IndexBuffer.h" />
     <ClInclude Include="Src\OpenGL\Renderer.h" />
     <ClInclude Include="Src\OpenGL\Shader.h" />
@@ -382,13 +380,9 @@
     <ClInclude Include="Src\Vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\ParticleComputes\Advection.shader" />
-    <None Include="Resources\ParticleComputes\Collision.shader" />
-    <None Include="Resources\ParticleComputes\Displacement.shader" />
-    <None Include="Resources\ParticleComputes\DensityPressure.shader" />
-    <None Include="Resources\ParticleComputes\ExternalForces.shader" />
-    <None Include="Resources\ParticleComputes\Neighbors.shader" />
-    <None Include="Resources\ParticleComputes\Viscosity.shader" />
+    <None Include="Resources\ParticleComputes\DP.shader" />
+    <None Include="Resources\ParticleComputes\Forces.shader" />
+    <None Include="Resources\ParticleComputes\Integration.shader" />
     <None Include="Resources\Shaders\Color.shader" />
     <None Include="Resources\Shaders\MaterialLighting.shader" />
     <None Include="Resources\Shaders\Model.shader" />
