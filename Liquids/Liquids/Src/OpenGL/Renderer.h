@@ -28,6 +28,11 @@ public:
 		ssbo.BindToDraw();
 		glDrawElements(GL_POINTS, ib.GetCount(), GL_UNSIGNED_INT, nullptr);
 	}
+	inline void DrawPoints(VertexArray& va, Shader& shdr, uint count) {
+		shdr.Bind();
+		va.Bind();
+		glDrawArrays(GL_POINTS, 0, count);
+	}
 	inline void DrawTriangles(SSBO& ssbo, Shader& shader, uint count)
 	{
 		shader.Bind(); 

@@ -55,21 +55,21 @@ Skybox::Skybox() : enable(true)
 	m5 = new IndexBuffer(a5, 6);
 	m6 = new IndexBuffer(a6, 6);
 	
-	t1 = new Texture("Res/Images/Skybox/back.bmp",false);
+	t1 = new Texture("Resources/Images/Skybox/back.bmp",false);
 	t1->Bind(25);
-	t2 = new Texture("Res/Images/Skybox/front.bmp", false);
+	t2 = new Texture("Resources/Images/Skybox/front.bmp", false);
 	t2->Bind(26);
-	t3 = new Texture("Res/Images/Skybox/down.bmp", false);
+	t3 = new Texture("Resources/Images/Skybox/down.bmp", false);
 	t3->Bind(27);
-	t4 = new Texture("Res/Images/Skybox/up.bmp", false);
+	t4 = new Texture("Resources/Images/Skybox/up.bmp", false);
 	t4->Bind(28);
-	t5 = new Texture("Res/Images/Skybox/left.bmp", false);
+	t5 = new Texture("Resources/Images/Skybox/left.bmp", false);
 	t5->Bind(29);
-	t6 = new Texture("Res/Images/Skybox/right.bmp", false);
+	t6 = new Texture("Resources/Images/Skybox/right.bmp", false);
 	t6->Bind(30);
 
 	ChooseBox(3);
-	m_Shader = new Shader("Res/Shaders/Texture2D.shader");
+	m_Shader = new Shader("Resources/Shaders/Texture2D.shader");
 	m_Shader->Unbind();
 }
 void Skybox::ChooseBox(int i)
@@ -81,71 +81,71 @@ void Skybox::ChooseBox(int i)
 	switch (i)
 	{
 	case 1:
-		t1 = new Texture("Res/Images/Skybox/bluemoon_bk.tga", false);
+		t1 = new Texture("Resources/Images/Skybox/bluemoon_bk.tga", false);
 		t1->Bind(25);
-		t2 = new Texture("Res/Images/Skybox/bluemoon_ft.tga", false);
+		t2 = new Texture("Resources/Images/Skybox/bluemoon_ft.tga", false);
 		t2->Bind(26);
-		t3 = new Texture("Res/Images/Skybox/bluemoon_dn.tga", false);
+		t3 = new Texture("Resources/Images/Skybox/bluemoon_dn.tga", false);
 		t3->Bind(27);
-		t4 = new Texture("Res/Images/Skybox/bluemoon_up.tga", false);
+		t4 = new Texture("Resources/Images/Skybox/bluemoon_up.tga", false);
 		t4->Bind(28);
-		t5 = new Texture("Res/Images/Skybox/bluemoon_lf.tga", false);
+		t5 = new Texture("Resources/Images/Skybox/bluemoon_lf.tga", false);
 		t5->Bind(29);
-		t6 = new Texture("Res/Images/Skybox/bluemoon_rt.tga", false);
+		t6 = new Texture("Resources/Images/Skybox/bluemoon_rt.tga", false);
 		t6->Bind(30); break;
 	case 0:
-		t1 = new Texture("Res/Images/Skybox/back.bmp", false);
+		t1 = new Texture("Resources/Images/Skybox/back.bmp", false);
 		t1->Bind(25);
-		t2 = new Texture("Res/Images/Skybox/front.bmp", false);
+		t2 = new Texture("Resources/Images/Skybox/front.bmp", false);
 		t2->Bind(26);
-		t3 = new Texture("Res/Images/Skybox/down.bmp", false);
+		t3 = new Texture("Resources/Images/Skybox/down.bmp", false);
 		t3->Bind(27);
-		t4 = new Texture("Res/Images/Skybox/up.bmp", false);
+		t4 = new Texture("Resources/Images/Skybox/up.bmp", false);
 		t4->Bind(28);
-		t5 = new Texture("Res/Images/Skybox/left.bmp", false);
+		t5 = new Texture("Resources/Images/Skybox/left.bmp", false);
 		t5->Bind(29);
-		t6 = new Texture("Res/Images/Skybox/right.bmp", false);
+		t6 = new Texture("Resources/Images/Skybox/right.bmp", false);
 		t6->Bind(30); break;
 	case 2:
-		t1 = new Texture("Res/Images/Skybox/bloody-marvelous_bk.tga", false);
+		t1 = new Texture("Resources/Images/Skybox/bloody-marvelous_bk.tga", false);
 		t1->Bind(25);
-		t2 = new Texture("Res/Images/Skybox/bloody-marvelous_ft.tga", false);
+		t2 = new Texture("Resources/Images/Skybox/bloody-marvelous_ft.tga", false);
 		t2->Bind(26);
-		t3 = new Texture("Res/Images/Skybox/bloody-marvelous_dn.tga", false);
+		t3 = new Texture("Resources/Images/Skybox/bloody-marvelous_dn.tga", false);
 		t3->Bind(27);
-		t4 = new Texture("Res/Images/Skybox/bloody-marvelous_up.tga", false);
+		t4 = new Texture("Resources/Images/Skybox/bloody-marvelous_up.tga", false);
 		t4->Bind(28);
-		t5 = new Texture("Res/Images/Skybox/bloody-marvelous_lf.tga", false);
+		t5 = new Texture("Resources/Images/Skybox/bloody-marvelous_lf.tga", false);
 		t5->Bind(29);
-		t6 = new Texture("Res/Images/Skybox/bloody-marvelous_rt.tga",false);
+		t6 = new Texture("Resources/Images/Skybox/bloody-marvelous_rt.tga",false);
 		t6->Bind(30); break;
 	case 3:
 		enable = false; break;
 	case 4:
-		t1 = new Texture("Res/Images/Skybox/hills_bk.tga", false);
+		t1 = new Texture("Resources/Images/Skybox/hills_bk.tga", false);
 		t1->Bind(25);
-		t2 = new Texture("Res/Images/Skybox/hills_ft.tga", false);
+		t2 = new Texture("Resources/Images/Skybox/hills_ft.tga", false);
 		t2->Bind(26);
-		t3 = new Texture("Res/Images/Skybox/hills_dn.tga", false);
+		t3 = new Texture("Resources/Images/Skybox/hills_dn.tga", false);
 		t3->Bind(27);
-		t4 = new Texture("Res/Images/Skybox/hills_up.tga", false);
+		t4 = new Texture("Resources/Images/Skybox/hills_up.tga", false);
 		t4->Bind(28);
-		t5 = new Texture("Res/Images/Skybox/hills_lf.tga", false);
+		t5 = new Texture("Resources/Images/Skybox/hills_lf.tga", false);
 		t5->Bind(29);
-		t6 = new Texture("Res/Images/Skybox/hills_rt.tga", false);
+		t6 = new Texture("Resources/Images/Skybox/hills_rt.tga", false);
 		t6->Bind(30); break;
 	case 5:
-		t1 = new Texture("Res/Images/Skybox/desert_night_bk.tga", false);
+		t1 = new Texture("Resources/Images/Skybox/desert_night_bk.tga", false);
 		t1->Bind(25);
-		t2 = new Texture("Res/Images/Skybox/desert_night_ft.tga", false);
+		t2 = new Texture("Resources/Images/Skybox/desert_night_ft.tga", false);
 		t2->Bind(26);
-		t3 = new Texture("Res/Images/Skybox/desert_night_dn.tga", false);
+		t3 = new Texture("Resources/Images/Skybox/desert_night_dn.tga", false);
 		t3->Bind(27);
-		t4 = new Texture("Res/Images/Skybox/desert_night_up.tga", false);
+		t4 = new Texture("Resources/Images/Skybox/desert_night_up.tga", false);
 		t4->Bind(28);
-		t5 = new Texture("Res/Images/Skybox/desert_night_lf.tga", false);
+		t5 = new Texture("Resources/Images/Skybox/desert_night_lf.tga", false);
 		t5->Bind(29);
-		t6 = new Texture("Res/Images/Skybox/desert_night_rt.tga", false);
+		t6 = new Texture("Resources/Images/Skybox/desert_night_rt.tga", false);
 		t6->Bind(30); break;
 	}
 }

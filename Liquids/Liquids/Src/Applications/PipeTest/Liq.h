@@ -15,7 +15,7 @@
 #define DISPATCHSIZE 128
 #define MAX_PARTICLES 100000
 #define MAX_PIPES 20
-
+#define SPH_PARTICLE_RADIUS 0.005f
 namespace app
 {
 	class Liq :public Application
@@ -25,13 +25,12 @@ namespace app
 		Renderer renderer;
 
 		void initParticles(), renderParticles();
-		void computeDP(), integrate(), computeForces();
 		SSBO* particles;
 		uint nParticles;
 
-		Shader *PR,*DP,*Forces,*Integrator;
-
-		float mass, lineWidth,k,pr,radius,viscosity;
+		Shader *PR,*DP,*Force,*Integrator;
+		void computeDP(), computeForces(), integrate();
+		
 
 		inline glm::vec3 getWorldPos(){
 			double x = 2.0 * xPos / glfwWindowWidth -1;
