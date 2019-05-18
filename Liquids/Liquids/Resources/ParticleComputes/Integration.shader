@@ -15,10 +15,26 @@ struct Particle {
 	float density;
 	float pressure;
 };
+struct Pipe {
+	float lowX, lowY, highX, highY, base, dY, dX, power, dampeningRatio;
+};
+layout(std430, binding = 1) buffer Pipes
+{
+	Pipe pipes[];
+};
+#define e 2.718281f
+
 layout(std430, binding = 0) buffer Data
 {
 	Particle particles[];
 };
+
+uniform int nPipes;
+
+float f(Pipe pipe, float x);
+float slopeNormal(Pipe pipe, float x);
+vec2 getNormal(vec2 velocity, float m);
+
 void main()
 {
 	uint i = gl_GlobalInvocationID.x;
@@ -49,7 +65,39 @@ void main()
 		new_position.y = 1;
 		new_velocity.y *= -1 * WALL_DAMPING;
 	}
+	else {
+		for (int j = 0; j < nPipes; j++)
+		{
+			float y = f(pipes[j], new_position.x);
+			if (abs(y - new_position.y) <= 0.07f)
+			{
+				float m = slopeNormal(pipes[j], new_position.x);
+				vec2 norm = getNormal(new_velocity, m);
+				new_velocity = reflect(new_velocity, norm) * pipes[j].dampeningRatio;
+			}
+		}
+	}
 
 	particles[i].velocity = new_velocity;
 	particles[i].position = new_position;
+}
+
+
+float f(Pipe pipe, float x) {
+	return (pipe.base * pow(e, (x + pipe.dX)*pipe.power)) + pipe.dY;
+}
+float slopeNormal(Pipe pipe, float x) {
+	float m = pipe.base * pipe.power * pow(e, pipe.power*(x + pipe.dX));
+	m = -1 / m;
+	return m;
+}
+vec2 getNormal(vec2 velocity, float m)
+{
+	float angle = atan(m);
+	vec2 norm = vec2(cos(angle), sin(angle));
+	velocity = normalize(velocity);
+	if (dot(norm, velocity) >= 0)
+		return norm;
+	else
+		return norm * -1;
 }

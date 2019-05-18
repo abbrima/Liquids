@@ -32,6 +32,15 @@ namespace app
 		void computeDP(), computeForces(), integrate();
 		
 
+		//pipes
+		void initPipes(),renderPipes();
+		uint nPipes;
+		SSBO *pipes;
+		VertexBuffer* pipesVB[MAX_PIPES];
+		VertexArray* pipesVA[MAX_PIPES];
+		Shader *pipeRenderer;
+
+
 		inline glm::vec3 getWorldPos(){
 			double x = 2.0 * xPos / glfwWindowWidth -1;
 			double y = 2.0 * yPos / glfwWindowHeight -1;
