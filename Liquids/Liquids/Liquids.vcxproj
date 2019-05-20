@@ -89,6 +89,7 @@
     <ClCompile Include="Src\Applications\PipeTest\Particle.cpp" />
     <ClCompile Include="Src\Applications\PipeTest\Pipe.cpp" />
     <ClCompile Include="Src\Main\EntryPoint.cpp" />
+    <ClCompile Include="Src\OpenGL\AtomicCounterBuffer.cpp" />
     <ClCompile Include="Src\OpenGL\IndexBuffer.cpp" />
     <ClCompile Include="Src\OpenGL\Renderer.cpp" />
     <ClCompile Include="Src\OpenGL\Shader.cpp" />
@@ -117,6 +118,7 @@
     <ClInclude Include="Src\Applications\PipeTest\Liq.h" />
     <ClInclude Include="Src\Applications\PipeTest\Particle.h" />
     <ClInclude Include="Src\Applications\PipeTest\Pipe.h" />
+    <ClInclude Include="Src\OpenGL\AtomicCounterBuffer.h" />
     <ClInclude Include="Src\OpenGL\IndexBuffer.h" />
     <ClInclude Include="Src\OpenGL\Renderer.h" />
     <ClInclude Include="Src\OpenGL\Shader.h" />
@@ -380,6 +382,7 @@
     <ClInclude Include="Src\Vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\ParticleComputes\CellReseter.shader" />
     <None Include="Resources\ParticleComputes\DP.shader" />
     <None Include="Resources\ParticleComputes\Forces.shader" />
     <None Include="Resources\ParticleComputes\Integration.shader" />

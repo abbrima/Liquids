@@ -73,7 +73,7 @@ void main()
 			{
 				float m = slopeNormal(pipes[j], new_position.x);
 				vec2 norm = getNormal(new_velocity, m);
-				new_velocity = reflect(new_velocity, norm) * pipes[j].dampeningRatio;
+				//new_velocity = reflect(new_velocity, norm) * pipes[j].dampeningRatio;
 			}
 		}
 	}

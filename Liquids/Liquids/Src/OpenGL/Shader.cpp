@@ -122,9 +122,15 @@ void Shader::SetUniform3f(const std::string& name, float v0, float v1, float v2)
 {
 	GLCall(glUniform3f(GetUniformLocation(name), v0, v1, v2));
 }
+void Shader::SetUniform2f(const std::string& name, float v0, float v1) {
+	GLCall(glUniform2f(GetUniformLocation(name), v0, v1));
+}
 void Shader::SetUniform1f(const std::string& name, float value)
 {
 	GLCall(glUniform1f(GetUniformLocation(name), value));
+}
+void Shader::SetUniform1ui(const std::string& name, uint value) {
+	GLCall(glUniform1ui(GetUniformLocation(name), value));
 }
 void Shader::SetUniform1i(const std::string& name, int value)
 {
@@ -171,6 +177,10 @@ void Shader::SetUniformLightClass(const std::string& name, LightClass& lights)
 	std::vector<Light> vec = lights.GetActiveLightsVector();
 	SetUniformLightArray(name, vec.data(), lights.GetActiveLightsNumber());
 }
+void Shader::SetUniformVec2(const std::string& name, glm::vec2 vec)
+{
+	SetUniform2f(name, vec.x, vec.y);
+}
 void Shader::SetUniformVec3(const std::string& name, glm::vec3 vec)
 {
 	SetUniform3f(name, vec.x, vec.y, vec.z);
@@ -205,4 +215,9 @@ void Shader::BindSSBO(SSBO& ssbo, std::string name, uint BindingPoint)
 	uint index = GetBlockLocation(name);
 	GLCall(glShaderStorageBlockBinding(m_RendererID, index, BindingPoint));
 	GLCall(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, BindingPoint, ssbo.GetID()));
+}
+void Shader::BindACB(AtomicCounterBuffer& acb, uint BindingPoint) {
+	Bind();
+	acb.Bind();
+	glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, BindingPoint, acb.GetID());
 }

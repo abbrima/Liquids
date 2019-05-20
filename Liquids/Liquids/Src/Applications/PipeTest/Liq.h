@@ -2,7 +2,7 @@
 #include "Applications/Application.h"
 #include "imgui/imgui.h"
 #include "Tools/MyExternals.h"
-
+#include <memory>
 #include "OpenGL/IndexBuffer.h"
 #include "OpenGL/VertexArray.h"
 #include "OpenGL/VertexBuffer.h"
@@ -23,22 +23,29 @@ namespace app
 	private:
 		glm::mat4 projection;
 		Renderer renderer;
+		int startingParticles;
 
 		void initParticles(), renderParticles();
-		SSBO* particles;
+		std::unique_ptr<SSBO> particles;
 		uint nParticles;
 
-		Shader *PR,*DP,*Force,*Integrator;
+		
+
+		float k, pr, pRadius, mass, viscosity; glm::vec2 gravity;
+
+		std::unique_ptr<Shader> PR,DP,Force,Integrator;
 		void computeDP(), computeForces(), integrate();
 		
+		//Cells
+
 
 		//pipes
 		void initPipes(),renderPipes();
 		uint nPipes;
-		SSBO *pipes;
-		VertexBuffer* pipesVB[MAX_PIPES];
-		VertexArray* pipesVA[MAX_PIPES];
-		Shader *pipeRenderer;
+		std::unique_ptr<SSBO> pipes;
+		std::unique_ptr<VertexBuffer> pipesVB[MAX_PIPES];
+		std::unique_ptr<VertexArray> pipesVA[MAX_PIPES];
+		std::unique_ptr<Shader> pipeRenderer;
 
 
 		inline glm::vec3 getWorldPos(){

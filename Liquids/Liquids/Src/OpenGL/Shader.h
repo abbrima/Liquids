@@ -6,6 +6,7 @@
 #include "Tools/Materials.h"
 #include "Tools/Lights.h"
 #include "OpenGL/SSBO.h"
+#include "OpenGL/AtomicCounterBuffer.h"
 struct ShaderProgramSource
 {
 	std::string VertexSource;
@@ -30,19 +31,23 @@ public:
 	//set uniforms
 	void SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3);
 	void SetUniform3f(const std::string& name, float v0, float v1, float v2);
+	void SetUniform2f(const std::string& name, float v0, float v1);
 	void SetUniform1f(const std::string& name, float value);
+	void SetUniform1ui(const std::string& name, uint value);
 	void SetUniform1i(const std::string& name, int value);
 	void SetUniformMat4f(const std::string& name, glm::mat4 matrix, bool trans = false);
 	void SetUniformMaterial(const std::string& name, Material& material);
 	void SetUniformLight(const std::string& name,Light& light);
 	void SetUniformLightArray(const std::string& name, Light lights[],unsigned int size);
 	void SetUniformLightClass(const std::string& name, LightClass& lights);
+	void SetUniformVec2(const std::string& name, glm::vec2 vec);
 	void SetUniformVec3(const std::string& name, glm::vec3 vec);
 	void SetUniformVec4(const std::string& name, glm::vec4 vec);
 
 	//set SSBO
 	void BindSSBO(SSBO& ssbo, std::string name, uint BindingPoint);
-
+	//set ACB
+	void BindACB(AtomicCounterBuffer& acb, uint BindingPoint);
 private:
 	ShaderProgramSource ParseShader(const std::string& filepath);
 	unsigned int CompileShader(unsigned int type, const std::string& source);
