@@ -81,6 +81,9 @@
     <ClCompile Include="Src\OpenGL\AtomicCounterBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Applications\PipeTest\CellSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Vendor\glm\detail\_features.hpp">
@@ -902,6 +905,9 @@
     <ClInclude Include="Src\OpenGL\AtomicCounterBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Applications\PipeTest\CellSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Vendor\glm\detail\func_common.inl">
@@ -1308,6 +1314,6 @@
     <None Include="Resources\ParticleComputes\DP.shader" />
     <None Include="Resources\ParticleComputes\Forces.shader" />
     <None Include="Resources\ParticleComputes\Integration.shader" />
-    <None Include="Resources\ParticleComputes\CellReseter.shader" />
+    <None Include="Resources\ParticleComputes\CellSorter.shader" />
   </ItemGroup>
 </Project>

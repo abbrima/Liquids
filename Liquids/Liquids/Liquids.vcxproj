@@ -85,6 +85,7 @@
   <ItemGroup>
     <ClCompile Include="Src\Applications\Application.cpp" />
     <ClCompile Include="Src\Applications\Hello Triangle\HelloTriangle.cpp" />
+    <ClCompile Include="Src\Applications\PipeTest\CellSystem.cpp" />
     <ClCompile Include="Src\Applications\PipeTest\Liq.cpp" />
     <ClCompile Include="Src\Applications\PipeTest\Particle.cpp" />
     <ClCompile Include="Src\Applications\PipeTest\Pipe.cpp" />
@@ -115,6 +116,7 @@
     <ClInclude Include="Dep\GLFW\include\GLFW\glfw3native.h" />
     <ClInclude Include="Src\Applications\Application.h" />
     <ClInclude Include="Src\Applications\Hello Triangle\HelloTriangle.h" />
+    <ClInclude Include="Src\Applications\PipeTest\CellSystem.h" />
     <ClInclude Include="Src\Applications\PipeTest\Liq.h" />
     <ClInclude Include="Src\Applications\PipeTest\Particle.h" />
     <ClInclude Include="Src\Applications\PipeTest\Pipe.h" />
@@ -382,7 +384,7 @@
     <ClInclude Include="Src\Vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\ParticleComputes\CellReseter.shader" />
+    <None Include="Resources\ParticleComputes\CellSorter.shader" />
     <None Include="Resources\ParticleComputes\DP.shader" />
     <None Include="Resources\ParticleComputes\Forces.shader" />
     <None Include="Resources\ParticleComputes\Integration.shader" />

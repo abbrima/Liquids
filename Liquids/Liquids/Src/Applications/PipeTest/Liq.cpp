@@ -25,6 +25,9 @@ namespace app
 			nParticles++;
 			mouseButtons[GLFW_MOUSE_BUTTON_RIGHT] = false;
 		}
+
+		cellsys->SortParticles(*particles,nParticles,getDX());
+
 		computeDP();
 		computeForces();
 		integrate();
@@ -132,6 +135,10 @@ namespace app
 		DP = std::make_unique<Shader>("Resources/ParticleComputes/DP.shader");
 		Force = std::make_unique<Shader>("Resources/ParticleComputes/Forces.shader");
 		Integrator = std::make_unique<Shader>("Resources/ParticleComputes/Integration.shader");
+		initCells();
+	}
+	void Liq::initCells() {
+		cellsys = std::make_unique<CellSystem>(2 / (4 * pRadius), 2 / (4 * pRadius), 4 * pRadius);
 	}
 	void Liq::renderParticles(){
 		PR->Bind();

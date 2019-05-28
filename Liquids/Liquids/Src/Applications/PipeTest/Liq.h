@@ -10,6 +10,7 @@
 #include "OpenGL/Shader.h"
 #include "OpenGL/Renderer.h"
 #include "OpenGL/SSBO.h"
+#include "Applications/PipeTest/CellSystem.h"
 #include "Applications/PipeTest/Particle.h"
 #include "Applications/PipeTest/Pipe.h"
 #define DISPATCHSIZE 128
@@ -37,6 +38,8 @@ namespace app
 		void computeDP(), computeForces(), integrate();
 		
 		//Cells
+		std::unique_ptr<CellSystem> cellsys;
+		void initCells();
 
 
 		//pipes
