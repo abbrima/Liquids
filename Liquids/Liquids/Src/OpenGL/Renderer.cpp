@@ -14,7 +14,7 @@ bool GLLogCall(const char* function, const char* file, int line)
 	}
 	return true;
 }
-void Renderer::DrawTriangles(const VertexArray& va, Shader& shader, uint count) const
+void Renderer::DrawTriangles(const VertexArray& va, Shader& shader,const uint& count) const
 {
 	shader.Bind();
 	va.Bind();
@@ -34,7 +34,7 @@ void Renderer::DrawTriangles(SSBO& ssbo, const IndexBuffer& ib, Shader& shader) 
 	ib.Bind();
 	GLCall(glDrawElements(GL_TRIANGLES, ib.GetCount(), GL_UNSIGNED_INT, nullptr));
 }
-void Renderer::DrawLineStrip(const VertexArray& va, Shader& shader, uint count) const
+void Renderer::DrawLineStrip(const VertexArray& va, Shader& shader,const uint& count) const
 {
 	va.Bind();
 	shader.Bind();
@@ -61,7 +61,7 @@ void Renderer::DrawLines(const VertexArray& va, const IndexBuffer& ib, const Sha
 	ib.Bind();
 	GLCall(glDrawElements(GL_LINES, ib.GetCount(), GL_UNSIGNED_INT, nullptr));
 }
-void Renderer::DrawPoints(SSBO& ssbo,Shader& shader,uint count) const
+void Renderer::DrawPoints(SSBO& ssbo,Shader& shader,const uint& count) const
 {
 	shader.Bind();
 	ssbo.BindToDraw();

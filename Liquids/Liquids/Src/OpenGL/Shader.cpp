@@ -5,9 +5,9 @@
 #include <sstream>
 #include "OpenGL/Renderer.h"
 
-Shader::Shader(const std::string& filepath):m_FilePath(filepath), m_RendererID(0)
+Shader::Shader(const std::string& filepath,const std::string& extra):m_FilePath(filepath), m_RendererID(0)
 {
-	ShaderProgramSource source = ParseShader(filepath);
+	ShaderProgramSource source = ParseShader(filepath,extra);
 	m_RendererID = CreateShader(source.VertexSource, source.FragmentSource,source.ComputeSource);
 }
 Shader::~Shader()
@@ -71,7 +71,7 @@ unsigned int Shader::CreateShader(const std::string& vertexShader, const std::st
 	
 }
 
-ShaderProgramSource Shader::ParseShader(const std::string& filepath)
+ShaderProgramSource Shader::ParseShader(const std::string& filepath,const std::string& extra)
 //gets shader code from files and puts it in a string
 {
 	enum class ShaderType
@@ -80,6 +80,10 @@ ShaderProgramSource Shader::ParseShader(const std::string& filepath)
 	};
 	ShaderType type = ShaderType::NONE;
 	std::ifstream stream(filepath);
+
+	if (!stream.is_open())
+		std::cout << "NOT FOUND!: " << filepath << std::endl;
+
 	std::string line;
 	std::stringstream ss[3];
 	while (getline(stream, line))
@@ -93,11 +97,16 @@ ShaderProgramSource Shader::ParseShader(const std::string& filepath)
 			else if (line.find("compute") != std::string::npos)
 				type = ShaderType::COMPUTE;
 		}
+		else if (line.find("#external") != std::string::npos)
+		{
+			ss[(int)type] << extra << '\n';
+		}
 		else
 		{
 			ss[(int)type] << line << '\n';
 		}
-	}	return { ss[0].str() , ss[1].str() ,ss[2].str()};
+	}	
+	return { ss[0].str() , ss[1].str() ,ss[2].str()};
 
 }
 void Shader::Bind() const
@@ -108,35 +117,35 @@ void Shader::Unbind() const
 {
 	GLCall(glUseProgram(0));
 }
-void Shader::DispatchCompute(uint x , uint y ,uint z)
+void Shader::DispatchCompute(const uint& x , const uint& y ,const uint& z)
 {
 	Bind();
 	GLCall(glDispatchCompute(x, y, z));
 	GLCall(glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT));
 }
-void Shader::SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3)
+void Shader::SetUniform4f(const std::string& name, const float& v0, const float& v1, const float& v2, const float& v3)
 {
 	GLCall(glUniform4f(GetUniformLocation(name),v0,v1,v2,v3));
 }
-void Shader::SetUniform3f(const std::string& name, float v0, float v1, float v2)
+void Shader::SetUniform3f(const std::string& name, const float& v0, const float& v1, const float& v2)
 {
 	GLCall(glUniform3f(GetUniformLocation(name), v0, v1, v2));
 }
-void Shader::SetUniform2f(const std::string& name, float v0, float v1) {
+void Shader::SetUniform2f(const std::string& name, const float& v0, const float& v1) {
 	GLCall(glUniform2f(GetUniformLocation(name), v0, v1));
 }
-void Shader::SetUniform1f(const std::string& name, float value)
+void Shader::SetUniform1f(const std::string& name, const float& value)
 {
 	GLCall(glUniform1f(GetUniformLocation(name), value));
 }
-void Shader::SetUniform1ui(const std::string& name, uint value) {
+void Shader::SetUniform1ui(const std::string& name, const uint& value) {
 	GLCall(glUniform1ui(GetUniformLocation(name), value));
 }
-void Shader::SetUniform1i(const std::string& name, int value)
+void Shader::SetUniform1i(const std::string& name, const int& value)
 {
 	GLCall(glUniform1i(GetUniformLocation(name), value));
 }
-void Shader::SetUniformMat4f(const std::string& name, glm::mat4 matrix,bool trans)
+void Shader::SetUniformMat4f(const std::string& name,const glm::mat4& matrix,bool trans)
 {
 	if (!trans)
 		GLCall(glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, &matrix[0][0]));
@@ -162,7 +171,7 @@ void Shader::SetUniformLight(const std::string& name, Light& light)
 	SetUniform1f((name + ".Quadratic"), light.Quadratic);
 
 }
-void Shader::SetUniformLightArray(const std::string& name, Light lights[], unsigned int size)
+void Shader::SetUniformLightArray(const std::string& name, Light lights[], const uint& size)
 {
 	for (unsigned int i = 0; i < size; i++)
 	{
@@ -177,15 +186,15 @@ void Shader::SetUniformLightClass(const std::string& name, LightClass& lights)
 	std::vector<Light> vec = lights.GetActiveLightsVector();
 	SetUniformLightArray(name, vec.data(), lights.GetActiveLightsNumber());
 }
-void Shader::SetUniformVec2(const std::string& name, glm::vec2 vec)
+void Shader::SetUniformVec2(const std::string& name,const glm::vec2& vec)
 {
 	SetUniform2f(name, vec.x, vec.y);
 }
-void Shader::SetUniformVec3(const std::string& name, glm::vec3 vec)
+void Shader::SetUniformVec3(const std::string& name,const glm::vec3& vec)
 {
 	SetUniform3f(name, vec.x, vec.y, vec.z);
 }
-void Shader::SetUniformVec4(const std::string& name, glm::vec4 vec)
+void Shader::SetUniformVec4(const std::string& name,const glm::vec4& vec)
 {
 	SetUniform4f(name, vec.x, vec.y, vec.z, vec.w);
 }
@@ -208,16 +217,31 @@ uint Shader::GetBlockLocation(const std::string& name)
 	m_BlockLocationCache[name] = location;
 	return location;
 }
-void Shader::BindSSBO(SSBO& ssbo, std::string name, uint BindingPoint)
+uint Shader::GetUniformBlockLocation(const std::string& name)
+{
+	if (m_UniformBlockLocationCache.find(name) != m_BlockLocationCache.end())
+		return m_UniformBlockLocationCache[name];
+	GLCall(uint location = glGetUniformBlockIndex(m_RendererID, name.c_str()));
+	m_UniformBlockLocationCache[name] = location;
+	return location;
+}
+void Shader::BindSSBO(SSBO& ssbo,const std::string& name, const uint& BindingPoint)
 {
 	Bind();
 	ssbo.Bind();
-	uint index = GetBlockLocation(name);
+	const uint& index = GetBlockLocation(name);
 	GLCall(glShaderStorageBlockBinding(m_RendererID, index, BindingPoint));
 	GLCall(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, BindingPoint, ssbo.GetID()));
 }
-void Shader::BindACB(AtomicCounterBuffer& acb, uint BindingPoint) {
+void Shader::BindACB(AtomicCounterBuffer& acb, const uint& BindingPoint) {
 	Bind();
 	acb.Bind();
 	glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, BindingPoint, acb.GetID());
+}
+void Shader::BindUBO(UBO& ubo, const std::string& name, const uint& BindingPoint) {
+	Bind();
+	ubo.Bind();
+	const uint& index = GetUniformBlockLocation(name);
+	GLCall(glUniformBlockBinding(m_RendererID,index,BindingPoint));
+	glBindBufferBase(GL_UNIFORM_BUFFER, BindingPoint, ubo.GetID());
 }

@@ -1,6 +1,7 @@
 #shader compute
 #version 430 core
-#define WORK_GROUP_SIZE 128
+
+#external
 
 layout(local_size_x = WORK_GROUP_SIZE) in;
 

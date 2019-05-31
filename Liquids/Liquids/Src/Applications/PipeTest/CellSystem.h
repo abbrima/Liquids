@@ -1,24 +1,24 @@
 #pragma once
-#include "OpenGL/Shader.h"
 #include "OpenGL/SSBO.h"
-#include "OpenGL/AtomicCounterBuffer.h"
-#define MAX_PINC 1000
-#include <memory>
-
+#include "OpenGL/Shader.h"
+#include "Applications/PipeTest/Particle.h"
+#define BITONIC_COMPARASION_SIZE 128
 class CellSystem {
 private:
-	std::unique_ptr<SSBO> cells;
-	std::unique_ptr<Shader> sorter;
-	std::unique_ptr<AtomicCounterBuffer> acb;
-	uint height; uint width; uint h;
+	SSBO& particles; uint& nParticles;
+	uint width, height; float h;
+	
+	std::unique_ptr<AtomicCounterBuffer> OffsetACB;
+	std::unique_ptr<Shader> UnsortedSorter,Bitonic1,Bitonic2,OffsetCalculator;
+	std::unique_ptr<SSBO> IndexList;
+	void SortUnsorted();
+	void SortBitonic();
+	void GenOffsetList();
+
 public:
-	CellSystem(uint height, uint width, uint harg);
+	CellSystem(const uint& width,const uint& height,const float& h,SSBO& particles,uint& nParticles);
 	~CellSystem();
-
-	void SortParticles(SSBO& particles,const uint& nParticles,const uint& dSize);
-
-	inline uint GetHeight() { return height; }
-	inline uint GetWidth() { return width; }
-	inline SSBO GetCells() { return *cells; }
-	inline AtomicCounterBuffer GetACB() { return *acb; }
+	inline SSBO& GetIndexList() { return *IndexList; }
+	inline AtomicCounterBuffer& GetOffsetACB() { return *OffsetACB; }
+	void Sort();
 };

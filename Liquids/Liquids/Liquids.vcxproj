@@ -86,6 +86,7 @@
     <ClCompile Include="Src\Applications\Application.cpp" />
     <ClCompile Include="Src\Applications\Hello Triangle\HelloTriangle.cpp" />
     <ClCompile Include="Src\Applications\PipeTest\CellSystem.cpp" />
+    <ClCompile Include="Src\Applications\PipeTest\Emitter.cpp" />
     <ClCompile Include="Src\Applications\PipeTest\Liq.cpp" />
     <ClCompile Include="Src\Applications\PipeTest\Particle.cpp" />
     <ClCompile Include="Src\Applications\PipeTest\Pipe.cpp" />
@@ -96,6 +97,7 @@
     <ClCompile Include="Src\OpenGL\Shader.cpp" />
     <ClCompile Include="Src\OpenGL\SSBO.cpp" />
     <ClCompile Include="Src\OpenGL\Texture.cpp" />
+    <ClCompile Include="Src\OpenGL\UBO.cpp" />
     <ClCompile Include="Src\OpenGL\VertexArray.cpp" />
     <ClCompile Include="Src\OpenGL\VertexBuffer.cpp" />
     <ClCompile Include="Src\Tools\FPSCamera.cpp" />
@@ -117,6 +119,7 @@
     <ClInclude Include="Src\Applications\Application.h" />
     <ClInclude Include="Src\Applications\Hello Triangle\HelloTriangle.h" />
     <ClInclude Include="Src\Applications\PipeTest\CellSystem.h" />
+    <ClInclude Include="Src\Applications\PipeTest\Emitter.h" />
     <ClInclude Include="Src\Applications\PipeTest\Liq.h" />
     <ClInclude Include="Src\Applications\PipeTest\Particle.h" />
     <ClInclude Include="Src\Applications\PipeTest\Pipe.h" />
@@ -126,6 +129,7 @@
     <ClInclude Include="Src\OpenGL\Shader.h" />
     <ClInclude Include="Src\OpenGL\SSBO.h" />
     <ClInclude Include="Src\OpenGL\Texture.h" />
+    <ClInclude Include="Src\OpenGL\UBO.h" />
     <ClInclude Include="Src\OpenGL\VertexArray.h" />
     <ClInclude Include="Src\OpenGL\VertexBuffer.h" />
     <ClInclude Include="Src\OpenGL\VertexBufferLayout.h" />
@@ -384,10 +388,13 @@
     <ClInclude Include="Src\Vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\ParticleComputes\CellSorter.shader" />
+    <None Include="Resources\ParticleComputes\Sorting\Bitonic1.shader" />
+    <None Include="Resources\ParticleComputes\Sorting\Bitonic2.shader" />
     <None Include="Resources\ParticleComputes\DP.shader" />
     <None Include="Resources\ParticleComputes\Forces.shader" />
     <None Include="Resources\ParticleComputes\Integration.shader" />
+    <None Include="Resources\ParticleComputes\Sorting\OffsetCalculator.shader" />
+    <None Include="Resources\ParticleComputes\Sorting\UnsortedSorter.shader" />
     <None Include="Resources\Shaders\Color.shader" />
     <None Include="Resources\Shaders\MaterialLighting.shader" />
     <None Include="Resources\Shaders\Model.shader" />

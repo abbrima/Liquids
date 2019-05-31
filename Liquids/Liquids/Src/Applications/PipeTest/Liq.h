@@ -10,13 +10,12 @@
 #include "OpenGL/Shader.h"
 #include "OpenGL/Renderer.h"
 #include "OpenGL/SSBO.h"
-#include "Applications/PipeTest/CellSystem.h"
+#include "OpenGL/UBO.h"
+
 #include "Applications/PipeTest/Particle.h"
 #include "Applications/PipeTest/Pipe.h"
-#define DISPATCHSIZE 128
-#define MAX_PARTICLES 100000
-#define MAX_PIPES 20
-#define SPH_PARTICLE_RADIUS 0.005f
+#include "Applications/PipeTest/Emitter.h"
+#include "Applications/PipeTest/CellSystem.h"
 namespace app
 {
 	class Liq :public Application
@@ -30,15 +29,16 @@ namespace app
 		std::unique_ptr<SSBO> particles;
 		uint nParticles;
 
-		
+		std::unique_ptr<SSBO> test;
+		std::unique_ptr<CellSystem> cellsys;
 
-		float k, pr, pRadius, mass, viscosity; glm::vec2 gravity;
+		float k, pr, mass, viscosity; glm::vec2 gravity;
 
 		std::unique_ptr<Shader> PR,DP,Force,Integrator;
-		void computeDP(), computeForces(), integrate();
+		std::unique_ptr<UBO> constants;
+		void computeDP(), computeForces(), integrate(), initConstants();
 		
 		//Cells
-		std::unique_ptr<CellSystem> cellsys;
 		void initCells();
 
 
@@ -61,8 +61,8 @@ namespace app
 		}
 		inline uint getDX() {
 			uint d = 0;
-			d = nParticles / DISPATCHSIZE;
-			if (nParticles%DISPATCHSIZE > 0)
+			d = nParticles / PARTICLE_DISPATCH_SIZE;
+			if (nParticles%PARTICLE_DISPATCH_SIZE > 0)
 				d++;
 			return d;
 		}

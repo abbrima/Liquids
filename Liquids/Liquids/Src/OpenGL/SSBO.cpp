@@ -3,7 +3,7 @@
 #include "OpenGL/VertexBufferLayout.h"
 #include <memory>
 
-SSBO::SSBO(const void* data, uint size)
+SSBO::SSBO(const void* data,const uint& size)
 {
 	GLCall(glGenBuffers(1, &m_RendererID));
 	GLCall(glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_RendererID));
@@ -43,7 +43,7 @@ void SSBO::Unbind() const
 {
 	GLCall(glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0));
 }
-void SSBO::Write(const void* data,uint size)
+void SSBO::Write(const void* data,const uint& size)
 {
 	Bind();
 	GLvoid* p;
@@ -52,7 +52,7 @@ void SSBO::Write(const void* data,uint size)
 	GLCall(glUnmapBuffer(GL_SHADER_STORAGE_BUFFER));
 	Unbind();
 }
-void SSBO::Append(const void* data, uint size, uint offset)
+void SSBO::Append(const void* data,const uint& size,const uint& offset)
 {
 	Bind(); 
 	GLCall(glBufferSubData(GL_SHADER_STORAGE_BUFFER, offset, size, data));

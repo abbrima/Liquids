@@ -1,15 +1,17 @@
 #include "Liq.h"
 #include <iostream>
-
+#include <memory>
 namespace app
 {
 	Liq::Liq() :
-		nParticles(0),nPipes(0),k(2000.f),pr(1000.f),pRadius(0.005f),mass(0.02f),
-		viscosity(3000.f),startingParticles(4000),gravity(glm::vec2(0, -9806.65) ){
+		nParticles(0),nPipes(0),k(3400.f),pr(1000.f),mass(0.02f),
+		viscosity(3000.f),startingParticles(100),gravity(glm::vec2(0, -9806.65) ){
 		projection = glm::ortho(-1.f,1.f,-1.f,1.f);
 		glEnable(GL_PROGRAM_POINT_SIZE);
 		glEnable(GL_POINT_SMOOTH);
 		glEnable(GL_LINE_SMOOTH);
+
+		test = std::make_unique<SSBO>(nullptr,MAX_PARTICLES * sizeof(uint) * 2);
 
 		initParticles();
 		initPipes();
@@ -18,16 +20,21 @@ namespace app
 		
 	}
 	void Liq::OnUpdate(){
-		if (mouseButtons[GLFW_MOUSE_BUTTON_LEFT] || mouseButtons[GLFW_MOUSE_BUTTON_RIGHT])
+		if (mouseButtons[GLFW_MOUSE_BUTTON_LEFT])
 		{
 			glm::vec2 pos = getWorldPos();
 			particles->Append(new Particle(glm::vec2(pos)), sizeof(Particle), nParticles * sizeof(Particle));
 			nParticles++;
+			mouseButtons[GLFW_MOUSE_BUTTON_LEFT] = false;
+		}
+		if (mouseButtons[GLFW_MOUSE_BUTTON_RIGHT])
+		{
+			glm::vec2 pos = getWorldPos();
+			Emitter emitter(pos); emitter.EmitIntoSSBO<Particle>(200, nParticles, *particles);
 			mouseButtons[GLFW_MOUSE_BUTTON_RIGHT] = false;
 		}
-
-		cellsys->SortParticles(*particles,nParticles,getDX());
-
+		cellsys->Sort();
+		
 		computeDP();
 		computeForces();
 		integrate();
@@ -43,7 +50,6 @@ namespace app
 		ImGui::Text("nParticles: %d", nParticles);
 		ImGui::InputFloat("Stiffness", &k);
 		ImGui::InputFloat("Resting Density", &pr);
-		ImGui::InputFloat("ParticleRadius", &pRadius);
 		ImGui::InputFloat("Mass", &mass);
 		ImGui::InputFloat("Viscosity", &viscosity);
 		if (ImGui::Button("Reset"))
@@ -132,36 +138,47 @@ namespace app
 		particles->SetLayout(layout);
 
 		PR = std::make_unique<Shader>("Resources/Shaders/Particle.shader");
-		DP = std::make_unique<Shader>("Resources/ParticleComputes/DP.shader");
-		Force = std::make_unique<Shader>("Resources/ParticleComputes/Forces.shader");
-		Integrator = std::make_unique<Shader>("Resources/ParticleComputes/Integration.shader");
+		DP = std::make_unique<Shader>("Resources/ParticleComputes/DP.shader", DSIZE(PARTICLE_DISPATCH_SIZE));
+		Force = std::make_unique<Shader>("Resources/ParticleComputes/Forces.shader", DSIZE(PARTICLE_DISPATCH_SIZE));
+		Integrator = std::make_unique<Shader>("Resources/ParticleComputes/Integration.shader", DSIZE(PARTICLE_DISPATCH_SIZE));
+		initConstants();
 		initCells();
 	}
 	void Liq::initCells() {
-		cellsys = std::make_unique<CellSystem>(2 / (4 * pRadius), 2 / (4 * pRadius), 4 * pRadius);
+		cellsys = std::make_unique<CellSystem>(2 / (4 * SPH_PARTICLE_RADIUS), 2 / (4 * SPH_PARTICLE_RADIUS), 4 * SPH_PARTICLE_RADIUS,*particles,nParticles);
+	}
+	void Liq::initConstants() {
+		float* farr = new float[4];
+		farr[0] = 4 * SPH_PARTICLE_RADIUS;
+		farr[1] = 315.f / (64.f * glm::pi<float>() * pow(farr[0], 9));
+		farr[2] = -45.f / (glm::pi<float>() * pow(farr[0], 6));
+		farr[3] = farr[2] * -1;
+
+		constants = std::make_unique<UBO>(farr, sizeof(float) * 4);
 	}
 	void Liq::renderParticles(){
 		PR->Bind();
 		PR->SetUniformMat4f("u_MVP", projection);
-		PR->SetUniform1f("radius", 2000.f * pRadius);
+		PR->SetUniform1f("radius", 2000.f * SPH_PARTICLE_RADIUS);
 		PR->SetUniform4f("u_Color", 0.f, 0.f, 1.0f, 1.0f);
 		renderer.DrawPoints(*particles, *PR, nParticles);
 	}
 	void Liq::computeDP() {
 		DP->BindSSBO(*particles, "Data", 0);
+		DP->BindUBO(*constants, "Constants", 2);
 		DP->SetUniform1i("nParticles", nParticles);
 		DP->SetUniform1f("k", k);
 		DP->SetUniform1f("pr", pr);
-		DP->SetUniform1f("pRadius", pRadius);
 		DP->SetUniform1f("mass", mass);
 		DP->DispatchCompute(getDX(), 1, 1);
+		
 	}
 	void Liq::computeForces() {
 		Force->BindSSBO(*particles, "Data", 0);
+		Force->BindUBO(*constants, "Constants", 2);
 		Force->SetUniform1i("nParticles", nParticles);
 		Force->SetUniform1f("viscosity", viscosity);
 		Force->SetUniform1f("mass", mass);
-		Force->SetUniform1f("pRadius", pRadius);
 		Force->SetUniformVec2("gravity", gravity);
 		Force->DispatchCompute(getDX(), 1, 1);
 	}

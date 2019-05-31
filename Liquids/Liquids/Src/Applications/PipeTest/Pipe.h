@@ -1,12 +1,15 @@
 #pragma once
+
+#define MAX_PIPES 20
+
 #include "glm/glm.hpp"
 #include <glm/gtc/type_ptr.hpp>
-#define e 2.718281f
+#include "glm/gtc/constants.hpp"
 
 struct Pipe{
 	float lowX, lowY, highX, highY, base, dY, dX, power, dampeningRatio;
-	Pipe(float base, float power, float dx, float dy, float dr);
-	void setConstraints(float lowX, float lowY, float highX, float highY);
-	float f(float x);
+	Pipe(const float& base,const float& power,const float& dx,const float& dy,const float& dr);
+	void setConstraints(const float& lowX,const float& lowY,const float& highX,const float& highY);
+	float f(const float& x);
 };
 

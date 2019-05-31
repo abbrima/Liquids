@@ -22,18 +22,18 @@ class Renderer
 public:
 	void Clear() const;
 	void DrawTriangles (const VertexArray& va, const IndexBuffer& ib, const Shader& shader) const;
-	inline void DrawPoints(SSBO& ssbo, IndexBuffer& ib,Shader& shader)
+	inline void DrawPoints(SSBO& ssbo,const IndexBuffer& ib,Shader& shader)
 	{
 		shader.Bind(); ib.Bind();
 		ssbo.BindToDraw();
 		glDrawElements(GL_POINTS, ib.GetCount(), GL_UNSIGNED_INT, nullptr);
 	}
-	inline void DrawPoints(VertexArray& va, Shader& shdr, uint count) {
+	inline void DrawPoints(VertexArray& va, Shader& shdr,const uint& count) {
 		shdr.Bind();
 		va.Bind();
 		glDrawArrays(GL_POINTS, 0, count);
 	}
-	inline void DrawTriangles(SSBO& ssbo, Shader& shader, uint count)
+	inline void DrawTriangles(SSBO& ssbo, Shader& shader,const uint& count)
 	{
 		shader.Bind(); 
 		ssbo.BindToDraw();
@@ -43,7 +43,7 @@ public:
 	void DrawTriangleFan(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) const;
 	void DrawQuads(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) const;
 	void DrawTriangles(SSBO& ssbo,const IndexBuffer& ib, Shader& shader) const;
-	void DrawPoints(SSBO& ssbo, Shader& shader,uint count) const;
-	void DrawLineStrip(const VertexArray& va, Shader& shader, uint count) const;
-	void DrawTriangles(const VertexArray& va, Shader& shader, uint count) const;
+	void DrawPoints(SSBO& ssbo, Shader& shader,const uint& count) const;
+	void DrawLineStrip(const VertexArray& va, Shader& shader,const uint& count) const;
+	void DrawTriangles(const VertexArray& va, Shader& shader,const uint& count) const;
 };

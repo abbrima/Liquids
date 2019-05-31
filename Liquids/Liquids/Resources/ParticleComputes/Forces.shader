@@ -1,24 +1,17 @@
 #shader compute
 #version 430 core
 
-#define WORK_GROUP_SIZE 128
+#external
 
 layout(local_size_x = WORK_GROUP_SIZE) in;
 
 // constants
 uniform int nParticles;
-
 #define PI_FLOAT 3.1415927410125732421875f
-uniform float pRadius;
-// Mass = Density * Volume
 uniform float mass;
-#define SMOOTHING_LENGTH (4 * pRadius)
-
 uniform float viscosity;
-
-// OpenGL y-axis is pointing up, while Vulkan y-axis is pointing down.
-// So in OpenGL this is negative, but in Vulkan this is positive.
 uniform vec2 gravity;
+
 struct Particle {
 	vec2 position;
 	vec2 velocity;
@@ -29,6 +22,13 @@ struct Particle {
 layout(std430, binding = 0) buffer Data
 {
 	Particle particles[];
+};
+layout(std140, binding = 2) uniform Constants
+{
+float h;
+float poly6;
+float gradspiky;
+float laplacianvis;
 };
 
 void main()
@@ -46,18 +46,19 @@ void main()
 		}
 		vec2 delta = particles[i].position - particles[j].position;
 		float r = length(delta);
-		if (r < SMOOTHING_LENGTH)
+		if (r < h)
 		{
 			pressure_force -= mass * (particles[i].pressure + particles[j].pressure) / (2.f * particles[j].density) *
 				// gradient of spiky kernel
-				-45.f / (PI_FLOAT * pow(SMOOTHING_LENGTH, 6)) * pow(SMOOTHING_LENGTH - r, 2) * normalize(delta);
+				gradspiky * pow(h - r, 2) * normalize(delta);
+			
 			viscosity_force += mass * (particles[j].velocity - particles[i].velocity) / particles[j].density *
 				// Laplacian of viscosity kernel
-				45.f / (PI_FLOAT * pow(SMOOTHING_LENGTH, 6)) * (SMOOTHING_LENGTH - r);
+				laplacianvis * (h - r);
 		}
 	}
 	viscosity_force *= viscosity;
 	vec2 external_force = particles[i].density * gravity;
 
 	particles[i].force = pressure_force + viscosity_force + external_force;
-}
+};

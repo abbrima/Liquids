@@ -78,6 +78,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 
 int main(void)
 {
+	
 	if (!glfwInit())
 		return -1;
 	GLFWwindow* window = glfwCreateWindow(1366, 768, "WINDOW", NULL, NULL);
