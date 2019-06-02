@@ -49,16 +49,20 @@ void CellSystem::SortUnsorted() {
 	UnsortedSorter->SetUniform1ui("width", width);
 
 	UnsortedSorter->DispatchCompute(GetDX(nParticles,PARTICLE_DISPATCH_SIZE), 1, 1);
+	//if (nParticles > 300)
+		//system("pause");
 }
 
 struct UnsortedList;
 void bsort(UnsortedList* arr, const uint& N);
 void hsort(UnsortedList* arr, const uint& n);
 void bbsort(UnsortedList* arr, const uint& N);
+
+
 void CellSystem::SortBitonic() {
 	const int N = GetMinPowOf2(nParticles);
 	/*Bitonic1->BindSSBO(*IndexList, "List", 4);
-	for (uint subsize = 2; subsize < N; subsize <<= 1)
+	for (uint subsize = 2; subsize <= N; subsize <<= 1)
 		for (uint compare_distance = subsize >> 1; compare_distance > 0; compare_distance >>= 1)
 		{
 			Bitonic1->SetUniform1ui("subsize", subsize);
@@ -66,21 +70,22 @@ void CellSystem::SortBitonic() {
 
 			Bitonic1->DispatchCompute(GetDX(N/2,BITONIC_COMPARASION_SIZE), 1, 1);
 		}
-
+	Bitonic1->Unbind();
+	IndexList->Unbind();
 	Bitonic2->BindSSBO(*IndexList, "List", 4);
-	for (uint compare_distance = N>>1; compare_distance>0; compare_distance>>=1)
+	for (uint compare_distance = N>>1; compare_distance>1; compare_distance>>=1)
 	{
-		Bitonic2->SetUniform1ui("compare_distance", compare_distance);
-		Bitonic2->DispatchCompute(GetDX(N / 2, BITONIC_COMPARASION_SIZE),1,1);
-	}*/
+		    Bitonic2->SetUniform1ui("compare_distance", compare_distance);
+		    Bitonic2->DispatchCompute(GetDX(N / 2, BITONIC_COMPARASION_SIZE),1,1);
+
+	}
+	Bitonic2->Unbind();
+	IndexList->Unbind();*/
 	uint* ptr = (uint*)IndexList->GetData();
 
-	//bbsort((UnsortedList*)ptr, N);
 	hsort((UnsortedList*)ptr, nParticles);
 
 	IndexList->Unmap();
-	if (nParticles > 1000);
-	//system("pause");
 }
 void CellSystem::GenOffsetList() {
 	OffsetList->WriteVal1ui(0xFFFFFFFF, height*width * sizeof(uint));
@@ -98,10 +103,10 @@ void CellSystem::SetShaderSSBOs(Shader& shader) {
 }
 void CellSystem::GuiRender() {
 	uint* ptr = (uint*)IndexList->GetData();
-
-	for (int i = 0; i < nParticles; i++)
+	const int N = GetMinPowOf2(nParticles);
+	for (int i = 0; i < N; i++)
 	{
-		ImGui::Text("%10d  %10d", *ptr, *(ptr + 1));
+		ImGui::Text("%4d  %10d  %10d",i, *ptr, *(ptr + 1));
 		ptr += 2;
 	}
 

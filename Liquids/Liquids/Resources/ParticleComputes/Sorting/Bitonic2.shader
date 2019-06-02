@@ -1,7 +1,8 @@
 #shader compute
-#version 430 core
+#version 460 core
 
 #external
+
 #define invodex gl_GlobalInvocationID.x
 layout(local_size_x = WORK_GROUP_SIZE) in;
 
@@ -25,7 +26,7 @@ void main() {
 	else
 		lefter_index = invodex;
 
-	exchange(ulist[lefter_index], ulist[lefter_index + compare_distance]);
+	//exchange(ulist[lefter_index], ulist[lefter_index + compare_distance]);
 }
 
 

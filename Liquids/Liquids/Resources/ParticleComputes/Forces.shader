@@ -1,5 +1,5 @@
 #shader compute
-#version 430 core
+#version 460 core
 
 #external
 #define invodex gl_GlobalInvocationID.x

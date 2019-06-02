@@ -5,7 +5,7 @@ namespace app
 {
 	Liq::Liq() :
 		nParticles(0),nPipes(0),k(3400.f),pr(1000.f),mass(0.02f),
-		viscosity(3000.f),startingParticles(25000),gravity(glm::vec2(0, -9806.65) ){
+		viscosity(3000.f),startingParticles(0),gravity(glm::vec2(0, -9806.65) ){
 		projection = glm::ortho(-1.f,1.f,-1.f,1.f);
 		glEnable(GL_PROGRAM_POINT_SIZE);
 		glEnable(GL_POINT_SMOOTH);
@@ -76,8 +76,8 @@ namespace app
 		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 		glLineWidth(1.0f);
 		renderParticles();
-		renderLines();
-		//renderPipes();
+		//renderLines();
+		renderPipes();
 	}
 	void Liq::OnImGuiRender(){
 		ImGui::Text("nParticles: %d", nParticles);
@@ -93,7 +93,7 @@ namespace app
 	
 	}
 	void Liq::FreeGuiRender(){
-		//::Begin("DATA");
+		//ImGui::Begin("DATA");
 		//cellsys->GuiRender();
 		//ImGui::End();
 	}
@@ -117,9 +117,9 @@ namespace app
 
 		pipeRenderer = std::make_unique<Shader>("Resources/Shaders/Color.shader");
 		Pipe* arr[MAX_PIPES];
-		arr[nPipes] = new Pipe(1.f, 5.f, -0.5f, -0.5f, 1.f);
+		arr[nPipes] = new Pipe(1.f, 5.f, -0.5f, -0.5f, 1.f,false);
 		arr[nPipes++]->setConstraints(-1.f, -1.f, 1.f, 1.f);
-		arr[nPipes] = new Pipe(1.f, 5.f, -0.4f, -0.4f, 1.f);
+		arr[nPipes] = new Pipe(1.f, 5.f, -0.4f, -0.4f, 1.f,true);
 		arr[nPipes++]->setConstraints(-1.f, -1.f, 1.f, 1.f);
 		for (uint i = 0; i < nPipes; i++)
 		{
@@ -195,7 +195,7 @@ namespace app
 		PR->Bind();
 		PR->SetUniformMat4f("u_MVP", projection);
 		PR->SetUniform1f("radius", 2000.f * SPH_PARTICLE_RADIUS);
-		PR->SetUniform3f("u_Color", 0.f, 0.f, 1.0f);
+		PR->SetUniform3f("u_Color", 1.f, 0.f, 0.0f);
 		PR->SetUniform1ui("nParticles", nParticles);
 		renderer.DrawPoints(*particles, *PR, nParticles);
 	}

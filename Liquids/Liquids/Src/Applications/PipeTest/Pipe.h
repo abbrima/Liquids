@@ -8,7 +8,8 @@
 
 struct Pipe{
 	float lowX, lowY, highX, highY, base, dY, dX, power, dampeningRatio;
-	Pipe(const float& base,const float& power,const float& dx,const float& dy,const float& dr);
+	bool upper;
+	Pipe(const float& base,const float& power,const float& dx,const float& dy,const float& dr,const bool& upper);
 	void setConstraints(const float& lowX,const float& lowY,const float& highX,const float& highY);
 	float f(const float& x);
 };

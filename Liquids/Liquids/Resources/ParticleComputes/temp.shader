@@ -1,5 +1,5 @@
 #shader compute
-#version 430 core
+#version 460 core
 
 #external
 
@@ -66,7 +66,7 @@ void main()
 
 /*
 #shader compute
-#version 430 core
+#version 460 core
 
 #external
 

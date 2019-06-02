@@ -1,5 +1,5 @@
 #shader compute
-#version 430 core
+#version 460 core
 
 #external
 #define PI_FLOAT 3.1415927410125732421875f
