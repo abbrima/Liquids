@@ -2,7 +2,6 @@
 #version 430 core
 
 #external
-
 #define invodex gl_GlobalInvocationID.x
 layout(local_size_x = WORK_GROUP_SIZE) in;
 

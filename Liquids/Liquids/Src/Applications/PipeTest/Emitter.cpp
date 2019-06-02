@@ -14,7 +14,7 @@ template<> Particle* Emitter::Emit<Particle>(const unsigned int& n) {
 	Particle* particles;
 	particles = new Particle[n];
 	for (int i = 0; i < n; i++)
-		particles[i].position = GenRandomPos(pos, 0.04f);
+	   particles[i].position = GenRandomPos(pos, 0.04f);
 	return particles;
 }
 

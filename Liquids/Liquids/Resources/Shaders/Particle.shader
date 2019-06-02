@@ -3,15 +3,18 @@
 
 layout(location = 0) in vec4 position;
 
-
+uniform uint nParticles;
 
 uniform mat4 u_MVP;
 uniform float radius;
+uniform vec3 u_Color;
 
+out vec3 VertexColor;
 
 void main()
 {
 	gl_PointSize = radius;
+	VertexColor = u_Color * gl_VertexID/nParticles;
 	gl_Position = u_MVP * position;
 };
 
@@ -20,12 +23,13 @@ void main()
 
 layout(location = 0) out vec4 color;
 
-uniform vec4 u_Color;
 
+in vec3 VertexColor;
 
 void main()
 {
-	color = u_Color;
+	
+	color = vec4(VertexColor, 1.0f);
 };
 
 

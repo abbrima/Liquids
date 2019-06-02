@@ -18,5 +18,6 @@ public:
 	void Append(const void* data,const uint& size,const uint& offset);
 	void* GetData();
 	void Unmap() const;
+	void WriteVal1ui(const uint& val,const uint& size);
 	void SetLayout(VertexBufferLayout& l);
 };

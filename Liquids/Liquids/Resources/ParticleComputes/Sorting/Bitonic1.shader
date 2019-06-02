@@ -29,7 +29,7 @@ void main() {
 	else
 		lefter_index = invodex;
 
-	exchange(ulist[lefter_index], ulist[lefter_index + compare_distance],(lefter_index/subsize)%2==0 );
+	exchange(ulist[lefter_index], ulist[lefter_index + compare_distance],(lefter_index/subsize)%2==0);
 }
 
 void exchange(inout UnsortedList lefter, inout UnsortedList righter, bool SL) {

@@ -28,14 +28,14 @@ CellSystem::CellSystem(const uint& width,const uint& height,const float& h,SSBO&
 	OffsetCalculator = std::make_unique<Shader>("Resources/ParticleComputes/Sorting/OffsetCalculator.shader"
 		,DSIZE(PARTICLE_DISPATCH_SIZE));
 
-	OffsetACB = std::make_unique<AtomicCounterBuffer>(nullptr, sizeof(uint)*width*height);
-	IndexList = std::make_unique<SSBO>(nullptr,sizeof(uint)*2*2*100000);
+	IndexList = std::make_unique<SSBO>(nullptr,sizeof(uint)*2*2*MAX_PARTICLES);
+	OffsetList = std::make_unique<SSBO>(nullptr, sizeof(uint)*width*height);
 }
 CellSystem::~CellSystem() {
 
 }
 void CellSystem::Sort() {
-	SortUnsorted();
+	 SortUnsorted();
 	SortBitonic();
  	GenOffsetList();
 }
@@ -49,37 +49,61 @@ void CellSystem::SortUnsorted() {
 	UnsortedSorter->SetUniform1ui("width", width);
 
 	UnsortedSorter->DispatchCompute(GetDX(nParticles,PARTICLE_DISPATCH_SIZE), 1, 1);
-
 }
+
+struct UnsortedList;
+void bsort(UnsortedList* arr, const uint& N);
+void hsort(UnsortedList* arr, const uint& n);
+void bbsort(UnsortedList* arr, const uint& N);
 void CellSystem::SortBitonic() {
 	const int N = GetMinPowOf2(nParticles);
-	Bitonic1->BindSSBO(*IndexList, "List", 4);
-	for (uint subsize = 2; subsize < N; subsize *= 2)
-		for (uint compare_distance = subsize / 2; compare_distance > 0; compare_distance /= 2)
+	/*Bitonic1->BindSSBO(*IndexList, "List", 4);
+	for (uint subsize = 2; subsize < N; subsize <<= 1)
+		for (uint compare_distance = subsize >> 1; compare_distance > 0; compare_distance >>= 1)
 		{
 			Bitonic1->SetUniform1ui("subsize", subsize);
 			Bitonic1->SetUniform1ui("compare_distance", compare_distance);
 
 			Bitonic1->DispatchCompute(GetDX(N/2,BITONIC_COMPARASION_SIZE), 1, 1);
 		}
+
 	Bitonic2->BindSSBO(*IndexList, "List", 4);
-	for (uint compare_distance = N/2; compare_distance>0; compare_distance/=2)
+	for (uint compare_distance = N>>1; compare_distance>0; compare_distance>>=1)
 	{
 		Bitonic2->SetUniform1ui("compare_distance", compare_distance);
 		Bitonic2->DispatchCompute(GetDX(N / 2, BITONIC_COMPARASION_SIZE),1,1);
-	}
+	}*/
+	uint* ptr = (uint*)IndexList->GetData();
+
+	//bbsort((UnsortedList*)ptr, N);
+	hsort((UnsortedList*)ptr, nParticles);
+
+	IndexList->Unmap();
+	if (nParticles > 1000);
+	//system("pause");
 }
 void CellSystem::GenOffsetList() {
-	OffsetACB->Set(0xFFFFFFFF);
+	OffsetList->WriteVal1ui(0xFFFFFFFF, height*width * sizeof(uint));
 
 	OffsetCalculator->BindSSBO(*IndexList, "IndexList", 4);
-	OffsetCalculator->BindACB(*OffsetACB, 3);
-
-	OffsetCalculator->DispatchCompute(GetDX(nParticles, PARTICLE_DISPATCH_SIZE), 1, 1);
-
-	uint* ptr = (uint*)OffsetACB->GetData(); uint count = 0;
-	std::cout << *ptr << std::endl;
-	std::cin.get();
-	OffsetACB->Unmap();
+	OffsetCalculator->BindSSBO(*OffsetList, "OffsetList", 5);
+    OffsetCalculator->DispatchCompute(GetDX(nParticles, PARTICLE_DISPATCH_SIZE), 1, 1);
 	
+}
+void CellSystem::SetShaderSSBOs(Shader& shader) {
+	shader.Bind();
+
+	shader.BindSSBO(*IndexList, "IndexList", 4);
+	shader.BindSSBO(*OffsetList, "OffsetList", 5);
+}
+void CellSystem::GuiRender() {
+	uint* ptr = (uint*)IndexList->GetData();
+
+	for (int i = 0; i < nParticles; i++)
+	{
+		ImGui::Text("%10d  %10d", *ptr, *(ptr + 1));
+		ptr += 2;
+	}
+
+	IndexList->Unmap();
 }

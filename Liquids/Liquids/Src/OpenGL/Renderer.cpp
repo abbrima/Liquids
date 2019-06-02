@@ -20,6 +20,24 @@ void Renderer::DrawTriangles(const VertexArray& va, Shader& shader,const uint& c
 	va.Bind();
 	GLCall(glDrawArrays(GL_TRIANGLES, 0, count));
 }
+void Renderer::DrawPoints(VertexArray& va, Shader& shdr, const uint& count) const
+{
+	shdr.Bind();
+	va.Bind();
+	glDrawArrays(GL_POINTS, 0, count);
+}
+void Renderer::DrawTriangles(SSBO& ssbo, Shader& shader, const uint& count) const
+{
+	shader.Bind();
+	ssbo.BindToDraw();
+	glDrawArrays(GL_TRIANGLES, 0, count);
+}
+void Renderer::DrawPoints(SSBO& ssbo, const IndexBuffer& ib, Shader& shader) const
+{
+	shader.Bind(); ib.Bind();
+	ssbo.BindToDraw();
+	glDrawElements(GL_POINTS, ib.GetCount(), GL_UNSIGNED_INT, nullptr);
+}
 void Renderer::DrawTriangles(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) const
 {
 	shader.Bind();
@@ -60,6 +78,11 @@ void Renderer::DrawLines(const VertexArray& va, const IndexBuffer& ib, const Sha
 	va.Bind();
 	ib.Bind();
 	GLCall(glDrawElements(GL_LINES, ib.GetCount(), GL_UNSIGNED_INT, nullptr));
+}
+void Renderer::DrawLines(const VertexArray& va, Shader& shader, const uint& count) const {
+	shader.Bind();
+	va.Bind();
+	GLCall(glDrawArrays(GL_LINES, 0, count));
 }
 void Renderer::DrawPoints(SSBO& ssbo,Shader& shader,const uint& count) const
 {

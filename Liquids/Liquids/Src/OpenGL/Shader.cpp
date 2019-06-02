@@ -122,6 +122,7 @@ void Shader::DispatchCompute(const uint& x , const uint& y ,const uint& z)
 	Bind();
 	GLCall(glDispatchCompute(x, y, z));
 	GLCall(glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT));
+
 }
 void Shader::SetUniform4f(const std::string& name, const float& v0, const float& v1, const float& v2, const float& v3)
 {
@@ -236,7 +237,8 @@ void Shader::BindSSBO(SSBO& ssbo,const std::string& name, const uint& BindingPoi
 void Shader::BindACB(AtomicCounterBuffer& acb, const uint& BindingPoint) {
 	Bind();
 	acb.Bind();
-	glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, BindingPoint, acb.GetID());
+	
+	GLCall(glBindBufferBase(GL_ATOMIC_COUNTER_BUFFERS, BindingPoint, acb.GetID()));
 }
 void Shader::BindUBO(UBO& ubo, const std::string& name, const uint& BindingPoint) {
 	Bind();

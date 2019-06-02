@@ -2,6 +2,10 @@
 #version 430 core
 
 #external
+#define invodex gl_GlobalInvocationID.x
+#define p particles[invodex]
+#define np particles[ulist[j].pIndex]
+
 
 layout(local_size_x = WORK_GROUP_SIZE) in;
 
@@ -11,13 +15,25 @@ uniform int nParticles;
 uniform float mass;
 uniform float viscosity;
 uniform vec2 gravity;
-
+uniform uint width, height;
 struct Particle {
 	vec2 position;
 	vec2 velocity;
 	vec2 force;
 	float density;
 	float pressure;
+};
+struct UnsortedList {
+	uint cIndex; uint pIndex;
+};
+
+layout(std430, binding = 4) buffer IndexList
+{
+	UnsortedList ulist[];
+};
+layout(std430, binding = 5) buffer OffsetList
+{
+	uint olist[];
 };
 layout(std430, binding = 0) buffer Data
 {
@@ -31,34 +47,64 @@ float gradspiky;
 float laplacianvis;
 };
 
-void main()
-{
-	uint i = gl_GlobalInvocationID.x;
-	// compute all forces
-	vec2 pressure_force = vec2(0, 0);
-	vec2 viscosity_force = vec2(0, 0);
+ivec2 GetIndex2D(vec2 position);
+int _2to1(ivec2 pos);
 
-	for (uint j = 0; j < nParticles; j++)
-	{
-		if (i == j)
-		{
-			continue;
-		}
-		vec2 delta = particles[i].position - particles[j].position;
-		float r = length(delta);
-		if (r < h)
-		{
-			pressure_force -= mass * (particles[i].pressure + particles[j].pressure) / (2.f * particles[j].density) *
-				// gradient of spiky kernel
-				gradspiky * pow(h - r, 2) * normalize(delta);
-			
-			viscosity_force += mass * (particles[j].velocity - particles[i].velocity) / particles[j].density *
-				// Laplacian of viscosity kernel
-				laplacianvis * (h - r);
-		}
-	}
-	viscosity_force *= viscosity;
-	vec2 external_force = particles[i].density * gravity;
+void main() {
+	ivec2 CellIndex2D = GetIndex2D(p.position);
 
-	particles[i].force = pressure_force + viscosity_force + external_force;
-};
+	vec2 pressureForce = vec2(0, 0), viscosityForce = vec2(0, 0);
+
+	for (int iii=-1;iii<=1;iii++)
+		for (int jjj = -1; jjj <= 1; jjj++)
+		{
+			int CellIndex = _2to1(CellIndex2D + ivec2(iii, jjj));
+			if (CellIndex == -1)
+				continue;
+			uint j = olist[CellIndex];
+			if (j == 0xFFFFFFFF)
+				continue;
+			while (ulist[j].cIndex == CellIndex && j < nParticles) {
+				//resolve particles
+				if (ulist[j].pIndex == invodex)
+				{
+					j++;
+					continue;
+				}
+				vec2 delta = p.position - np.position;
+				float r = length(delta);
+				if (r < h)
+				{
+					pressureForce -= mass * (p.pressure + np.pressure) / (2.f * np.density) *
+						// gradient of spiky kernel
+						gradspiky * pow(h - r, 2) * normalize(delta);
+
+					viscosityForce += mass * (np.velocity - p.velocity) / np.density *
+						// Laplacian of viscosity kernel
+						laplacianvis * (h - r);
+				}
+
+				j++;
+			}
+		}
+
+
+	viscosityForce *= viscosity;
+	vec2 externalForce = p.density * gravity;
+
+	p.force = pressureForce + viscosityForce + externalForce;
+}
+ivec2 GetIndex2D(vec2 position) {
+	position.x *= width / 2; position.y *= height / 2;
+	ivec2 pos = ivec2(position);
+	pos.x += int(width / 2); if (pos.x == width) pos.x--;
+	pos.y += int(height / 2); if (pos.y == height) pos.y--;
+	return pos;
+}
+int _2to1(ivec2 pos) {
+	if (pos.y >= height || pos.y < 0 || pos.x >= width || pos.x < 0)
+		return -1;
+	else
+		return (pos.y)*int(width) + (pos.x);
+}
+

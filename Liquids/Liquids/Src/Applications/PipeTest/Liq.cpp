@@ -5,7 +5,7 @@ namespace app
 {
 	Liq::Liq() :
 		nParticles(0),nPipes(0),k(3400.f),pr(1000.f),mass(0.02f),
-		viscosity(3000.f),startingParticles(100),gravity(glm::vec2(0, -9806.65) ){
+		viscosity(3000.f),startingParticles(25000),gravity(glm::vec2(0, -9806.65) ){
 		projection = glm::ortho(-1.f,1.f,-1.f,1.f);
 		glEnable(GL_PROGRAM_POINT_SIZE);
 		glEnable(GL_POINT_SMOOTH);
@@ -14,10 +14,42 @@ namespace app
 		test = std::make_unique<SSBO>(nullptr,MAX_PARTICLES * sizeof(uint) * 2);
 
 		initParticles();
+		initLines();
 		initPipes();
 	}
 	Liq::~Liq(){
 		
+	}
+	void Liq::initLines() {
+		std::vector<glm::vec2> linePoints;
+		for (float x = -1.f; x <= 1.f; x += 0.02f)
+		{
+			linePoints.emplace_back(glm::vec2(x,-1.f));
+			linePoints.emplace_back(glm::vec2(x, 1.f));
+		}
+		for (float x = -1.f; x <= 1.f; x += 0.02f)
+		{
+			linePoints.emplace_back(glm::vec2(-1.f, x));
+			linePoints.emplace_back(glm::vec2(1.f, x));
+		}
+		LinesVB = std::make_unique<VertexBuffer>(linePoints.data(), linePoints.size() * sizeof(glm::vec2));
+		LinesVA = std::make_unique<VertexArray>();
+		VertexBufferLayout layout;
+		layout.Push<float>(2);
+		LinesVA->AddBuffer(*LinesVB, layout);
+		LinesSH = std::make_unique<Shader>("Resources/Shaders/Color.shader");
+		LinesVB->Unbind();
+		LinesVA->Unbind();
+	}
+	void Liq::renderLines() {
+		LinesSH->Bind();
+		GLCall(glLineWidth(1.f));
+		LinesSH->SetUniformMat4f("u_MVP", projection);
+		LinesSH->SetUniform4f("u_Color", 0.0f, 0.0f, 0.0f, 1.0f);
+
+		renderer.DrawLines(*LinesVA, *LinesSH, LinesVB->GetSize()/sizeof(glm::vec2));
+		LinesVA->Unbind();
+		LinesVB->Unbind();
 	}
 	void Liq::OnUpdate(){
 		if (mouseButtons[GLFW_MOUSE_BUTTON_LEFT])
@@ -44,6 +76,7 @@ namespace app
 		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 		glLineWidth(1.0f);
 		renderParticles();
+		renderLines();
 		//renderPipes();
 	}
 	void Liq::OnImGuiRender(){
@@ -60,7 +93,9 @@ namespace app
 	
 	}
 	void Liq::FreeGuiRender(){
-		
+		//::Begin("DATA");
+		//cellsys->GuiRender();
+		//ImGui::End();
 	}
 	void Liq::renderPipes()
 	{
@@ -153,29 +188,36 @@ namespace app
 		farr[1] = 315.f / (64.f * glm::pi<float>() * pow(farr[0], 9));
 		farr[2] = -45.f / (glm::pi<float>() * pow(farr[0], 6));
 		farr[3] = farr[2] * -1;
-
+		
 		constants = std::make_unique<UBO>(farr, sizeof(float) * 4);
 	}
 	void Liq::renderParticles(){
 		PR->Bind();
 		PR->SetUniformMat4f("u_MVP", projection);
 		PR->SetUniform1f("radius", 2000.f * SPH_PARTICLE_RADIUS);
-		PR->SetUniform4f("u_Color", 0.f, 0.f, 1.0f, 1.0f);
+		PR->SetUniform3f("u_Color", 0.f, 0.f, 1.0f);
+		PR->SetUniform1ui("nParticles", nParticles);
 		renderer.DrawPoints(*particles, *PR, nParticles);
 	}
 	void Liq::computeDP() {
 		DP->BindSSBO(*particles, "Data", 0);
 		DP->BindUBO(*constants, "Constants", 2);
+		cellsys->SetShaderSSBOs(*DP);
 		DP->SetUniform1i("nParticles", nParticles);
 		DP->SetUniform1f("k", k);
 		DP->SetUniform1f("pr", pr);
 		DP->SetUniform1f("mass", mass);
+		DP->SetUniform1ui("width", cellsys->GetWidth());
+		DP->SetUniform1ui("height", cellsys->GetHeight());
 		DP->DispatchCompute(getDX(), 1, 1);
 		
 	}
 	void Liq::computeForces() {
 		Force->BindSSBO(*particles, "Data", 0);
 		Force->BindUBO(*constants, "Constants", 2);
+		cellsys->SetShaderSSBOs(*Force);
+		Force->SetUniform1ui("width", cellsys->GetWidth());
+		Force->SetUniform1ui("height", cellsys->GetHeight());
 		Force->SetUniform1i("nParticles", nParticles);
 		Force->SetUniform1f("viscosity", viscosity);
 		Force->SetUniform1f("mass", mass);

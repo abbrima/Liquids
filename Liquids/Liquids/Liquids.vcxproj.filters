@@ -90,6 +90,9 @@
     <ClCompile Include="Src\OpenGL\UBO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Tools\Bitonic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Vendor\glm\detail\_features.hpp">
@@ -1330,5 +1333,6 @@
     <None Include="Resources\ParticleComputes\Sorting\Bitonic2.shader" />
     <None Include="Resources\ParticleComputes\Sorting\UnsortedSorter.shader" />
     <None Include="Resources\ParticleComputes\Sorting\OffsetCalculator.shader" />
+    <None Include="Resources\ParticleComputes\temp.shader" />
   </ItemGroup>
 </Project>

@@ -25,6 +25,7 @@ namespace app
 		Renderer renderer;
 		int startingParticles;
 
+
 		void initParticles(), renderParticles();
 		std::unique_ptr<SSBO> particles;
 		uint nParticles;
@@ -66,6 +67,13 @@ namespace app
 				d++;
 			return d;
 		}
+
+		void initLines();
+		void renderLines();
+		std::unique_ptr<VertexBuffer> LinesVB;
+		std::unique_ptr<VertexArray>  LinesVA;
+		std::unique_ptr<Shader> LinesSH;
+
 	public:
 		Liq();
 		~Liq();

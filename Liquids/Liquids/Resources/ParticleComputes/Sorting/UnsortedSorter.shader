@@ -46,5 +46,6 @@ uint GetIndex(vec2 position) {
 	ivec2 pos = ivec2(position);
 	pos.x += int(width / 2); if (pos.x == width) pos.x--;
 	pos.y += int(height / 2); if (pos.y == height) pos.y--;
+
 	return uint(pos.y)*width + uint(pos.x);
 }
