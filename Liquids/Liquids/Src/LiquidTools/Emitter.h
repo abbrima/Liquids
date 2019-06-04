@@ -1,5 +1,5 @@
 #pragma once
-#include <Applications/PipeTest/Particle.h>
+#include "LiquidTools/Particle.h"
 #include "OpenGL/SSBO.h"
 #include "glm/common.hpp"
 class Emitter {
@@ -11,6 +11,5 @@ public:
 
 
 	template<typename T> T* Emit(const unsigned int& n);
-
 	template<typename T> void EmitIntoSSBO(const unsigned int& n,unsigned int& nParticles, SSBO& ssbo);
 };

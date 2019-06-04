@@ -69,28 +69,31 @@
     <ClCompile Include="Src\OpenGL\SSBO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Applications\PipeTest\Pipe.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Applications\PipeTest\Particle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Applications\PipeTest\Liq.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Src\OpenGL\AtomicCounterBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Applications\PipeTest\Emitter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Applications\PipeTest\CellSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Src\OpenGL\UBO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Src\Tools\Bitonic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\LiquidTools\CellSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\LiquidTools\Emitter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\LiquidTools\Particle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\LiquidTools\Pipe.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Applications\WaterTest\WaterTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -902,25 +905,28 @@
     <ClInclude Include="Src\OpenGL\SSBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Applications\PipeTest\Pipe.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Applications\PipeTest\Particle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Applications\PipeTest\Liq.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Src\OpenGL\AtomicCounterBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Applications\PipeTest\Emitter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Applications\PipeTest\CellSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Src\OpenGL\UBO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\LiquidTools\CellSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\LiquidTools\Emitter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\LiquidTools\Particle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\LiquidTools\Pipe.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Applications\WaterTest\WaterTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1326,13 +1332,20 @@
     <None Include="Resources\Shaders\MaterialLighting.shader" />
     <None Include="Resources\Shaders\Model.shader" />
     <None Include="Resources\Shaders\ModelColor.shader" />
-    <None Include="Resources\ParticleComputes\DP.shader" />
-    <None Include="Resources\ParticleComputes\Forces.shader" />
-    <None Include="Resources\ParticleComputes\Integration.shader" />
-    <None Include="Resources\ParticleComputes\Sorting\Bitonic1.shader" />
-    <None Include="Resources\ParticleComputes\Sorting\Bitonic2.shader" />
-    <None Include="Resources\ParticleComputes\Sorting\UnsortedSorter.shader" />
-    <None Include="Resources\ParticleComputes\Sorting\OffsetCalculator.shader" />
-    <None Include="Resources\ParticleComputes\temp.shader" />
+    <None Include="Resources\PipeTest\DP.shader" />
+    <None Include="Resources\PipeTest\Forces.shader" />
+    <None Include="Resources\PipeTest\Integration.shader" />
+    <None Include="Resources\PipeTest\temp.shader" />
+    <None Include="Resources\WaterTest\DP.shader" />
+    <None Include="Resources\WaterTest\Forces.shader" />
+    <None Include="Resources\WaterTest\Integration.shader" />
+    <None Include="Resources\NPSorting\Bitonic1.shader" />
+    <None Include="Resources\NPSorting\Bitonic2.shader" />
+    <None Include="Resources\NPSorting\OffsetCalculator.shader" />
+    <None Include="Resources\NPSorting\UnsortedSorter.shader" />
+    <None Include="Resources\PipeTest\Sorting\Bitonic1.shader" />
+    <None Include="Resources\PipeTest\Sorting\Bitonic2.shader" />
+    <None Include="Resources\PipeTest\Sorting\OffsetCalculator.shader" />
+    <None Include="Resources\PipeTest\Sorting\UnsortedSorter.shader" />
   </ItemGroup>
 </Project>

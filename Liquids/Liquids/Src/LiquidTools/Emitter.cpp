@@ -10,9 +10,9 @@ static glm::vec2 GenRandomPos(const glm::vec2& pos, const float& offset) {
 template<typename T> T* Emitter::Emit(const unsigned int& n) {
 	static_assert(false);
 }
-template<> Particle* Emitter::Emit<Particle>(const unsigned int& n) {
-	Particle* particles;
-	particles = new Particle[n];
+template<> NormalParticle* Emitter::Emit<NormalParticle>(const unsigned int& n) {
+	NormalParticle* particles;
+	particles = new NormalParticle[n];
 	for (int i = 0; i < n; i++)
 	   particles[i].position = GenRandomPos(pos, 0.04f);
 	return particles;
@@ -21,8 +21,8 @@ template<> Particle* Emitter::Emit<Particle>(const unsigned int& n) {
 template<typename T> void Emitter::EmitIntoSSBO(const unsigned int& n, unsigned int& nParticles, SSBO& ssbo) {
 	static_assert(false);
 }
-template<> void Emitter::EmitIntoSSBO<Particle>(const unsigned int& n,unsigned int& nParticles, SSBO& ssbo) {
-	Particle* particles = Emit<Particle>(n);
-	ssbo.Append(particles, n * sizeof(Particle), sizeof(Particle)*nParticles);
+template<> void Emitter::EmitIntoSSBO<NormalParticle>(const unsigned int& n,unsigned int& nParticles, SSBO& ssbo) {
+	NormalParticle* particles = Emit<NormalParticle>(n);
+	ssbo.Append(particles, n * sizeof(NormalParticle), sizeof(NormalParticle)*nParticles);
 	nParticles += n;
 }

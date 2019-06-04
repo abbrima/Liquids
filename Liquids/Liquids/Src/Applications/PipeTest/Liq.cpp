@@ -4,8 +4,8 @@
 namespace app
 {
 	Liq::Liq() :
-		nParticles(0),nPipes(0),k(3400.f),pr(1000.f),mass(0.02f),
-		viscosity(3000.f),startingParticles(0),gravity(glm::vec2(0, -9806.65) ){
+		nParticles(0),nPipes(0),k(5000.f),pr(1000.f),mass(0.02f),
+		viscosity(3000.f),gravity(glm::vec2(0, -9806.65) ){
 		projection = glm::ortho(-1.f,1.f,-1.f,1.f);
 		glEnable(GL_PROGRAM_POINT_SIZE);
 		glEnable(GL_POINT_SMOOTH);
@@ -52,17 +52,10 @@ namespace app
 		LinesVB->Unbind();
 	}
 	void Liq::OnUpdate(){
-		if (mouseButtons[GLFW_MOUSE_BUTTON_LEFT])
-		{
-			glm::vec2 pos = getWorldPos();
-			particles->Append(new Particle(glm::vec2(pos)), sizeof(Particle), nParticles * sizeof(Particle));
-			nParticles++;
-			mouseButtons[GLFW_MOUSE_BUTTON_LEFT] = false;
-		}
 		if (mouseButtons[GLFW_MOUSE_BUTTON_RIGHT])
 		{
 			glm::vec2 pos = getWorldPos();
-			Emitter emitter(pos); emitter.EmitIntoSSBO<Particle>(200, nParticles, *particles);
+			Emitter emitter(pos); emitter.EmitIntoSSBO<NormalParticle>(200, nParticles, *particles);
 			mouseButtons[GLFW_MOUSE_BUTTON_RIGHT] = false;
 		}
 		cellsys->Sort();
@@ -87,7 +80,6 @@ namespace app
 		ImGui::InputFloat("Viscosity", &viscosity);
 		if (ImGui::Button("Reset"))
 			initParticles();
-		ImGui::InputInt("startingParticles", &startingParticles);
 		ImGui::SliderFloat("Gravity X: ", &gravity.x, -10000.f, 10000.f);
 		ImGui::SliderFloat("Gravity Y: ", &gravity.y, -10000.f, 10000.f);
 	
@@ -117,10 +109,10 @@ namespace app
 
 		pipeRenderer = std::make_unique<Shader>("Resources/Shaders/Color.shader");
 		Pipe* arr[MAX_PIPES];
-		arr[nPipes] = new Pipe(1.f, 5.f, -0.5f, -0.5f, 1.f,false);
-		arr[nPipes++]->setConstraints(-1.f, -1.f, 1.f, 1.f);
-		arr[nPipes] = new Pipe(1.f, 5.f, -0.4f, -0.4f, 1.f,true);
-		arr[nPipes++]->setConstraints(-1.f, -1.f, 1.f, 1.f);
+		arr[nPipes] = new Pipe(1.f, 5.f, -0.5f, -0.5f, 0.95f,false);
+		arr[nPipes++]->setConstraints(-0.3f, -0.55f, 1.f, 1.f); 
+		arr[nPipes] = new Pipe(1.f, 5.f, -0.4f, -0.4f, 0.95f,true);
+		arr[nPipes++]->setConstraints(-1.f, -0.55f, 1.f, 1.f);
 		for (uint i = 0; i < nPipes; i++)
 		{
 			pipes->Append(arr[i], sizeof(Pipe), i * sizeof(Pipe));
@@ -150,37 +142,25 @@ namespace app
 	}
 	void Liq::initParticles(){
 		nParticles = 0;
-		particles = std::make_unique<SSBO>(nullptr, sizeof(Particle) * MAX_PARTICLES);
+		particles = std::make_unique<SSBO>(nullptr, sizeof(NormalParticle) * MAX_PARTICLES);
 		VertexBufferLayout layout;
 		layout.Push<float>(2);
 		layout.Push<float>(2);
 		layout.Push<float>(2);
 		layout.Push<float>(2);
 		
-		for (auto i = 0, x = 0, y = 0; i < startingParticles; i++)
-		{
-			particles->Append(new Particle(glm::vec2(-0.625f + SPH_PARTICLE_RADIUS * 2 * x, 1 - SPH_PARTICLE_RADIUS * 2 * y)),
-				sizeof(Particle), nParticles * sizeof(Particle));
-			nParticles++;
-			x++;
-			if (x >= 125)
-			{
-				x = 0;
-				y++;
-			}
-		}
-
 		particles->SetLayout(layout);
 
 		PR = std::make_unique<Shader>("Resources/Shaders/Particle.shader");
-		DP = std::make_unique<Shader>("Resources/ParticleComputes/DP.shader", DSIZE(PARTICLE_DISPATCH_SIZE));
-		Force = std::make_unique<Shader>("Resources/ParticleComputes/Forces.shader", DSIZE(PARTICLE_DISPATCH_SIZE));
-		Integrator = std::make_unique<Shader>("Resources/ParticleComputes/Integration.shader", DSIZE(PARTICLE_DISPATCH_SIZE));
+		DP = std::make_unique<Shader>("Resources/PipeTest/DP.shader", DSIZE(PARTICLE_DISPATCH_SIZE));
+		Force = std::make_unique<Shader>("Resources/PipeTest/Forces.shader", DSIZE(PARTICLE_DISPATCH_SIZE));
+		Integrator = std::make_unique<Shader>("Resources/PipeTest/Integration.shader", DSIZE(PARTICLE_DISPATCH_SIZE));
 		initConstants();
 		initCells();
 	}
 	void Liq::initCells() {
-		cellsys = std::make_unique<CellSystem>(2 / (4 * SPH_PARTICLE_RADIUS), 2 / (4 * SPH_PARTICLE_RADIUS), 4 * SPH_PARTICLE_RADIUS,*particles,nParticles);
+		cellsys = std::make_unique<CellSystem>(2/(4*SPH_PARTICLE_RADIUS),2/(4*SPH_PARTICLE_RADIUS)
+			,4 * SPH_PARTICLE_RADIUS,*particles,nParticles,"NPSorting");
 	}
 	void Liq::initConstants() {
 		float* farr = new float[4];

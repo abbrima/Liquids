@@ -85,11 +85,12 @@
   <ItemGroup>
     <ClCompile Include="Src\Applications\Application.cpp" />
     <ClCompile Include="Src\Applications\Hello Triangle\HelloTriangle.cpp" />
-    <ClCompile Include="Src\Applications\PipeTest\CellSystem.cpp" />
-    <ClCompile Include="Src\Applications\PipeTest\Emitter.cpp" />
+    <ClCompile Include="Src\Applications\WaterTest\WaterTest.cpp" />
+    <ClCompile Include="Src\LiquidTools\CellSystem.cpp" />
+    <ClCompile Include="Src\LiquidTools\Emitter.cpp" />
     <ClCompile Include="Src\Applications\PipeTest\Liq.cpp" />
-    <ClCompile Include="Src\Applications\PipeTest\Particle.cpp" />
-    <ClCompile Include="Src\Applications\PipeTest\Pipe.cpp" />
+    <ClCompile Include="Src\LiquidTools\Particle.cpp" />
+    <ClCompile Include="Src\LiquidTools\Pipe.cpp" />
     <ClCompile Include="Src\Main\EntryPoint.cpp" />
     <ClCompile Include="Src\OpenGL\AtomicCounterBuffer.cpp" />
     <ClCompile Include="Src\OpenGL\IndexBuffer.cpp" />
@@ -119,11 +120,12 @@
     <ClInclude Include="Dep\GLFW\include\GLFW\glfw3native.h" />
     <ClInclude Include="Src\Applications\Application.h" />
     <ClInclude Include="Src\Applications\Hello Triangle\HelloTriangle.h" />
-    <ClInclude Include="Src\Applications\PipeTest\CellSystem.h" />
-    <ClInclude Include="Src\Applications\PipeTest\Emitter.h" />
+    <ClInclude Include="Src\Applications\WaterTest\WaterTest.h" />
+    <ClInclude Include="Src\LiquidTools\CellSystem.h" />
+    <ClInclude Include="Src\LiquidTools\Emitter.h" />
     <ClInclude Include="Src\Applications\PipeTest\Liq.h" />
-    <ClInclude Include="Src\Applications\PipeTest\Particle.h" />
-    <ClInclude Include="Src\Applications\PipeTest\Pipe.h" />
+    <ClInclude Include="Src\LiquidTools\Particle.h" />
+    <ClInclude Include="Src\LiquidTools\Pipe.h" />
     <ClInclude Include="Src\OpenGL\AtomicCounterBuffer.h" />
     <ClInclude Include="Src\OpenGL\IndexBuffer.h" />
     <ClInclude Include="Src\OpenGL\Renderer.h" />
@@ -389,14 +391,18 @@
     <ClInclude Include="Src\Vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\ParticleComputes\Sorting\Bitonic1.shader" />
-    <None Include="Resources\ParticleComputes\Sorting\Bitonic2.shader" />
-    <None Include="Resources\ParticleComputes\DP.shader" />
-    <None Include="Resources\ParticleComputes\Forces.shader" />
-    <None Include="Resources\ParticleComputes\Integration.shader" />
-    <None Include="Resources\ParticleComputes\Sorting\OffsetCalculator.shader" />
-    <None Include="Resources\ParticleComputes\temp.shader" />
-    <None Include="Resources\ParticleComputes\Sorting\UnsortedSorter.shader" />
+    <None Include="Resources\NPSorting\Bitonic1.shader" />
+    <None Include="Resources\NPSorting\Bitonic2.shader" />
+    <None Include="Resources\PipeTest\DP.shader" />
+    <None Include="Resources\PipeTest\Forces.shader" />
+    <None Include="Resources\PipeTest\Integration.shader" />
+    <None Include="Resources\NPSorting\OffsetCalculator.shader" />
+    <None Include="Resources\PipeTest\Sorting\Bitonic1.shader" />
+    <None Include="Resources\PipeTest\Sorting\Bitonic2.shader" />
+    <None Include="Resources\PipeTest\Sorting\OffsetCalculator.shader" />
+    <None Include="Resources\PipeTest\Sorting\UnsortedSorter.shader" />
+    <None Include="Resources\PipeTest\temp.shader" />
+    <None Include="Resources\NPSorting\UnsortedSorter.shader" />
     <None Include="Resources\Shaders\Color.shader" />
     <None Include="Resources\Shaders\MaterialLighting.shader" />
     <None Include="Resources\Shaders\Model.shader" />
@@ -405,6 +411,9 @@
     <None Include="Resources\Shaders\Test.shader" />
     <None Include="Resources\Shaders\Texture2D.shader" />
     <None Include="Resources\Shaders\TextureLighting.shader" />
+    <None Include="Resources\WaterTest\DP.shader" />
+    <None Include="Resources\WaterTest\Forces.shader" />
+    <None Include="Resources\WaterTest\Integration.shader" />
     <None Include="Src\Vendor\glm\detail\func_common.inl" />
     <None Include="Src\Vendor\glm\detail\func_common_simd.inl" />
     <None Include="Src\Vendor\glm\detail\func_exponential.inl" />

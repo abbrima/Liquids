@@ -19,7 +19,7 @@
 #include "imgui/imgui_impl_glfw_gl3.h"
 
 #include "Applications/Application.h"
-#include "Applications/Hello Triangle/HelloTriangle.h"
+#include "Applications/WaterTest/WaterTest.h"
 #include "Applications/PipeTest/Liq.h"
 
 #include "Tools/MyExternals.h"
@@ -115,9 +115,9 @@ int main(void)
 		app::ApplicationMenu* applicationMenu = new app::ApplicationMenu(currentApplication);
 		
 		//currentApplication = applicationMenu;
-		currentApplication = new app::Liq();
+		currentApplication = new app::WaterTest();
 
-		applicationMenu->RegisterApplication<app::HelloTriangle>("Hello Triangle!");
+		applicationMenu->RegisterApplication<app::WaterTest>("Water");
 		applicationMenu->RegisterApplication<app::Liq>("Pipe Test");
 
 		while (!glfwWindowShouldClose(window))

@@ -12,10 +12,10 @@
 #include "OpenGL/SSBO.h"
 #include "OpenGL/UBO.h"
 
-#include "Applications/PipeTest/Particle.h"
-#include "Applications/PipeTest/Pipe.h"
-#include "Applications/PipeTest/Emitter.h"
-#include "Applications/PipeTest/CellSystem.h"
+#include "LiquidTools/Particle.h"
+#include "LiquidTools/Pipe.h"
+#include "LiquidTools/Emitter.h"
+#include "LiquidTools/CellSystem.h"
 namespace app
 {
 	class Liq :public Application
@@ -23,7 +23,6 @@ namespace app
 	private:
 		glm::mat4 projection;
 		Renderer renderer;
-		int startingParticles;
 
 
 		void initParticles(), renderParticles();

@@ -13,19 +13,19 @@ static uint GetDX(uint total, const uint& dsize){
 		ret++;
 	return ret;
 }
-CellSystem::CellSystem(const uint& width,const uint& height,const float& h,SSBO& particles,uint& nParticles)
+CellSystem::CellSystem(const uint& width,const uint& height,const float& h,SSBO& particles,uint& nParticles,const std::string& loc)
 	:width(width),height(height),h(h),particles(particles),nParticles(nParticles){
 	
-	UnsortedSorter = std::make_unique<Shader>("Resources/ParticleComputes/Sorting/UnsortedSorter.shader"
+	UnsortedSorter = std::make_unique<Shader>("Resources/"+loc+"/UnsortedSorter.shader"
 		, DSIZE(PARTICLE_DISPATCH_SIZE));
 
-	Bitonic1 = std::make_unique<Shader>("Resources/ParticleComputes/Sorting/Bitonic1.shader",
+	Bitonic1 = std::make_unique<Shader>("Resources/"+loc+"/Bitonic1.shader",
 		DSIZE(BITONIC_COMPARASION_SIZE));
 	
-	Bitonic2 = std::make_unique<Shader>("Resources/ParticleComputes/Sorting/Bitonic2.shader",
+	Bitonic2 = std::make_unique<Shader>("Resources/"+loc+"/Bitonic2.shader",
 		DSIZE(BITONIC_COMPARASION_SIZE));
 	
-	OffsetCalculator = std::make_unique<Shader>("Resources/ParticleComputes/Sorting/OffsetCalculator.shader"
+	OffsetCalculator = std::make_unique<Shader>("Resources/" + loc + "/OffsetCalculator.shader"
 		,DSIZE(PARTICLE_DISPATCH_SIZE));
 
 	IndexList = std::make_unique<SSBO>(nullptr,sizeof(uint)*2*2*MAX_PARTICLES);

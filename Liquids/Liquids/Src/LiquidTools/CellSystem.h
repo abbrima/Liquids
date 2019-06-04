@@ -1,7 +1,8 @@
 #pragma once
 #include "OpenGL/SSBO.h"
 #include "OpenGL/Shader.h"
-#include "Applications/PipeTest/Particle.h"
+#include "LiquidTools/CellSystem.h"
+#include "LiquidTools/Particle.h"
 #include "imgui/imgui.h"
 
 #define BITONIC_COMPARASION_SIZE 128
@@ -17,7 +18,7 @@ private:
 	void GenOffsetList();
 
 public:
-	CellSystem(const uint& width,const uint& height,const float& h,SSBO& particles,uint& nParticles);
+	CellSystem(const uint& width,const uint& height,const float& h,SSBO& particles,uint& nParticles,const std::string& loc);
 	~CellSystem();
 	void SetShaderSSBOs(Shader& shader);
 	//inline SSBO GetIndexList() { return *IndexList; }

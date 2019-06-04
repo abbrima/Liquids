@@ -70,21 +70,31 @@ void main()
 	else {
 		for (int j = 0; j < nPipes; j++)
 		{
-			float y = f(pipes[j], new_position.x);
-			if (pipes[j].upper && new_position.y > y)
+			if (new_position.x > pipes[j].lowX && new_position.x < pipes[j].highX)
 			{
-				float m = slopeNormal(pipes[j], new_position.x);
-				vec2 norm = getNormal(new_velocity, m);
-				new_position.y = y;
-				new_velocity = reflect(new_velocity, norm) * pipes[j].dampeningRatio;
+				float y = f(pipes[j], new_position.x);
+				if (new_position.y > pipes[j].lowY && new_position.y < pipes[j].highY)
+				{
+					if (pipes[j].upper && new_position.y > y)
+					{
+						float m = slopeNormal(pipes[j], new_position.x);
+						vec2 norm = getNormal(new_velocity, m);
+						new_position.y = y;
+						new_velocity = reflect(new_velocity, norm) * pipes[j].dampeningRatio;
+					}
+					else if (!pipes[j].upper && new_position.y < y)
+					{
+						float m = slopeNormal(pipes[j], new_position.x);
+						vec2 norm = getNormal(new_velocity, m);
+						new_position.y = y;
+						new_velocity = reflect(new_velocity, norm) * pipes[j].dampeningRatio;
+					}
+				}
+				else
+					continue;
 			}
-			else if (!pipes[j].upper && new_position.y < y)
-			{
-				float m = slopeNormal(pipes[j], new_position.x);
-				vec2 norm = getNormal(new_velocity, m);
-				new_position.y = y;
-				new_velocity = reflect(new_velocity, norm) * pipes[j].dampeningRatio;
-			}
+			else
+				continue;
 		}
 	}
 
