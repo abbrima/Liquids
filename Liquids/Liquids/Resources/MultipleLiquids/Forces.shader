@@ -12,8 +12,6 @@ layout(local_size_x = WORK_GROUP_SIZE) in;
 // constants
 uniform int nParticles;
 #define PI_FLOAT 3.1415927410125732421875f
-uniform float mass;
-uniform float viscosity;
 uniform vec2 gravity;
 
 uniform int enableInteraction;
@@ -22,13 +20,21 @@ uniform float interactionForce;
 
 uniform uint width, height;
 
+
 struct Particle {
 	vec2 position;
 	vec2 velocity;
 	vec2 force;
+	vec2 color1;
+	vec2 color2;
 	float density;
 	float pressure;
+	float pr;
+	float k;
+	float mass;
+	float viscosity;
 };
+
 struct UnsortedList {
 	uint cIndex; uint pIndex;
 };
@@ -81,11 +87,11 @@ void main() {
 				float r = length(delta);
 				if (r < h)
 				{
-					pressureForce -= mass * (p.pressure + np.pressure) / (2.f * np.density) *
+					pressureForce -= np.mass * (p.pressure + np.pressure) / (2.f * np.density) *
 						// gradient of spiky kernel
 						gradspiky * pow(h - r, 2) * normalize(delta);
 
-					viscosityForce += mass * (np.velocity - p.velocity) / np.density *
+					viscosityForce += np.mass * (np.velocity - p.velocity) / np.density *
 						// Laplacian of viscosity kernel
 						laplacianvis * (h - r);
 				}
@@ -95,7 +101,7 @@ void main() {
 		}
 
 
-	viscosityForce *= viscosity;
+	viscosityForce *= p.viscosity;
 	vec2 externalForce1 = p.density * gravity;
 
 	vec2 externalForce2 = vec2(0, 0);

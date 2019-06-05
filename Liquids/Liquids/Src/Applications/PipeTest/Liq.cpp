@@ -139,19 +139,15 @@ namespace app
 			pipesVB[i]->Unbind();
 			pipesVA[i]->Unbind();
 		}
+		for (int i = 0; i < nPipes; i++)
+			delete arr[i];
 	}
 	void Liq::initParticles(){
 		nParticles = 0;
 		particles = std::make_unique<SSBO>(nullptr, sizeof(NormalParticle) * MAX_PARTICLES);
-		VertexBufferLayout layout;
-		layout.Push<float>(2);
-		layout.Push<float>(2);
-		layout.Push<float>(2);
-		layout.Push<float>(2);
-		
-		particles->SetLayout(layout);
+		particles->SetLayout(NormalParticle::GetLayout());
 
-		PR = std::make_unique<Shader>("Resources/Shaders/Particle.shader");
+		PR = std::make_unique<Shader>("Resources/PipeTest/Particle.shader");
 		DP = std::make_unique<Shader>("Resources/PipeTest/DP.shader", DSIZE(PARTICLE_DISPATCH_SIZE));
 		Force = std::make_unique<Shader>("Resources/PipeTest/Forces.shader", DSIZE(PARTICLE_DISPATCH_SIZE));
 		Integrator = std::make_unique<Shader>("Resources/PipeTest/Integration.shader", DSIZE(PARTICLE_DISPATCH_SIZE));

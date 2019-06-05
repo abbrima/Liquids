@@ -2,25 +2,18 @@
 #version 460 core
 
 #external
+#define PI_FLOAT 3.1415927410125732421875f
 #define invodex gl_GlobalInvocationID.x
 #define p particles[invodex]
 #define np particles[ulist[j].pIndex]
 
-
 layout(local_size_x = WORK_GROUP_SIZE) in;
 
-// constants
-uniform int nParticles;
-#define PI_FLOAT 3.1415927410125732421875f
-uniform float mass;
-uniform float viscosity;
-uniform vec2 gravity;
-
-uniform int enableInteraction;
-uniform vec2 worldPos;
-uniform float interactionForce;
-
 uniform uint width, height;
+uniform int nParticles;
+uniform float pr;
+uniform float mass;
+uniform float k;
 
 struct Particle {
 	vec2 position;
@@ -58,54 +51,33 @@ int _2to1(ivec2 pos);
 
 void main() {
 	ivec2 CellIndex2D = GetIndex2D(p.position);
+	float density_sum = 0.f;
 
-	vec2 pressureForce = vec2(0, 0), viscosityForce = vec2(0, 0);
-
-	for (int iii=-1;iii<=1;iii++)
+	for (int iii = -1; iii <= 1; iii++)
 		for (int jjj = -1; jjj <= 1; jjj++)
 		{
 			int CellIndex = _2to1(CellIndex2D + ivec2(iii, jjj));
 			if (CellIndex == -1)
 				continue;
+			//loop through all particles
 			uint j = olist[CellIndex];
 			if (j == 0xFFFFFFFF)
 				continue;
 			while (ulist[j].cIndex == CellIndex && j < nParticles) {
 				//resolve particles
-				if (ulist[j].pIndex == invodex)
-				{
-					j++;
-					continue;
-				}
 				vec2 delta = p.position - np.position;
 				float r = length(delta);
 				if (r < h)
 				{
-					pressureForce -= mass * (p.pressure + np.pressure) / (2.f * np.density) *
-						// gradient of spiky kernel
-						gradspiky * pow(h - r, 2) * normalize(delta);
-
-					viscosityForce += mass * (np.velocity - p.velocity) / np.density *
-						// Laplacian of viscosity kernel
-						laplacianvis * (h - r);
+					density_sum += mass * pow(h * h - r * r, 3) * poly6;
 				}
-
 				j++;
 			}
 		}
-
-
-	viscosityForce *= viscosity;
-	vec2 externalForce1 = p.density * gravity;
-
-	vec2 externalForce2 = vec2(0, 0);
-	vec2 myvec = worldPos - p.position;
-	if (myvec != vec2(0, 0) && enableInteraction!=0) {
-		externalForce2 = p.density * normalize(myvec) * interactionForce;
-	}
-
-	p.force = pressureForce + viscosityForce + externalForce1 + externalForce2;
+	p.density = density_sum;
+	p.pressure = max(k * (density_sum - pr), 0.f);
 }
+
 ivec2 GetIndex2D(vec2 position) {
 	position.x *= width / 2; position.y *= height / 2;
 	ivec2 pos = ivec2(position);
@@ -119,4 +91,5 @@ int _2to1(ivec2 pos) {
 	else
 		return (pos.y)*int(width) + (pos.x);
 }
+
 

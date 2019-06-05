@@ -15,13 +15,7 @@ uniform int nParticles;
 uniform float mass;
 uniform float viscosity;
 uniform vec2 gravity;
-
-uniform int enableInteraction;
-uniform vec2 worldPos;
-uniform float interactionForce;
-
 uniform uint width, height;
-
 struct Particle {
 	vec2 position;
 	vec2 velocity;
@@ -96,15 +90,9 @@ void main() {
 
 
 	viscosityForce *= viscosity;
-	vec2 externalForce1 = p.density * gravity;
+	vec2 externalForce = p.density * gravity;
 
-	vec2 externalForce2 = vec2(0, 0);
-	vec2 myvec = worldPos - p.position;
-	if (myvec != vec2(0, 0) && enableInteraction!=0) {
-		externalForce2 = p.density * normalize(myvec) * interactionForce;
-	}
-
-	p.force = pressureForce + viscosityForce + externalForce1 + externalForce2;
+	p.force = pressureForce + viscosityForce + externalForce;
 }
 ivec2 GetIndex2D(vec2 position) {
 	position.x *= width / 2; position.y *= height / 2;

@@ -16,26 +16,23 @@ layout(std430, binding = 4) buffer List
 };
 
 uniform uint compare_distance;
-
 void exchange(inout UnsortedList lefter, inout UnsortedList righter);
 
 void main() {
-	uint lefter_index;
+	uint ind;
 	if (invodex / compare_distance > 0)
-		lefter_index = invodex * 2 - invodex % compare_distance;
+		ind = invodex * 2 - invodex % compare_distance;
 	else
-		lefter_index = invodex;
-
-	//exchange(ulist[lefter_index], ulist[lefter_index + compare_distance]);
+		invodex = ind;
+	exchange(ulist[ind], ulist[ind + compare_distance]);
 }
 
-
+void swap(inout UnsortedList first, inout UnsortedList second) {
+	UnsortedList temp = first;
+	first = second;
+	second = temp;
+}
 void exchange(inout UnsortedList lefter, inout UnsortedList righter) {
-		if (lefter.cIndex > righter.cIndex)
-		{
-			UnsortedList temp = lefter;
-			lefter = righter;
-			righter = temp;
-		}
+	if (lefter.pIndex > righter.pIndex)
+		swap(lefter, righter);
 }
-

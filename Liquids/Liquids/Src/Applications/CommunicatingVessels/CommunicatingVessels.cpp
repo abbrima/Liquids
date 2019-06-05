@@ -1,18 +1,18 @@
-#include "WaterTest.h"
-#include <iostream>
+#include "Applications/CommunicatingVessels/CommunicatingVessels.h"
+#include <memory>
 
 namespace app
 {
-	WaterTest::WaterTest()
+	CommunicatingVessels::CommunicatingVessels()
 		:projection(glm::ortho(-1.f, 1.f, -1.f, 1.f)),
 		nParticles(0),
 		k(2000.f),
 		viscosity(3000.f),
-		pr(1000.f),
 		mass(0.02f),
-	    gravity(glm::vec2(0.f, -9806.65f)),
+		pr(1000.f),
+		gravity(glm::vec2(0.f, -9806.65f)),
+		nVerticalPipes(0),
 		startingParticles(10000)
-
 	{
 		glEnable(GL_PROGRAM_POINT_SIZE);
 		glEnable(GL_POINT_SMOOTH);
@@ -26,13 +26,13 @@ namespace app
 
 		constants = std::make_unique<UBO>(farr, sizeof(float) * 4);
 
-
+		initVerticalPipes(true);
 		initParticles();
 	}
-	WaterTest::~WaterTest() {
+	CommunicatingVessels::~CommunicatingVessels() {
 
 	}
-	void WaterTest::OnUpdate() {
+	void CommunicatingVessels::OnUpdate() {
 		if (mouseButtons[GLFW_MOUSE_BUTTON_RIGHT])
 		{
 			glm::vec2 pos = getWorldPos();
@@ -47,13 +47,14 @@ namespace app
 		computeForces();
 		integrate();
 	}
-	void WaterTest::OnRender() {
+	void CommunicatingVessels::OnRender() {
 		GLCall(glClearColor(0.6f, 0.6f, 0.6f, 1.0f));
 		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
 		renderParticles();
+		renderPipes();
 	}
-	void WaterTest::OnImGuiRender() {
+	void CommunicatingVessels::OnImGuiRender() {
 		ImGui::Text("nParticles: %d", nParticles);
 		ImGui::InputFloat("Stiffness", &k);
 		ImGui::InputFloat("Resting Density", &pr);
@@ -64,48 +65,73 @@ namespace app
 		ImGui::InputInt("startingParticles", &startingParticles);
 		ImGui::SliderFloat("Gravity X: ", &gravity.x, -10000.f, 10000.f);
 		ImGui::SliderFloat("Gravity Y: ", &gravity.y, -10000.f, 10000.f);
+
+		if (ImGui::Button("OpenBarrier"))
+			initVerticalPipes(false);
+		if (ImGui::Button("CloseBarrier"))
+			initVerticalPipes(true);
 	}
-	void WaterTest::FreeGuiRender() {
+	void CommunicatingVessels::FreeGuiRender() {
 
 	}
-
-	void WaterTest::initParticles() {
+	void CommunicatingVessels::initParticles() {
 		nParticles = 0;
-		particles = std::make_unique<SSBO>(nullptr, sizeof(NormalParticle)*MAX_PARTICLES);
 
+		particles = std::make_unique<SSBO>(nullptr, sizeof(NormalParticle)*MAX_PARTICLES);
 		particles->SetLayout(NormalParticle::GetLayout());
 
-		PR = std::make_unique<Shader>("Resources/WaterTest/Particle.shader");
-		DP = std::make_unique<Shader>("Resources/WaterTest/DP.shader",DSIZE(PARTICLE_DISPATCH_SIZE));
-		Forces = std::make_unique<Shader>("Resources/WaterTest/Forces.shader", DSIZE(PARTICLE_DISPATCH_SIZE));
-		Integrator = std::make_unique<Shader>("Resources/WaterTest/Integration.shader", DSIZE(PARTICLE_DISPATCH_SIZE));
+		PR = std::make_unique<Shader>("Resources/CommunicatingVessels/Particle.shader");
+		DP = std::make_unique<Shader>("Resources/CommunicatingVessels/DP.shader", DSIZE(PARTICLE_DISPATCH_SIZE));
+		Forces = std::make_unique<Shader>("Resources/CommunicatingVessels/Forces.shader", DSIZE(PARTICLE_DISPATCH_SIZE));
+		Integrator = std::make_unique<Shader>("Resources/CommunicatingVessels/Integration.shader", DSIZE(PARTICLE_DISPATCH_SIZE));
 
 		cellsys = std::make_unique<CellSystem>(2 / (4 * SPH_PARTICLE_RADIUS), 2 / (4 * SPH_PARTICLE_RADIUS)
 			, 4 * SPH_PARTICLE_RADIUS, *particles, nParticles, "NPSorting");
-
-		for (auto i = 0, x = 0, y = 0; i < startingParticles; i++)
-		{
-			particles->Append(new NormalParticle(glm::vec2(-0.625f + SPH_PARTICLE_RADIUS * 2 * x, 1 - SPH_PARTICLE_RADIUS * 2 * y)),
-				sizeof(NormalParticle), nParticles * sizeof(NormalParticle));
-			nParticles++;
-			x++;
-			if (x >= 125)
-			{
-				x = 0;
-				y++;
-			}
-		}
 	}
-	void WaterTest::renderParticles() {
+	void CommunicatingVessels::initVerticalPipes(const bool& close) {
+		nVerticalPipes = 0;
+		VerticalPipe* arr[MAX_PIPES];
+		if (close)
+		    arr[nVerticalPipes++] = new VerticalPipe(0.f, -2.f, 0.2f, 1.f);
+		else
+			arr[nVerticalPipes++] = new VerticalPipe(0.f, -0.9f, 0.2f, 1.f);
+		verticalpipes = std::make_unique<SSBO>(nullptr, sizeof(VerticalPipe)*MAX_PIPES);
+		std::vector<glm::vec2> points;
+		for (uint i = 0; i < nVerticalPipes; i++)
+		{
+			points.emplace_back(glm::vec2(arr[i]->x,arr[i]->lowY));
+			points.emplace_back(glm::vec2(arr[i]->x, arr[i]->highY));
+		}
+		VerticalPipesVB = std::make_unique<VertexBuffer>(points.data(), sizeof(glm::vec2)*points.size());
+		VerticalPipesVA = std::make_unique<VertexArray>();
+		VertexBufferLayout layout; layout.Push<float>(2); VerticalPipesVA->AddBuffer(*VerticalPipesVB, layout);
+		PipesShader = std::make_unique<Shader>("Resources/Shaders/Color.shader");
+		VerticalPipesVB->Unbind();
+		VerticalPipesVA->Unbind();
+	}
+	void CommunicatingVessels::renderPipes() {
+		PipesShader->Bind();
+
+		GLCall(glLineWidth(20.f));
+
+		PipesShader->SetUniformMat4f("u_MVP", projection);
+		PipesShader->SetUniform4f("u_Color", 1.0f, 1.0f, 1.0f, 1.0f);
+
+		renderer.DrawLines(*VerticalPipesVA, *PipesShader, VerticalPipesVB->GetSize() / (sizeof(float)*2));
+
+		VerticalPipesVA->Unbind();
+		VerticalPipesVB->Unbind();
+	}
+	void CommunicatingVessels::renderParticles() {
 		PR->Bind();
 		PR->SetUniformMat4f("u_MVP", projection);
 		PR->SetUniform1ui("nParticles", nParticles);
 		PR->SetUniform1f("radius", 2000.f * SPH_PARTICLE_RADIUS);
 		PR->SetUniform3f("u_Color", 0.0f, 0.0f, 1.0f);
-		
+
 		renderer.DrawPoints(*particles, *PR, nParticles);
 	}
-	void WaterTest::computeDP() {
+	void CommunicatingVessels::computeDP() {
 		DP->BindSSBO(*particles, "Data", 0);
 		DP->BindUBO(*constants, "Constants", 2);
 		cellsys->SetShaderSSBOs(*DP);
@@ -117,7 +143,7 @@ namespace app
 		DP->SetUniform1ui("height", cellsys->GetHeight());
 		DP->DispatchCompute(getDX(), 1, 1);
 	}
-	void WaterTest::computeForces() {
+	void CommunicatingVessels::computeForces() {
 		Forces->BindSSBO(*particles, "Data", 0);
 		Forces->BindUBO(*constants, "Constants", 2);
 		cellsys->SetShaderSSBOs(*Forces);
@@ -127,13 +153,12 @@ namespace app
 		Forces->SetUniform1f("viscosity", viscosity);
 		Forces->SetUniform1f("mass", mass);
 		Forces->SetUniformVec2("gravity", gravity);
-		Forces->SetUniform1b("enableInteraction", mouseButtons[GLFW_MOUSE_BUTTON_LEFT]);
-		Forces->SetUniformVec2("worldPos", getWorldPos());
-		Forces->SetUniform1f("interactionForce", 100000);
 		Forces->DispatchCompute(getDX(), 1, 1);
 	}
-	void WaterTest::integrate() {
+	void CommunicatingVessels::integrate() {
 		Integrator->BindSSBO(*particles, "Data", 0);
+		Integrator->BindSSBO(*verticalpipes, "Pipes", 1);
+		Integrator->SetUniform1ui("nPipes", nVerticalPipes);
 		Integrator->DispatchCompute(getDX(), 1, 1);
 	}
 }

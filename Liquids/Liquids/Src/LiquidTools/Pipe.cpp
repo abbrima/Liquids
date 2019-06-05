@@ -15,3 +15,5 @@ void Pipe::setConstraints(const float& lowX, const float& lowY, const float& hig
 float Pipe::f(const float& x) {
 	return (base * pow(glm::e<float>(),(x+dX)*power)) + dY;
 }
+VerticalPipe::VerticalPipe(const float& x, const float& lowy, const float& highy, const float& dampeningRatio)
+	:x(x), lowY(lowy), highY(highy), dampeningRatio(dampeningRatio) {}

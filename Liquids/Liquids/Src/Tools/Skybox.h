@@ -16,8 +16,8 @@ class Skybox
 public:
 	Skybox();
 	~Skybox();
-	void Render(glm::mat4& mvp) const;
-	void ChooseBox(int i);
+	void Render(const glm::mat4& mvp) const;
+	void ChooseBox(const int& i);
 private:
 	VertexArray *m_VAO;
 	VertexBuffer *m_VBO;

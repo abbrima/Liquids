@@ -13,4 +13,8 @@ struct Pipe{
 	void setConstraints(const float& lowX,const float& lowY,const float& highX,const float& highY);
 	float f(const float& x);
 };
+struct VerticalPipe {
+	float x; float lowY; float highY; float dampeningRatio;
 
+	VerticalPipe(const float& x, const float& lowy, const float& highy, const float& dampeningRatio);
+};

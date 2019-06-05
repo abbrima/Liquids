@@ -16,9 +16,9 @@
 #include "LiquidTools/Pipe.h"
 #include "LiquidTools/Emitter.h"
 #include "LiquidTools/CellSystem.h"
-namespace app
-{
-	class WaterTest : public Application
+
+namespace app {
+	class MultipleLiquids : public Application
 	{
 	private:
 		glm::mat4 projection;
@@ -28,15 +28,15 @@ namespace app
 		std::unique_ptr<Shader> DP, Forces, Integrator, PR;
 		std::unique_ptr<CellSystem> cellsys;
 		std::unique_ptr<UBO> constants;
-		float k, mass, pr, viscosity;
 		glm::vec2 gravity;
 		int startingParticles;
 
 		void computeDP(), computeForces(), integrate();
 
 	public:
-		WaterTest();
-		~WaterTest();
+
+		MultipleLiquids();
+		~MultipleLiquids();
 
 		void OnUpdate() override;
 		void OnRender() override;

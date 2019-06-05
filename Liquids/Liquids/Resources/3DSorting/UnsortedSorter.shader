@@ -7,9 +7,9 @@
 layout(local_size_x = WORK_GROUP_SIZE) in;
 
 struct Particle {
-	vec2 position;
-	vec2 velocity;
-	vec2 force;
+	vec3 position;
+	vec3 velocity;
+	vec3 force;
 	float density;
 	float pressure;
 };
@@ -28,9 +28,10 @@ layout(std430, binding = 4) buffer List
 
 uniform uint width;
 uniform uint height;
+uniform uint depth;
 uniform uint nParticles;
 
-uint GetIndex(vec2 position);
+uint GetIndex(in vec3 cellIndex);
 
 void main()
 {
@@ -41,11 +42,12 @@ void main()
 	ulist[i + nParticles].pIndex = 0xFFFFFFFF;
 }
 
-uint GetIndex(vec2 position) {
-	position.x *= width / 2; position.y *= height / 2;
-	ivec2 pos = ivec2(position);
-	pos.x += int(width / 2); if (pos.x == width) pos.x--;
-	pos.y += int(height / 2); if (pos.y == height) pos.y--;
-
-	return uint(pos.y)*width + uint(pos.x);
+uint GetIndex(in vec3 cellIndex)
+{
+	const uint p1 = 73856093; // some large primes
+	const uint p2 = 19349663;
+	const uint p3 = 83492791;
+	uint n = p1 * cellIndex.x ^ p2*cellIndex.y ^ p3*cellIndex.z;
+	n %= depth*width*height;
+	return n;
 }

@@ -72,7 +72,7 @@ Skybox::Skybox() : enable(true)
 	m_Shader = new Shader("Resources/Shaders/Texture2D.shader");
 	m_Shader->Unbind();
 }
-void Skybox::ChooseBox(int i)
+void Skybox::ChooseBox(const int& i)
 {
 	if (enable)
 	   delete t1, t2, t3, t4, t5, t6;
@@ -149,7 +149,7 @@ void Skybox::ChooseBox(int i)
 		t6->Bind(30); break;
 	}
 }
-void Skybox::Render(glm::mat4& mvp) const
+void Skybox::Render(const glm::mat4& mvp) const
 {
 	if (enable)
 	{

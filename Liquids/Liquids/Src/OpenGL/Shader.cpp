@@ -199,7 +199,12 @@ void Shader::SetUniformVec4(const std::string& name,const glm::vec4& vec)
 {
 	SetUniform4f(name, vec.x, vec.y, vec.z, vec.w);
 }
-
+void Shader::SetUniform1b(const std::string& name, const bool& b) {
+	if (b)
+		SetUniform1i(name, 1);
+	else
+		SetUniform1i(name, 0);
+}
 int Shader::GetUniformLocation(const std::string& name)
 {
 	if (m_UniformLocationCache.find(name) != m_UniformLocationCache.end())

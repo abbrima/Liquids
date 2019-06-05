@@ -1,18 +1,13 @@
-#include "WaterTest.h"
+#include "Applications/MultipleLiquids/MultipleLiquids.h"
 #include <iostream>
 
-namespace app
-{
-	WaterTest::WaterTest()
+namespace app {
+
+	MultipleLiquids::MultipleLiquids()
 		:projection(glm::ortho(-1.f, 1.f, -1.f, 1.f)),
 		nParticles(0),
-		k(2000.f),
-		viscosity(3000.f),
-		pr(1000.f),
-		mass(0.02f),
-	    gravity(glm::vec2(0.f, -9806.65f)),
-		startingParticles(10000)
-
+		gravity(glm::vec2(0.f, -9806.65f)),
+		startingParticles(10000) 
 	{
 		glEnable(GL_PROGRAM_POINT_SIZE);
 		glEnable(GL_POINT_SMOOTH);
@@ -26,114 +21,102 @@ namespace app
 
 		constants = std::make_unique<UBO>(farr, sizeof(float) * 4);
 
-
 		initParticles();
 	}
-	WaterTest::~WaterTest() {
+	MultipleLiquids::~MultipleLiquids() {
 
 	}
-	void WaterTest::OnUpdate() {
-		if (mouseButtons[GLFW_MOUSE_BUTTON_RIGHT])
+	void MultipleLiquids::OnUpdate() {
+
+		if (keys[GLFW_KEY_W])
+		{
+			glm::vec2 pos= getWorldPos();
+			Emitter emitter(pos); emitter.EmitLiquidIntoSSBO<AdvancedParticle>(200, nParticles, *particles, LiquidType::Water);
+			keys[GLFW_KEY_W] = false;
+		}
+		if (keys[GLFW_KEY_O])
 		{
 			glm::vec2 pos = getWorldPos();
-			Emitter emitter(pos); emitter.EmitIntoSSBO<NormalParticle>(200, nParticles, *particles);
-			mouseButtons[GLFW_MOUSE_BUTTON_RIGHT] = false;
+			Emitter emitter(pos); emitter.EmitLiquidIntoSSBO<AdvancedParticle>(200, nParticles, *particles, LiquidType::Oil);
+			keys[GLFW_KEY_O] = false;
 		}
-
-
+		if (keys[GLFW_KEY_B])
+		{
+			glm::vec2 pos = getWorldPos();
+			Emitter emitter(pos); emitter.EmitLiquidIntoSSBO<AdvancedParticle>(200, nParticles, *particles, LiquidType::Blood);
+			keys[GLFW_KEY_B] = false;
+		}
 		cellsys->Sort();
 
 		computeDP();
 		computeForces();
 		integrate();
+		
 	}
-	void WaterTest::OnRender() {
+	void MultipleLiquids::OnRender() {
 		GLCall(glClearColor(0.6f, 0.6f, 0.6f, 1.0f));
 		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
 		renderParticles();
 	}
-	void WaterTest::OnImGuiRender() {
+	void MultipleLiquids::OnImGuiRender() {
 		ImGui::Text("nParticles: %d", nParticles);
-		ImGui::InputFloat("Stiffness", &k);
-		ImGui::InputFloat("Resting Density", &pr);
-		ImGui::InputFloat("Mass", &mass);
-		ImGui::InputFloat("Viscosity", &viscosity);
 		if (ImGui::Button("Reset"))
 			initParticles();
 		ImGui::InputInt("startingParticles", &startingParticles);
 		ImGui::SliderFloat("Gravity X: ", &gravity.x, -10000.f, 10000.f);
 		ImGui::SliderFloat("Gravity Y: ", &gravity.y, -10000.f, 10000.f);
 	}
-	void WaterTest::FreeGuiRender() {
-
+	void MultipleLiquids::FreeGuiRender() {
+		
 	}
-
-	void WaterTest::initParticles() {
+	void MultipleLiquids::initParticles() {
 		nParticles = 0;
-		particles = std::make_unique<SSBO>(nullptr, sizeof(NormalParticle)*MAX_PARTICLES);
+		particles = std::make_unique<SSBO>(nullptr, sizeof(AdvancedParticle)*MAX_PARTICLES);
 
-		particles->SetLayout(NormalParticle::GetLayout());
+		particles->SetLayout(AdvancedParticle::GetLayout());
 
-		PR = std::make_unique<Shader>("Resources/WaterTest/Particle.shader");
-		DP = std::make_unique<Shader>("Resources/WaterTest/DP.shader",DSIZE(PARTICLE_DISPATCH_SIZE));
-		Forces = std::make_unique<Shader>("Resources/WaterTest/Forces.shader", DSIZE(PARTICLE_DISPATCH_SIZE));
-		Integrator = std::make_unique<Shader>("Resources/WaterTest/Integration.shader", DSIZE(PARTICLE_DISPATCH_SIZE));
+		PR = std::make_unique<Shader>("Resources/MultipleLiquids/Particle.shader");
+		DP = std::make_unique<Shader>("Resources/MultipleLiquids/DP.shader", DSIZE(PARTICLE_DISPATCH_SIZE));
+		Forces = std::make_unique<Shader>("Resources/MultipleLiquids/Forces.shader", DSIZE(PARTICLE_DISPATCH_SIZE));
+		Integrator = std::make_unique<Shader>("Resources/MultipleLiquids/Integration.shader", DSIZE(PARTICLE_DISPATCH_SIZE));
 
 		cellsys = std::make_unique<CellSystem>(2 / (4 * SPH_PARTICLE_RADIUS), 2 / (4 * SPH_PARTICLE_RADIUS)
-			, 4 * SPH_PARTICLE_RADIUS, *particles, nParticles, "NPSorting");
-
-		for (auto i = 0, x = 0, y = 0; i < startingParticles; i++)
-		{
-			particles->Append(new NormalParticle(glm::vec2(-0.625f + SPH_PARTICLE_RADIUS * 2 * x, 1 - SPH_PARTICLE_RADIUS * 2 * y)),
-				sizeof(NormalParticle), nParticles * sizeof(NormalParticle));
-			nParticles++;
-			x++;
-			if (x >= 125)
-			{
-				x = 0;
-				y++;
-			}
-		}
+			, 4 * SPH_PARTICLE_RADIUS, *particles, nParticles, "APSorting");
 	}
-	void WaterTest::renderParticles() {
+	void MultipleLiquids::renderParticles() {
 		PR->Bind();
 		PR->SetUniformMat4f("u_MVP", projection);
 		PR->SetUniform1ui("nParticles", nParticles);
 		PR->SetUniform1f("radius", 2000.f * SPH_PARTICLE_RADIUS);
-		PR->SetUniform3f("u_Color", 0.0f, 0.0f, 1.0f);
-		
+
 		renderer.DrawPoints(*particles, *PR, nParticles);
 	}
-	void WaterTest::computeDP() {
+	void MultipleLiquids::computeDP() {
 		DP->BindSSBO(*particles, "Data", 0);
 		DP->BindUBO(*constants, "Constants", 2);
 		cellsys->SetShaderSSBOs(*DP);
 		DP->SetUniform1i("nParticles", nParticles);
-		DP->SetUniform1f("k", k);
-		DP->SetUniform1f("pr", pr);
-		DP->SetUniform1f("mass", mass);
 		DP->SetUniform1ui("width", cellsys->GetWidth());
 		DP->SetUniform1ui("height", cellsys->GetHeight());
 		DP->DispatchCompute(getDX(), 1, 1);
 	}
-	void WaterTest::computeForces() {
+	void MultipleLiquids::computeForces() {
 		Forces->BindSSBO(*particles, "Data", 0);
 		Forces->BindUBO(*constants, "Constants", 2);
 		cellsys->SetShaderSSBOs(*Forces);
 		Forces->SetUniform1ui("width", cellsys->GetWidth());
 		Forces->SetUniform1ui("height", cellsys->GetHeight());
 		Forces->SetUniform1i("nParticles", nParticles);
-		Forces->SetUniform1f("viscosity", viscosity);
-		Forces->SetUniform1f("mass", mass);
 		Forces->SetUniformVec2("gravity", gravity);
 		Forces->SetUniform1b("enableInteraction", mouseButtons[GLFW_MOUSE_BUTTON_LEFT]);
 		Forces->SetUniformVec2("worldPos", getWorldPos());
 		Forces->SetUniform1f("interactionForce", 100000);
 		Forces->DispatchCompute(getDX(), 1, 1);
 	}
-	void WaterTest::integrate() {
+	void MultipleLiquids::integrate() {
 		Integrator->BindSSBO(*particles, "Data", 0);
 		Integrator->DispatchCompute(getDX(), 1, 1);
 	}
+
 }

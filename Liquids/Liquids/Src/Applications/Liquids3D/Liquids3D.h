@@ -1,8 +1,9 @@
 #pragma once
+#pragma once
 #include "Applications/Application.h"
 #include "imgui/imgui.h"
-#include "Tools/MyExternals.h"
 #include <memory>
+
 #include "OpenGL/IndexBuffer.h"
 #include "OpenGL/VertexArray.h"
 #include "OpenGL/VertexBuffer.h"
@@ -12,31 +13,34 @@
 #include "OpenGL/SSBO.h"
 #include "OpenGL/UBO.h"
 
+#include "Tools/MyExternals.h"
+#include "Tools/FPSCamera.h"
+#include "Tools/Skybox.h"
+
 #include "LiquidTools/Particle.h"
 #include "LiquidTools/Pipe.h"
 #include "LiquidTools/Emitter.h"
-#include "LiquidTools/CellSystem.h"
-namespace app
-{
-	class WaterTest : public Application
+#include "LiquidTools/CellSystem3D.h"
+
+namespace app {
+	class Liquids3D : public Application
 	{
 	private:
-		glm::mat4 projection;
+		glm::mat4 projection,view,pv;
+
+		std::unique_ptr<FPSCamera> Camera; glm::mat4 CameraModel;
+
+		Skybox skybox; glm::mat4 skyboxModel;
+
 		Renderer renderer;
 
-		std::unique_ptr<SSBO> particles; uint nParticles; void initParticles(), renderParticles();
-		std::unique_ptr<Shader> DP, Forces, Integrator, PR;
-		std::unique_ptr<CellSystem> cellsys;
-		std::unique_ptr<UBO> constants;
-		float k, mass, pr, viscosity;
-		glm::vec2 gravity;
-		int startingParticles;
 
-		void computeDP(), computeForces(), integrate();
+
 
 	public:
-		WaterTest();
-		~WaterTest();
+
+		Liquids3D();
+		~Liquids3D();
 
 		void OnUpdate() override;
 		void OnRender() override;
@@ -60,5 +64,10 @@ namespace app
 				d++;
 			return d;
 		}
+	private:
+		uint nParticles;
+		std::unique_ptr<SSBO> particles; void initParticles(); void renderParticles();
+		std::unique_ptr<Shader> PR;
+		std::unique_ptr<CellSystem3D> cellsys;
 	};
 }

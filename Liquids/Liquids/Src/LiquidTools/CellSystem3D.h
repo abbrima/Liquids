@@ -9,25 +9,26 @@
 #ifndef BITONIC_COMPARASION_SIZE
 #define BITONIC_COMPARASION_SIZE 128
 #endif
-class CellSystem {
+class CellSystem3D {
 private:
 	SSBO& particles; uint& nParticles;
-	uint width, height; float h;
-	
-	std::unique_ptr<Shader> UnsortedSorter,Bitonic1,Bitonic2,OffsetCalculator;
-	std::unique_ptr<SSBO> IndexList,OffsetList;
+	uint width, height , depth; float h;
+
+	std::unique_ptr<Shader> UnsortedSorter, Bitonic1, Bitonic2, OffsetCalculator;
+	std::unique_ptr<SSBO> IndexList, OffsetList;
 	void SortUnsorted();
 	void SortBitonic();
 	void GenOffsetList();
 
 public:
-	CellSystem(const uint& width,const uint& height,const float& h,SSBO& particles,uint& nParticles,const std::string& loc);
-	~CellSystem();
+	CellSystem3D(const uint& width, const uint& height, const uint& depth, const float& h, SSBO& particles, uint& nParticles, const std::string& loc);
+	~CellSystem3D();
 	void SetShaderSSBOs(Shader& shader);
 	//inline SSBO GetIndexList() { return *IndexList; }
 	//inline SSBO GetOffsetList() { return *OffsetList; }
 	inline uint GetHeight() { return height; }
 	inline uint GetWidth() { return width; }
+	inline uint GetDepth() { return depth; }
 	void Sort();
 	void GuiRender();
 };

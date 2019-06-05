@@ -96,6 +96,18 @@
     <ClCompile Include="Src\Applications\WaterTest\WaterTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Applications\CommunicatingVessels\CommunicatingVessels.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Applications\MultipleLiquids\MultipleLiquids.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Applications\Liquids3D\Liquids3D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\LiquidTools\CellSystem3D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Vendor\glm\detail\_features.hpp">
@@ -929,6 +941,21 @@
     <ClInclude Include="Src\Applications\WaterTest\WaterTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Applications\CommunicatingVessels\CommunicatingVessels.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Applications\MultipleLiquids\MultipleLiquids.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Applications\Liquids3D\Liquids3D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\LiquidTools\CellSystem3D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Tools\Timer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Vendor\glm\detail\func_common.inl">
@@ -1324,7 +1351,6 @@
     <None Include="Src\Vendor\glm\gtx\wrap.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="Resources\Shaders\Particle.shader" />
     <None Include="Resources\Shaders\Test.shader" />
     <None Include="Resources\Shaders\Texture2D.shader" />
     <None Include="Resources\Shaders\TextureLighting.shader" />
@@ -1343,9 +1369,24 @@
     <None Include="Resources\NPSorting\Bitonic2.shader" />
     <None Include="Resources\NPSorting\OffsetCalculator.shader" />
     <None Include="Resources\NPSorting\UnsortedSorter.shader" />
-    <None Include="Resources\PipeTest\Sorting\Bitonic1.shader" />
-    <None Include="Resources\PipeTest\Sorting\Bitonic2.shader" />
-    <None Include="Resources\PipeTest\Sorting\OffsetCalculator.shader" />
-    <None Include="Resources\PipeTest\Sorting\UnsortedSorter.shader" />
+    <None Include="Resources\CommunicatingVessels\DP.shader" />
+    <None Include="Resources\CommunicatingVessels\Forces.shader" />
+    <None Include="Resources\CommunicatingVessels\Integration.shader" />
+    <None Include="Resources\PipeTest\Particle.shader" />
+    <None Include="Resources\CommunicatingVessels\Particle.shader" />
+    <None Include="Resources\WaterTest\Particle.shader" />
+    <None Include="Resources\APSorting\Bitonic1.shader" />
+    <None Include="Resources\APSorting\Bitonic2.shader" />
+    <None Include="Resources\APSorting\OffsetCalculator.shader" />
+    <None Include="Resources\APSorting\UnsortedSorter.shader" />
+    <None Include="Resources\MultipleLiquids\DP.shader" />
+    <None Include="Resources\MultipleLiquids\Forces.shader" />
+    <None Include="Resources\MultipleLiquids\Integration.shader" />
+    <None Include="Resources\MultipleLiquids\Particle.shader" />
+    <None Include="Resources\Liquids3D\Particle.shader" />
+    <None Include="Resources\3DSorting\Bitonic1.shader" />
+    <None Include="Resources\3DSorting\Bitonic2.shader" />
+    <None Include="Resources\3DSorting\OffsetCalculator.shader" />
+    <None Include="Resources\3DSorting\UnsortedSorter.shader" />
   </ItemGroup>
 </Project>

@@ -16,9 +16,10 @@
 #include "LiquidTools/Pipe.h"
 #include "LiquidTools/Emitter.h"
 #include "LiquidTools/CellSystem.h"
+
 namespace app
 {
-	class WaterTest : public Application
+	class CommunicatingVessels : public Application
 	{
 	private:
 		glm::mat4 projection;
@@ -34,15 +35,21 @@ namespace app
 
 		void computeDP(), computeForces(), integrate();
 
+		uint nVerticalPipes;
+		std::unique_ptr<SSBO> verticalpipes;
+		std::unique_ptr<VertexBuffer> VerticalPipesVB;
+		std::unique_ptr<VertexArray> VerticalPipesVA;
+		std::unique_ptr<Shader> PipesShader;
+		void initVerticalPipes(const bool& close), renderPipes();
+
 	public:
-		WaterTest();
-		~WaterTest();
+		CommunicatingVessels();
+		~CommunicatingVessels();
 
 		void OnUpdate() override;
 		void OnRender() override;
 		void OnImGuiRender() override;
 		void FreeGuiRender() override;
-
 
 	private:
 		inline glm::vec3 getWorldPos() {

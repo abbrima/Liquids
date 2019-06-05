@@ -34,7 +34,7 @@ void SSBO::BindToDraw() const
 		offset += element.count * VertexBufferElement::GetSizeOfType(element.type);
 	}
 }
-void SSBO::SetLayout(VertexBufferLayout& l)
+void SSBO::SetLayout(const VertexBufferLayout& l)
 {
 	layout = new VertexBufferLayout();
 	*layout = l;

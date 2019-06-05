@@ -50,6 +50,7 @@ public:
 	void SetUniformVec2(const std::string& name,const glm::vec2& vec);
 	void SetUniformVec3(const std::string& name,const glm::vec3& vec);
 	void SetUniformVec4(const std::string& name,const glm::vec4& vec);
+	void SetUniform1b(const std::string& name, const bool& b);
 
 	void BindSSBO(SSBO& ssbo,const std::string& name,const uint& BindingPoint);
 	void BindACB(AtomicCounterBuffer& acb,const uint& BindingPoint);
