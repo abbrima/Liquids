@@ -56,11 +56,12 @@ public:
 };
 class Particle3D : public Particle {
 public:
-	glm::vec3 position;
-	glm::vec3 velocity;
-	glm::vec3 force;
+	glm::vec4 position;
+	glm::vec4 velocity;
+	glm::vec4 force;
 	float density;
 	float pressure;
+	float padding[2];
 
 	Particle3D();
 	Particle3D(const glm::vec3& pos);

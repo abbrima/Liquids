@@ -62,7 +62,7 @@ template <> Particle3D* Emitter3D::Emit<Particle3D>(const unsigned int& n) {
 	particles = new Particle3D[n];
 	for (int i = 0; i < n; i++)
 	{
-		particles[i].position = GenRandomPos3D(pos, 0.04f);
+		particles[i].position = glm::vec4(GenRandomPos3D(pos, 0.04f),0);
 	}
 	return particles;
 }

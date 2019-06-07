@@ -66,8 +66,15 @@ namespace app {
 		}
 	private:
 		uint nParticles;
-		std::unique_ptr<SSBO> particles; void initParticles(); void renderParticles();
-		std::unique_ptr<Shader> PR;
+		std::unique_ptr<SSBO> particles;
+		
+		void initParticles(); void renderParticles();
+		std::unique_ptr<Shader> PR,DP,Forces,Integrator;
 		std::unique_ptr<CellSystem3D> cellsys;
+		float mass, k, pr, viscosity;
+		glm::vec3 gravity;
+		void computeDP(), computeForces(), integrate();
+
+		std::unique_ptr<UBO> constants;
 	};
 }

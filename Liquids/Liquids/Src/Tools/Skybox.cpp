@@ -174,6 +174,8 @@ void Skybox::Render(const glm::mat4& mvp) const
 		renderer.DrawTriangles(*m_VAO, *m5, *m_Shader);
 		m_Shader->SetUniform1i("u_Texture", 30);
 		renderer.DrawTriangles(*m_VAO, *m6, *m_Shader);
+		//m_Shader->Unbind();
+		//m_VAO->Unbind();
 	}
 
 }

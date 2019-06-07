@@ -21,6 +21,7 @@ void SSBO::Bind() const
 }
 void SSBO::BindToDraw() const
 {
+	GLCall(glBindVertexArray(0));
 	GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_RendererID));
 	
 	const auto& elements = layout->GetElements();

@@ -3,15 +3,14 @@
 
 #external
 
+#define invodex gl_GlobalInvocationID.x
 
 layout(local_size_x = WORK_GROUP_SIZE) in;
-
 struct Particle {
-	vec3 position;
-	vec3 velocity;
-	vec3 force;
-	float density;
-	float pressure;
+	vec4 position;
+	vec4 velocity;
+	vec4 force;
+	vec4 dp;
 };
 struct UnsortedList {
 	uint cIndex; uint pIndex;
@@ -31,23 +30,23 @@ uniform uint height;
 uniform uint depth;
 uniform uint nParticles;
 
-uint GetIndex(in vec3 cellIndex);
+uint GetIndex(vec3 cellIndex);
 
 void main()
 {
-	uint i = gl_GlobalInvocationID.x;
-	ulist[i].cIndex = GetIndex(particles[i].position);
-	ulist[i].pIndex = i;
-	ulist[i + nParticles].cIndex = 0xFFFFFFFF;	
-	ulist[i + nParticles].pIndex = 0xFFFFFFFF;
+	ulist[invodex].cIndex = GetIndex(particles[invodex].position.xyz);
+	ulist[invodex].pIndex = invodex;
+	ulist[invodex + nParticles].cIndex = 0xFFFFFFFF;	
+	ulist[invodex + nParticles].pIndex = 0xFFFFFFFF;
 }
 
-uint GetIndex(in vec3 cellIndex)
+uint GetIndex(vec3 cellIndex)
 {
-	const uint p1 = 73856093; // some large primes
-	const uint p2 = 19349663;
-	const uint p3 = 83492791;
-	uint n = p1 * cellIndex.x ^ p2*cellIndex.y ^ p3*cellIndex.z;
-	n %= depth*width*height;
-	return n;
+	cellIndex.x *= width/2; cellIndex.y *= height/2; cellIndex.z *= depth/2;
+	ivec3 pos = ivec3(cellIndex);
+	pos.x += int(width) / 2; if (pos.x == width) pos.x--;
+	pos.y += int(height) / 2; if (pos.y == height) pos.y--;
+	pos.z += int(depth) / 2; if (pos.z == depth) pos.z--;
+
+	return uint(pos.z)*width*height + uint(pos.y)*width + uint(pos.x);
 }

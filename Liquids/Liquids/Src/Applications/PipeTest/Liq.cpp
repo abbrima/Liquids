@@ -82,6 +82,9 @@ namespace app
 			initParticles();
 		ImGui::SliderFloat("Gravity X: ", &gravity.x, -10000.f, 10000.f);
 		ImGui::SliderFloat("Gravity Y: ", &gravity.y, -10000.f, 10000.f);
+
+		glm::vec2 pos = getWorldPos();
+		ImGui::Text("x: %5.3f  y: %5.3f", pos.x, pos.y);
 	
 	}
 	void Liq::FreeGuiRender(){
@@ -109,10 +112,14 @@ namespace app
 
 		pipeRenderer = std::make_unique<Shader>("Resources/Shaders/Color.shader");
 		Pipe* arr[MAX_PIPES];
-		arr[nPipes] = new Pipe(1.f, 5.f, -0.5f, -0.5f, 0.95f,false);
-		arr[nPipes++]->setConstraints(-0.3f, -0.55f, 1.f, 1.f); 
-		arr[nPipes] = new Pipe(1.f, 5.f, -0.4f, -0.4f, 0.95f,true);
-		arr[nPipes++]->setConstraints(-1.f, -0.55f, 1.f, 1.f);
+		arr[nPipes] = new Pipe(1.f, 100.f, 0.6f, -0.5f, 0.95f,false);
+		arr[nPipes++]->setConstraints(-1.5f, -0.54f, -0.607f, 0.f); 
+		arr[nPipes] = new Pipe(1.f, 100.f, 0.7f, -0.4f, 0.95f,true);
+		arr[nPipes++]->setConstraints(-1.5f, -0.4f, -0.709f, 0.f);
+		arr[nPipes] = new Pipe(-1.f, -100.f, 0.72f, 0.3f, 0.95f, true);
+		arr[nPipes++]->setConstraints(-0.710f, -0.05f, -0.4f, 0.315f);
+		arr[nPipes] = new Pipe(-1.f, -100.f, 0.62f, 0.2f, 0.95f, false);
+		arr[nPipes++]->setConstraints(-0.612f, -0.26f, -0.4f, 0.2f);
 		for (uint i = 0; i < nPipes; i++)
 		{
 			pipes->Append(arr[i], sizeof(Pipe), i * sizeof(Pipe));

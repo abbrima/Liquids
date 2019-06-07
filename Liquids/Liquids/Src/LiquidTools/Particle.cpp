@@ -103,27 +103,26 @@ Particle3D::Particle3D()
 Particle3D::Particle3D(const glm::vec3& pos)
 {
 	memset(this, 0, sizeof(Particle3D));
-	position = pos;
+	position = glm::vec4(pos,0);
 }
 Particle3D::Particle3D(const glm::vec3& pos, const float& offset) {
 	float xo = -offset + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2 * offset)));
 	float yo = -offset + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2 * offset)));
 	float zo = -offset + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2 * offset)));
 	memset(this, 0, sizeof(Particle3D));
-	position = glm::vec3(pos.x + xo, pos.y + yo,pos.z+zo);
+	position = glm::vec4(glm::vec3(pos.x + xo, pos.y + yo,pos.z+zo),0);
 }
 Particle3D::Particle3D(const glm::vec3& pos, const glm::vec3& vel)
 {
 	memset(this, 0, sizeof(Particle3D));
-	position = pos;
-	velocity = vel;
+	position = glm::vec4(pos,0);
+	velocity = glm::vec4(vel,0);
 }
 VertexBufferLayout Particle3D::GetLayout() {
 	VertexBufferLayout layout;
-	layout.Push<float>(3);
-	layout.Push<float>(3);
-	layout.Push<float>(3);
-	layout.Push<float>(2);
-
+	layout.Push<float>(4);
+	layout.Push<float>(4);
+	layout.Push<float>(4);
+	layout.Push<float>(4);
 	return layout;
 }

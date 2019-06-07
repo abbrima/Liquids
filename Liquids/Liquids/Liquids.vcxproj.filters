@@ -1388,5 +1388,8 @@
     <None Include="Resources\3DSorting\Bitonic2.shader" />
     <None Include="Resources\3DSorting\OffsetCalculator.shader" />
     <None Include="Resources\3DSorting\UnsortedSorter.shader" />
+    <None Include="Resources\Liquids3D\DP.shader" />
+    <None Include="Resources\Liquids3D\Forces.shader" />
+    <None Include="Resources\Liquids3D\Integration.shader" />
   </ItemGroup>
 </Project>

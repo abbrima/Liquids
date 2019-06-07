@@ -24,8 +24,6 @@ public:
 	CellSystem3D(const uint& width, const uint& height, const uint& depth, const float& h, SSBO& particles, uint& nParticles, const std::string& loc);
 	~CellSystem3D();
 	void SetShaderSSBOs(Shader& shader);
-	//inline SSBO GetIndexList() { return *IndexList; }
-	//inline SSBO GetOffsetList() { return *OffsetList; }
 	inline uint GetHeight() { return height; }
 	inline uint GetWidth() { return width; }
 	inline uint GetDepth() { return depth; }

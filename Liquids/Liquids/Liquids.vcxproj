@@ -412,6 +412,9 @@
     <None Include="Resources\CommunicatingVessels\Forces.shader" />
     <None Include="Resources\CommunicatingVessels\Integration.shader" />
     <None Include="Resources\CommunicatingVessels\Particle.shader" />
+    <None Include="Resources\Liquids3D\DP.shader" />
+    <None Include="Resources\Liquids3D\Forces.shader" />
+    <None Include="Resources\Liquids3D\Integration.shader" />
     <None Include="Resources\Liquids3D\Particle.shader" />
     <None Include="Resources\MultipleLiquids\DP.shader" />
     <None Include="Resources\MultipleLiquids\Forces.shader" />

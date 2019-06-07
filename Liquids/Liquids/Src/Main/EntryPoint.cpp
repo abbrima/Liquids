@@ -118,7 +118,7 @@ int main(void)
 		app::ApplicationMenu* applicationMenu = new app::ApplicationMenu(currentApplication);
 		
 		//currentApplication = applicationMenu;
-		currentApplication = new app::CommunicatingVessels();
+		currentApplication = new app::Liquids3D();
 
 		applicationMenu->RegisterApplication<app::WaterTest>("Water");
 		applicationMenu->RegisterApplication<app::Liq>("Pipe Test");
