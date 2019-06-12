@@ -14,7 +14,8 @@ struct Particle {
 	float pressure;
 };
 struct UnsortedList {
-	uint cIndex; uint pIndex;
+	uint cIndex;
+	uint pIndex;
 };
 layout(std430, binding = 0) buffer Data
 {
@@ -37,8 +38,6 @@ void main()
 	uint i = gl_GlobalInvocationID.x;
 	ulist[i].cIndex = GetIndex(particles[i].position);
 	ulist[i].pIndex = i;
-	ulist[i + nParticles].cIndex = 0xFFFFFFFF;	
-	ulist[i + nParticles].pIndex = 0xFFFFFFFF;
 }
 
 uint GetIndex(vec2 position) {

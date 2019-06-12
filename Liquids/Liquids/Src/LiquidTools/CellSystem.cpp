@@ -36,20 +36,21 @@ CellSystem::~CellSystem() {
 
 }
 void CellSystem::Sort() {
-	 SortUnsorted();
+	Timer timer;
+	SortUnsorted();
 	SortBitonic();
  	GenOffsetList();
 }
 void CellSystem::SortUnsorted() {
 	//if nParticles > 1
-
 	UnsortedSorter->BindSSBO(particles, "Data", 0);
 	UnsortedSorter->BindSSBO(*IndexList, "List", 4);
-	UnsortedSorter->SetUniform1ui("nParticles", nParticles);
 	UnsortedSorter->SetUniform1ui("height", height);
 	UnsortedSorter->SetUniform1ui("width", width);
 
 	UnsortedSorter->DispatchCompute(GetDX(nParticles,PARTICLE_DISPATCH_SIZE), 1, 1);
+	const uint N = GetMinPowOf2(nParticles);
+	IndexList->WriteVal1uiOffset(0xFFFFFFFF, sizeof(uint) * 2 * (N - nParticles), sizeof(uint) * 2 * nParticles);
 	//if (nParticles > 300)
 		//system("pause");
 }
@@ -62,26 +63,29 @@ void bbsort(UnsortedList* arr, const uint& N);
 
 void CellSystem::SortBitonic() {
 	const int N = GetMinPowOf2(nParticles);
+	//Timer timer;
 #ifdef BITONIC
-	Bitonic1->BindSSBO(*IndexList, "List", 4);
-	for (uint subsize = 2; subsize < N; subsize <<= 1)
-		for (uint compare_distance = subsize >> 1; compare_distance > 0; compare_distance >>= 1)
+	
+	//bitonic step one
+	Bitonic1->BindSSBO(*IndexList, "Index", 4);
+	for (uint subsize = 2; subsize < N; subsize <<= 1) 
+		for (uint cdist = subsize >> 1; cdist >= 1; cdist >>= 1)
 		{
 			Bitonic1->SetUniform1ui("subsize", subsize);
-			Bitonic1->SetUniform1ui("compare_distance", compare_distance);
+			Bitonic1->SetUniform1ui("cdist", cdist);
 
-			Bitonic1->DispatchCompute(GetDX(N/2,BITONIC_COMPARASION_SIZE), 1, 1);
+			Bitonic1->DispatchCompute(N/BITONIC_COMPARASION_SIZE);
 		}
-	Bitonic1->Unbind();
-	IndexList->Unbind();
-	Bitonic2->BindSSBO(*IndexList, "List", 4);
-	for (uint compare_distance = N>>1; compare_distance>1; compare_distance>>=1)
+	//bitonic step two
+	Bitonic2->BindSSBO(*IndexList, "Index", 4);
+	for (uint cdist = N >> 1; cdist >= 1; cdist >>= 1)
 	{
-		    Bitonic2->SetUniform1ui("compare_distance", compare_distance);
-		    Bitonic2->DispatchCompute(GetDX(N / 2, BITONIC_COMPARASION_SIZE),1,1);
+		Bitonic2->SetUniform1ui("cdist", cdist);
+
+		Bitonic2->DispatchCompute(N/BITONIC_COMPARASION_SIZE);
 	}
-	Bitonic2->Unbind();
-	IndexList->Unbind();
+
+
 #else
 	//Timer timer;
 	uint* ptr = (uint*)IndexList->GetData();

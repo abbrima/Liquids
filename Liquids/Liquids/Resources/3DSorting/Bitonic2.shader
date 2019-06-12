@@ -1,38 +1,37 @@
 #shader compute
-#version 460 core
+#version 430 core
 
 #external
 
-#define invodex gl_GlobalInvocationID.x
+#define invodex gl_GlobalInvocationID.x 
+
 layout(local_size_x = WORK_GROUP_SIZE) in;
 
-
-struct UnsortedList {
-	uint cIndex; uint pIndex;
+struct Elem {
+	uint p;
+	uint c;
 };
-layout(std430, binding = 4) buffer List
-{
-	UnsortedList ulist[];
+layout(std430, binding = 4) buffer IndexList {
+	Elem es[];
 };
 
-uniform uint compare_distance;
-void exchange(inout UnsortedList lefter, inout UnsortedList righter);
+uniform uint cdist;
+
+void Exchange(inout Elem left, inout Elem right);
 
 void main() {
 	uint ind;
-	if (invodex / compare_distance > 0)
-		ind = invodex * 2 - invodex % compare_distance;
+	if (invodex / cdist > 0)
+		ind = invodex * 2 - invodex % cdist;
 	else
-		invodex = ind;
-	exchange(ulist[ind], ulist[ind + compare_distance]);
+		ind = invodex;
+	Exchange(es[ind], es[ind + cdist]);
 }
 
-void swap(inout UnsortedList first, inout UnsortedList second) {
-	UnsortedList temp = first;
-	first = second;
-	second = temp;
-}
-void exchange(inout UnsortedList lefter, inout UnsortedList righter) {
-	if (lefter.pIndex > righter.pIndex)
-		swap(lefter, righter);
+void Exchange(inout Elem left, inout Elem right) {
+	if (left.c > right.c) {
+		Elem temp = left;
+		left = right;
+		right = temp;
+	}
 }

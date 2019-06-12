@@ -7,41 +7,42 @@
 
 layout(local_size_x = WORK_GROUP_SIZE) in;
 
+struct Elem {
+	uint c;
+	uint p;
+};
+layout(std430, binding = 4) buffer IndexList {
+	Elem es[];
+};
 
-struct UnsortedList {
-	uint cIndex; uint pIndex;
-};
-layout(std430, binding = 4) buffer List
-{
-	UnsortedList ulist[];
-};
+uniform uint cdist;
 uniform uint subsize;
-uniform uint compare_distance;
-void exchange(inout UnsortedList lefter, inout UnsortedList righter,bool SL);
 
+void Exchange(inout Elem left, inout Elem right, bool SL) {
+	if (SL) {
+		if (left.c > right.c) {
+			Elem temp;
+			temp = left;
+			left = right;
+			right = temp;
+		}
+	}
+	else {
+		if (left.c < right.c) {
+			Elem temp;
+			temp = left;
+			left = right;
+			right = temp;
+		}
+	}
+}
 
 void main() {
 	uint ind;
-	if (invodex / compare_distance > 0)
-		ind = invodex * 2 - invodex % compare_distance;
+	if (invodex / cdist > 0)
+		ind = invodex * 2 - invodex % cdist;
 	else
-		invodex = ind;
+		ind = invodex;
 
-	exchange(ulist[ind], ulist[ind + compare_distance], (ind / subsize) % 2 == 0);
-
-}
-void swap(inout UnsortedList first, inout UnsortedList second) {
-	UnsortedList temp = first;
-	first = second;
-	second = temp;
-}
-void exchange(inout UnsortedList lefter, inout UnsortedList righter,bool SL) {
-	if (SL) {
-		if (lefter.pIndex > righter.pIndex)
-			swap(lefter, righter);
-	}
-	else {
-		if (lefter.pIndex < righter.pIndex)
-			swap(lefter, righter);
-	}
+	Exchange(es[ind], es[ind + cdist], (ind / subsize) % 2 == 0);
 }

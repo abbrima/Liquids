@@ -111,7 +111,8 @@ namespace app {
 		DP->SetUniform1ui("nParticles", nParticles);
 		DP->DispatchCompute(getDX(), 1, 1);
 	}
-	void Liquids3D::computeForces() {
+	void Liquids3D::computeForces() 
+	{
 		Forces->BindSSBO(*particles, "Data", 0);
 		Forces->BindUBO(*constants, "Constants", 2);
 		cellsys->SetShaderSSBOs(*Forces);
