@@ -17,8 +17,17 @@ struct Particle {
 	float pressure;
 };
 struct Pipe {
-	float lowX, lowY, highX, highY, base, dY, dX, xPower, xCo, dampeningRatio;
+	float lowX, lowY, highX, highY, base, dY, dX;
+	int xPower;
+	float xCo, dampeningRatio;
 	int upper;
+};
+struct FloatPair {
+	float f;
+	float slope;
+};
+layout(std430, binding = 2) buffer DEBUG {
+	FloatPair arr[];
 };
 layout(std430, binding = 1) buffer Pipes
 {
@@ -33,7 +42,7 @@ layout(std430, binding = 0) buffer Data
 
 uniform int nPipes;
 
-float f(in Pipe pipe,in float x);
+float f(Pipe pipe,float x);
 float slopeNormal(in Pipe pipe,in float x);
 vec2 getNormal(in vec2 velocity,in float m);
 
@@ -67,12 +76,14 @@ void main()
 		new_position.y = 1;
 		new_velocity.y *= -1 * WALL_DAMPING;
 	}
-	 {
+	{
 		for (int j = 0; j < nPipes; j++)
 		{
 			if (new_position.x > pipes[j].lowX && new_position.x < pipes[j].highX)
 			{
 				float y = f(pipes[j], new_position.x);
+				arr[i].f = y;
+				arr[i].slope = slopeNormal(pipes[j],new_position.x);
 				if (new_position.y > pipes[j].lowY && new_position.y < pipes[j].highY)
 				{
 					if (pipes[j].upper != 0 && new_position.y > y)
@@ -103,11 +114,18 @@ void main()
 }
 
 
-float f(in Pipe pipe, in float x) {
-	return pipe.base * sin(pipe.xCo * pow(x + pipe.dX, pipe.xPower)) + pipe.dY;
+float f(Pipe pipe, float x) {
+	float var = pipe.base * sin(pipe.xCo * pow(abs(x), pipe.xPower)) + pipe.dY;
+	if (x > 0.f)
+		return var;
+	else
+		return pipe.xPower % 2 == 0 ? var : -var + 2*pipe.dY;
 }
 float slopeNormal(in Pipe pipe,in float x) {
-	float m = pipe.base * pipe.xCo * pipe.xPower * pow(x, pipe.xPower - 1) * cos(pipe.xCo * pow(x, pipe.xPower));
+	float m = pipe.base * pipe.xCo * pipe.xPower * pow(abs(x),pipe.xPower-1)
+		* cos(pipe.xCo * pow(abs(x),pipe.xPower));
+	if (x<0.f)
+	   m = (pipe.xPower - 1) % 2 == 0 ? m : -m;
 	m = -1 / m;
 	return m;
 }
@@ -116,6 +134,7 @@ vec2 getNormal(in vec2 velocity,in float m)
 	float angle = atan(m);
 	vec2 norm = vec2(cos(angle), sin(angle));
 	velocity = normalize(velocity);
+	//return vec2(0, 1);
 	if (dot(norm, velocity) >= 0)
 		return norm;
 	else

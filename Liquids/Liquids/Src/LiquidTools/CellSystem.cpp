@@ -36,7 +36,6 @@ CellSystem::~CellSystem() {
 
 }
 void CellSystem::Sort() {
-	Timer timer;
 	SortUnsorted();
 	SortBitonic();
  	GenOffsetList();

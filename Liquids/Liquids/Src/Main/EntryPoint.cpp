@@ -81,7 +81,6 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 
 int main(void)
 {
-	
 	if (!glfwInit())
 		return -1;
 	GLFWwindow* window = glfwCreateWindow(1366, 768, "WINDOW", NULL, NULL);
@@ -118,7 +117,7 @@ int main(void)
 		app::ApplicationMenu* applicationMenu = new app::ApplicationMenu(currentApplication);
 		
 		//currentApplication = applicationMenu;
-		currentApplication = new app::WaterTest();
+		currentApplication = new app::Liq();
 
 		applicationMenu->RegisterApplication<app::WaterTest>("Water");
 		applicationMenu->RegisterApplication<app::Liq>("Pipe Test");

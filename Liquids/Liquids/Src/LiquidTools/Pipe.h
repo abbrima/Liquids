@@ -20,9 +20,11 @@ struct VerticalPipe {
 };
 
 struct SinusoidalPipe {
-	float lowX, lowY, highX, highY, base, dY, dX, xPower, xCo, dampeningRatio;
+	float lowX, lowY, highX, highY, base, dY, dX;
+	int xPower;
+	float xCo, dampeningRatio;
 	int upper;
-	SinusoidalPipe(const float& base, const float& power, const float& xCo, const float& dx, const float& dy, const float& dr, const bool& upper);
+	SinusoidalPipe(const float& base, const int& power, const float& xCo, const float& dx, const float& dy, const float& dr, const bool& upper);
 	void setConstraints(const float& lowX, const float& lowY, const float& highX, const float& highY);
 	float f(const float& x);
 };

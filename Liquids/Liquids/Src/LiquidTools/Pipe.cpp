@@ -18,7 +18,7 @@ float Pipe::f(const float& x) {
 VerticalPipe::VerticalPipe(const float& x, const float& lowy, const float& highy, const float& dampeningRatio)
 	:x(x), lowY(lowy), highY(highy), dampeningRatio(dampeningRatio) {}
 
-SinusoidalPipe::SinusoidalPipe(const float& base, const float& power, const float& xCo, const float& dx, const float& dy, const float& dr, const bool& upper)
+SinusoidalPipe::SinusoidalPipe(const float& base, const int& power, const float& xCo, const float& dx, const float& dy, const float& dr, const bool& upper)
 	: base(base), xPower(power), xCo(xCo), dX(dx), dY(dy), dampeningRatio(dr), upper(upper)
 {
 	memset(this, 0, sizeof(float) * 4);

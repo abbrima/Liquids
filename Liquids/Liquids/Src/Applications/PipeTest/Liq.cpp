@@ -11,7 +11,9 @@ namespace app
 		glEnable(GL_POINT_SMOOTH);
 		glEnable(GL_LINE_SMOOTH);
 
+
 		test = std::make_unique<SSBO>(nullptr,MAX_PARTICLES * sizeof(uint) * 2);
+
 
 		initParticles();
 		initLines();
@@ -90,21 +92,18 @@ namespace app
 	
 	}
 	void Liq::FreeGuiRender(){
-		ImGui::Begin("DATA");
+		/*ImGui::Begin("DATA");
 		//cellsys->GuiRender();
 
-		SinusoidalPipe* ptr = (SinusoidalPipe*)pipes->GetData();
-
-		for (uint i = 0; i < nPipes; i++) {
-			ImGui::Text(" %f ", ptr->base);
-			ptr++;
+		float* ptr = (float*)debug->GetData();
+		for (uint i = 0; i < nParticles; i++)
+		{
+			ImGui::Text("F(X) = %10.5f   Slope(X) = %10.5f", *ptr, *(ptr + 1));
+			ptr += 2;
 		}
+		debug->Unmap();
 
-
-		pipes->Unmap();
-
-
-		ImGui::End();
+		ImGui::End();*/
 	}
 	void Liq::renderPipes()
 	{
@@ -126,10 +125,10 @@ namespace app
 
 		pipeRenderer = std::make_unique<Shader>("Resources/Shaders/Color.shader");
 		SinusoidalPipe* arr[MAX_PIPES];
-		arr[nPipes] = new SinusoidalPipe(1.f/3, 3.f, 4.f, 0.f, -0.1f, 0.95f, false);
-		arr[nPipes++]->setConstraints(-1.f, -0.45f, 1.f, 0.24f); 
-		arr[nPipes] = new SinusoidalPipe(1.f/3, 3.f, 4.f, 0.f, 0.05f, 0.95f, true);
-		arr[nPipes++]->setConstraints(-1.f, -0.29f, 1.f, 0.39f);
+		arr[nPipes] = new SinusoidalPipe(0.3333f, 3, 4.f, 0.f, -0.1f, 0.95f, false);
+		arr[nPipes++]->setConstraints(-1.2f, -0.45f, 0.8f, 0.24f); 
+		arr[nPipes] = new SinusoidalPipe(0.3333f, 3, 4.f, 0.f, 0.05f, 0.95f, true);
+		arr[nPipes++]->setConstraints(-1.2f, -0.29f, 1.f, 0.39f);
 		for (uint i = 0; i < nPipes; i++)
 		{
 			pipes->Append(arr[i], sizeof(SinusoidalPipe), i * sizeof(SinusoidalPipe));
@@ -163,6 +162,8 @@ namespace app
 		nParticles = 0;
 		particles = std::make_unique<SSBO>(nullptr, sizeof(NormalParticle) * MAX_PARTICLES);
 		particles->SetLayout(NormalParticle::GetLayout());
+
+		debug = std::make_unique<SSBO>(nullptr, sizeof(float) * 2 * MAX_PARTICLES);
 
 		PR = std::make_unique<Shader>("Resources/PipeTest/Particle.shader");
 		DP = std::make_unique<Shader>("Resources/PipeTest/DP.shader", DSIZE(PARTICLE_DISPATCH_SIZE));
@@ -219,6 +220,7 @@ namespace app
 	}
 	void Liq::integrate() {
 		Integrator->BindSSBO(*particles, "Data", 0);
+		Integrator->BindSSBO(*debug, "DEBUG", 2);
 		Integrator->SetUniform1i("nPipes", nPipes);
 		Integrator->BindSSBO(*pipes, "Pipes", 1);
 		Integrator->DispatchCompute(getDX(), 1, 1);
