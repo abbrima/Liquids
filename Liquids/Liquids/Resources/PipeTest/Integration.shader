@@ -17,8 +17,8 @@ struct Particle {
 	float pressure;
 };
 struct Pipe {
-	float lowX, lowY, highX, highY, base, dY, dX, power, dampeningRatio;
-	bool upper;
+	float lowX, lowY, highX, highY, base, dY, dX, xPower, xCo, dampeningRatio;
+	int upper;
 };
 layout(std430, binding = 1) buffer Pipes
 {
@@ -67,7 +67,7 @@ void main()
 		new_position.y = 1;
 		new_velocity.y *= -1 * WALL_DAMPING;
 	}
-	else {
+	 {
 		for (int j = 0; j < nPipes; j++)
 		{
 			if (new_position.x > pipes[j].lowX && new_position.x < pipes[j].highX)
@@ -75,14 +75,14 @@ void main()
 				float y = f(pipes[j], new_position.x);
 				if (new_position.y > pipes[j].lowY && new_position.y < pipes[j].highY)
 				{
-					if (pipes[j].upper && new_position.y > y)
+					if (pipes[j].upper != 0 && new_position.y > y)
 					{
 						float m = slopeNormal(pipes[j], new_position.x);
 						vec2 norm = getNormal(new_velocity, m);
 						new_position.y = y;
 						new_velocity = reflect(new_velocity, norm) * pipes[j].dampeningRatio;
 					}
-					else if (!pipes[j].upper && new_position.y < y)
+					else if (pipes[j].upper == 0 && new_position.y < y)
 					{
 						float m = slopeNormal(pipes[j], new_position.x);
 						vec2 norm = getNormal(new_velocity, m);
@@ -104,10 +104,10 @@ void main()
 
 
 float f(in Pipe pipe, in float x) {
-	return (pipe.base * pow(e, (x + pipe.dX)*pipe.power)) + pipe.dY;
+	return pipe.base * sin(pipe.xCo * pow(x + pipe.dX, pipe.xPower)) + pipe.dY;
 }
 float slopeNormal(in Pipe pipe,in float x) {
-	float m = pipe.base * pipe.power * pow(e, pipe.power*(x + pipe.dX));
+	float m = pipe.base * pipe.xCo * pipe.xPower * pow(x, pipe.xPower - 1) * cos(pipe.xCo * pow(x, pipe.xPower));
 	m = -1 / m;
 	return m;
 }

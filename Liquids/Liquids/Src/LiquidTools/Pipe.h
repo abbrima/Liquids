@@ -8,7 +8,7 @@
 
 struct Pipe{
 	float lowX, lowY, highX, highY, base, dY, dX, power, dampeningRatio;
-	bool upper;
+	int upper;
 	Pipe(const float& base,const float& power,const float& dx,const float& dy,const float& dr,const bool& upper);
 	void setConstraints(const float& lowX,const float& lowY,const float& highX,const float& highY);
 	float f(const float& x);
@@ -17,4 +17,12 @@ struct VerticalPipe {
 	float x; float lowY; float highY; float dampeningRatio;
 
 	VerticalPipe(const float& x, const float& lowy, const float& highy, const float& dampeningRatio);
+};
+
+struct SinusoidalPipe {
+	float lowX, lowY, highX, highY, base, dY, dX, xPower, xCo, dampeningRatio;
+	int upper;
+	SinusoidalPipe(const float& base, const float& power, const float& xCo, const float& dx, const float& dy, const float& dr, const bool& upper);
+	void setConstraints(const float& lowX, const float& lowY, const float& highX, const float& highY);
+	float f(const float& x);
 };

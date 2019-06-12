@@ -73,6 +73,8 @@ namespace app
 		renderPipes();
 	}
 	void Liq::OnImGuiRender(){
+	
+
 		ImGui::Text("nParticles: %d", nParticles);
 		ImGui::InputFloat("Stiffness", &k);
 		ImGui::InputFloat("Resting Density", &pr);
@@ -88,9 +90,21 @@ namespace app
 	
 	}
 	void Liq::FreeGuiRender(){
-		//ImGui::Begin("DATA");
+		ImGui::Begin("DATA");
 		//cellsys->GuiRender();
-		//ImGui::End();
+
+		SinusoidalPipe* ptr = (SinusoidalPipe*)pipes->GetData();
+
+		for (uint i = 0; i < nPipes; i++) {
+			ImGui::Text(" %f ", ptr->base);
+			ptr++;
+		}
+
+
+		pipes->Unmap();
+
+
+		ImGui::End();
 	}
 	void Liq::renderPipes()
 	{
@@ -108,21 +122,17 @@ namespace app
 	}
 	void Liq::initPipes()
 	{
-		pipes = std::make_unique<SSBO>(nullptr, sizeof(Pipe)*MAX_PIPES);
+		pipes = std::make_unique<SSBO>(nullptr, sizeof(SinusoidalPipe)*MAX_PIPES);
 
 		pipeRenderer = std::make_unique<Shader>("Resources/Shaders/Color.shader");
-		Pipe* arr[MAX_PIPES];
-		arr[nPipes] = new Pipe(1.f, 100.f, 0.6f, -0.5f, 0.95f,false);
-		arr[nPipes++]->setConstraints(-1.5f, -0.54f, -0.607f, 0.f); 
-		arr[nPipes] = new Pipe(1.f, 100.f, 0.7f, -0.4f, 0.95f,true);
-		arr[nPipes++]->setConstraints(-1.5f, -0.4f, -0.709f, 0.f);
-		arr[nPipes] = new Pipe(-1.f, -100.f, 0.72f, 0.3f, 0.95f, true);
-		arr[nPipes++]->setConstraints(-0.710f, -0.05f, -0.4f, 0.315f);
-		arr[nPipes] = new Pipe(-1.f, -100.f, 0.62f, 0.2f, 0.95f, false);
-		arr[nPipes++]->setConstraints(-0.612f, -0.26f, -0.4f, 0.2f);
+		SinusoidalPipe* arr[MAX_PIPES];
+		arr[nPipes] = new SinusoidalPipe(1.f/3, 3.f, 4.f, 0.f, -0.1f, 0.95f, false);
+		arr[nPipes++]->setConstraints(-1.f, -0.45f, 1.f, 0.24f); 
+		arr[nPipes] = new SinusoidalPipe(1.f/3, 3.f, 4.f, 0.f, 0.05f, 0.95f, true);
+		arr[nPipes++]->setConstraints(-1.f, -0.29f, 1.f, 0.39f);
 		for (uint i = 0; i < nPipes; i++)
 		{
-			pipes->Append(arr[i], sizeof(Pipe), i * sizeof(Pipe));
+			pipes->Append(arr[i], sizeof(SinusoidalPipe), i * sizeof(SinusoidalPipe));
 			VertexBufferLayout layout;
 			layout.Push<float>(2);
 			std::vector<float> points;
@@ -180,7 +190,7 @@ namespace app
 		PR->SetUniform1f("radius", 2000.f * SPH_PARTICLE_RADIUS);
 		PR->SetUniform3f("u_Color", 1.f, 0.f, 0.0f);
 		PR->SetUniform1ui("nParticles", nParticles);
-		renderer.DrawPoints(*particles, *PR, nParticles);
+		renderer.DrawPoints(*particles, *PR, nParticles);	
 	}
 	void Liq::computeDP() {
 		DP->BindSSBO(*particles, "Data", 0);
