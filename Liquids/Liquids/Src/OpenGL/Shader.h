@@ -32,7 +32,7 @@ public:
 	~Shader();
 
 	void Bind()const;
-	void DispatchCompute(const uint& x,const uint& y,const uint& z);
+	void DispatchCompute(const uint& x,const uint& y=1,const uint& z=1 );
 	void Unbind() const;
 
 	//set uniforms

@@ -62,6 +62,14 @@ void SSBO::WriteVal1ui(const uint& val,const uint& size)
 	GLCall(glUnmapBuffer(GL_SHADER_STORAGE_BUFFER));
 	Unbind();
 }
+void SSBO::WriteVal1uiOffset(const uint& val, const uint& size, const uint& offset) {
+	Bind();
+	GLvoid* p;
+	GLCall(p = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY));
+	memset((char*)p + offset, val, size);
+	GLCall(glUnmapBuffer(GL_SHADER_STORAGE_BUFFER));
+	Unbind();
+}
 void SSBO::Append(const void* data,const uint& size,const uint& offset)
 {
 	Bind(); 
