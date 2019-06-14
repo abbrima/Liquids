@@ -1,5 +1,5 @@
 #pragma once
-//#define BITONIC
+#define BITONIC
 #include "OpenGL/SSBO.h"
 #include "OpenGL/Shader.h"
 #include "LiquidTools/CellSystem.h"
@@ -7,15 +7,21 @@
 #include "imgui/imgui.h"
 
 #ifndef BITONIC_COMPARASION_SIZE
-#define BITONIC_COMPARASION_SIZE 128
+#define BITONIC_COMPARASION_SIZE 512
+#endif
+#ifndef BITONIC_TRANSPOSE_SIZE
+#define BITONIC_TRANSPOSE_SIZE 16
 #endif
 class CellSystem {
 private:
 	SSBO& particles; uint& nParticles;
 	uint width, height; float h;
 	
-	std::unique_ptr<Shader> UnsortedSorter,Bitonic1,Bitonic2,OffsetCalculator;
+	std::unique_ptr<Shader> UnsortedSorter,OffsetCalculator,Bitonic,Transposer;
 	std::unique_ptr<SSBO> IndexList,OffsetList;
+
+	void setTransConstants(const uint& lvl, const uint& lvlmask, const uint& width, const uint& height);
+
 	void SortUnsorted();
 	void SortBitonic();
 	void GenOffsetList();

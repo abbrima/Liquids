@@ -68,7 +68,7 @@ namespace app {
 		ImGui::SliderFloat("Gravity Y: ", &gravity.y, -10000.f, 10000.f);
 	}
 	void MultipleLiquids::FreeGuiRender() {
-		
+
 	}
 	void MultipleLiquids::initParticles() {
 		nParticles = 0;

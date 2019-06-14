@@ -4,7 +4,7 @@
 #include "OpenGL/VertexBufferLayout.h"
 
 #define MAX_PARTICLES 100000
-#define PARTICLE_DISPATCH_SIZE 128
+#define PARTICLE_DISPATCH_SIZE 512
 #define SPH_PARTICLE_RADIUS 0.005f
 class Particle {
 public:

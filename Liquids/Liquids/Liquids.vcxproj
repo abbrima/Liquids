@@ -420,8 +420,8 @@
     <None Include="Resources\MultipleLiquids\Forces.shader" />
     <None Include="Resources\MultipleLiquids\Integration.shader" />
     <None Include="Resources\MultipleLiquids\Particle.shader" />
-    <None Include="Resources\NPSorting\Bitonic1.shader" />
-    <None Include="Resources\NPSorting\Bitonic2.shader" />
+    <None Include="Resources\NPSorting\Bitonic.shader" />
+    <None Include="Resources\NPSorting\Transposer.shader" />
     <None Include="Resources\PipeTest\DP.shader" />
     <None Include="Resources\PipeTest\Forces.shader" />
     <None Include="Resources\PipeTest\Integration.shader" />

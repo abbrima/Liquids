@@ -11,7 +11,7 @@ namespace app
 		pr(1000.f),
 		mass(0.02f),
 	    gravity(glm::vec2(0.f, -9806.65f)),
-		startingParticles(10000)
+		startingParticles(0)
 
 	{
 		glEnable(GL_PROGRAM_POINT_SIZE);
@@ -39,13 +39,21 @@ namespace app
 			Emitter emitter(pos); emitter.EmitIntoSSBO<NormalParticle>(200, nParticles, *particles);
 			mouseButtons[GLFW_MOUSE_BUTTON_RIGHT] = false;
 		}
+		if (mouseButtons[GLFW_MOUSE_BUTTON_LEFT])
+		{
+			glm::vec2 pos = getWorldPos();
+			particles->Append(new NormalParticle(pos), sizeof(NormalParticle), sizeof(NormalParticle)*nParticles);
+			nParticles++;
+			mouseButtons[GLFW_MOUSE_BUTTON_LEFT] = false;
+		}
+
 
 
 		cellsys->Sort();
 
 		computeDP();
 		computeForces();
-		integrate();
+		//integrate();
 	}
 	void WaterTest::OnRender() {
 		GLCall(glClearColor(0.6f, 0.6f, 0.6f, 1.0f));
@@ -66,7 +74,9 @@ namespace app
 		ImGui::SliderFloat("Gravity Y: ", &gravity.y, -10000.f, 10000.f);
 	}
 	void WaterTest::FreeGuiRender() {
-		
+		ImGui::Begin("Data");
+		cellsys->GuiRender();
+		ImGui::End();
 	}
 
 	void WaterTest::initParticles() {
@@ -95,6 +105,14 @@ namespace app
 				y++;
 			}
 		}
+		/*NormalParticle ps[4];
+		ps[0] = NormalParticle(glm::vec2(-0.6f, 0.f));
+		ps[1] = NormalParticle(glm::vec2(0.5f, 0.5f));
+		ps[2] = NormalParticle(glm::vec2(0.5f, -0.5f));
+		ps[3] = NormalParticle(glm::vec2(-0.3f, 0.7f));
+		particles->Append(ps, sizeof(NormalParticle) * 4, sizeof(NormalParticle)*nParticles);
+		nParticles += 4;*/
+
 	}
 	void WaterTest::renderParticles() {
 		PR->Bind();

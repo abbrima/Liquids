@@ -12,6 +12,8 @@
 #include "OpenGL/UBO.h"
 
 #define DSIZE(x) std::string("#define WORK_GROUP_SIZE ") + std::to_string(x)
+#define XSIZE(x) std::string("#define XSIZE ") + std::to_string(x)
+#define YSIZE(x) std::string("#define YSIZE ") + std::to_string(x)
 
 struct ShaderProgramSource
 {
