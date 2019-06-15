@@ -400,13 +400,13 @@
     <ClInclude Include="Src\Vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\3DSorting\Bitonic1.shader" />
-    <None Include="Resources\3DSorting\Bitonic2.shader" />
+    <None Include="Resources\3DSorting\Bitonic.shader" />
     <None Include="Resources\3DSorting\OffsetCalculator.shader" />
+    <None Include="Resources\3DSorting\Transposer.shader" />
     <None Include="Resources\3DSorting\UnsortedSorter.shader" />
-    <None Include="Resources\APSorting\Bitonic1.shader" />
-    <None Include="Resources\APSorting\Bitonic2.shader" />
+    <None Include="Resources\APSorting\Bitonic.shader" />
     <None Include="Resources\APSorting\OffsetCalculator.shader" />
+    <None Include="Resources\APSorting\Transposer.shader" />
     <None Include="Resources\APSorting\UnsortedSorter.shader" />
     <None Include="Resources\CommunicatingVessels\DP.shader" />
     <None Include="Resources\CommunicatingVessels\Forces.shader" />

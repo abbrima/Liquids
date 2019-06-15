@@ -101,6 +101,7 @@ namespace app
 		{
 			points.emplace_back(glm::vec2(arr[i]->x,arr[i]->lowY));
 			points.emplace_back(glm::vec2(arr[i]->x, arr[i]->highY));
+			verticalpipes->Append(arr[i], sizeof(VerticalPipe), sizeof(VerticalPipe)*i);
 		}
 		VerticalPipesVB = std::make_unique<VertexBuffer>(points.data(), sizeof(glm::vec2)*points.size());
 		VerticalPipesVA = std::make_unique<VertexArray>();

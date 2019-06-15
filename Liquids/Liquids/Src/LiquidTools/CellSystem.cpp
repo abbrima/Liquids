@@ -43,7 +43,6 @@ CellSystem::~CellSystem() {
 
 }
 void CellSystem::Sort() {
-	Timer timer;
 	SortUnsorted();
 	SortBitonic();
  	GenOffsetList();
@@ -122,7 +121,6 @@ void CellSystem::SortBitonic() {
 	
 
 #else
-	//Timer timer;
 	uint* ptr = (uint*)IndexList->GetData();
 
 	hsort((UnsortedList*)ptr, nParticles);

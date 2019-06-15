@@ -11,7 +11,7 @@ namespace app
 		pr(1000.f),
 		mass(0.02f),
 	    gravity(glm::vec2(0.f, -9806.65f)),
-		startingParticles(40000)
+		startingParticles(4000)
 
 	{
 		glEnable(GL_PROGRAM_POINT_SIZE);

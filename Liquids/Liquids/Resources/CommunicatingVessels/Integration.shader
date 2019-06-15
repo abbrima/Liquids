@@ -63,24 +63,26 @@ void main()
 		new_position.y = 1;
 		new_velocity.y *= -1 * WALL_DAMPING;
 	}
-	if
 	{
 		for (int i = 0; i < nPipes; i++)
 		{
-			float diff = new_position.x - pipes[i].x;
-			if (abs(diff) < 0.009f)
+			if (new_position.y <= pipes[i].highY && new_position.y >= pipes[i].lowY)
 			{
-				if (diff > 0.f)
-				{
-					float cosangle = dot(normalize(new_velocity), vec2(-1.f, 0.f));
-					if (cosangle<0)
-					new_velocity = reflect(new_velocity, vec2(-1.f, 0.f)) * pipes[i].dr;
+
+				float diff = new_position.x - pipes[i].x;
+				if (diff > 0.f && abs(diff)<0.006f) {
+					if (new_velocity.x < 0.f)
+					{
+						new_position.x = pipes[i].x + 0.006f;
+						new_velocity = reflect(new_velocity, vec2(1.0f, 0.0f)) * pipes[i].dr;
+					}
 				}
-				else
-				{
-					float cosangle = dot(normalize(new_velocity), vec2(1.f, 0.f));
-					if (cosangle<0)
-					new_velocity = reflect(new_velocity, vec2(1.f, 0.f)) * pipes[i].dr;
+				else if (diff < 0.f && abs(diff)<0.006f) {
+					if (new_velocity.x > 0.f)
+					{
+						new_position.x = pipes[i].x - 0.006f;
+						new_velocity = reflect(new_velocity, vec2(-1.0f, 0.0f)) * pipes[i].dr;
+					}
 				}
 			}
 		}
