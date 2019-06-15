@@ -35,7 +35,7 @@ void main() {
 
 	// Load shared data
 	shared_data[gl_LocalInvocationIndex] = es[gl_GlobalInvocationID.x];
-	groupMemoryBarrier();
+
 	barrier();
 	
 	// Sort the shared data
@@ -44,11 +44,12 @@ void main() {
 			Elem result = ((shared_data[gl_LocalInvocationIndex & ~j].c <= shared_data[gl_LocalInvocationIndex | j].c) 
 				== bool(u_LevelMask & gl_GlobalInvocationID.x)) ? 
 				shared_data[gl_LocalInvocationIndex ^ j] : shared_data[gl_LocalInvocationIndex];
-			groupMemoryBarrier();	barrier();
+		
 
+			barrier();
      		shared_data[gl_LocalInvocationIndex] = result;
 
-			groupMemoryBarrier();	barrier();
+			barrier();
 	}
 
 	// Store shared data

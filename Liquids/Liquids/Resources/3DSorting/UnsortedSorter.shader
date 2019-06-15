@@ -28,16 +28,12 @@ layout(std430, binding = 4) buffer List
 uniform uint width;
 uniform uint height;
 uniform uint depth;
-uniform uint nParticles;
-
 uint GetIndex(vec3 cellIndex);
 
 void main()
 {
 	ulist[invodex].cIndex = GetIndex(particles[invodex].position.xyz);
 	ulist[invodex].pIndex = invodex;
-	ulist[invodex + nParticles].cIndex = 0xFFFFFFFF;	
-	ulist[invodex + nParticles].pIndex = 0xFFFFFFFF;
 }
 
 uint GetIndex(vec3 cellIndex)

@@ -6,16 +6,19 @@
 #include "LiquidTools/Particle.h"
 #include "imgui/imgui.h"
 
-#ifndef BITONIC_COMPARASION_SIZE
-#define BITONIC_COMPARASION_SIZE 128
+#ifndef BITONIC_BLOCK_SIZE
+#define BITONIC_BLOCK_SIZE 512
+#endif
+#ifndef TRANSPOSE_BLOCK_SIZE
+#define TRANSPOSE_BLOCK_SIZE 16
 #endif
 class CellSystem3D {
 private:
 	SSBO& particles; uint& nParticles;
 	uint width, height , depth; float h;
 
-	std::unique_ptr<Shader> UnsortedSorter, Bitonic1, Bitonic2, OffsetCalculator;
-	std::unique_ptr<SSBO> IndexList, OffsetList;
+	std::unique_ptr<Shader> UnsortedSorter, Bitonic, Transposer, OffsetCalculator;
+	std::unique_ptr<SSBO> IndexList, SecondaryIndexList,OffsetList;
 	void SortUnsorted();
 	void SortBitonic();
 	void GenOffsetList();

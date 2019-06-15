@@ -29,7 +29,7 @@ shared Elem shared_data[XSIZE * YSIZE];
 void main() {
 	shared_data[gl_LocalInvocationIndex] = inputElem[gl_GlobalInvocationID.y * u_Width + gl_GlobalInvocationID.x];
 	
-	groupMemoryBarrier();	barrier();
+	barrier();
 
 	uvec2 XY = DTid.yx - GTid.yx + GTid.xy;
 	outputElem[XY.y * u_Height + XY.x] = shared_data[gl_LocalInvocationID.x * XSIZE + gl_LocalInvocationID.y];
