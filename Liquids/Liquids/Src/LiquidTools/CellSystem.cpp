@@ -7,9 +7,8 @@ static int GetMinPowOf2(const uint& nParticles) {
 	int k = 1;
 	while (k < nParticles)
 		k <<= 1;
-	if (k < BITONIC_COMPARASION_SIZE * BITONIC_TRANSPOSE_SIZE)
-		return BITONIC_COMPARASION_SIZE * BITONIC_TRANSPOSE_SIZE;
-
+	if (k < BITONIC_BLOCK_SIZE * TRANSPOSE_BLOCK_SIZE)
+		return BITONIC_BLOCK_SIZE * TRANSPOSE_BLOCK_SIZE;
 	return k;
 }
 static uint GetDX(uint total, const uint& dsize){
@@ -28,9 +27,10 @@ CellSystem::CellSystem(const uint& width,const uint& height,const float& h,SSBO&
 #ifdef BITONIC
 
 	Bitonic = std::make_unique<Shader>("Resources/" + loc + "/Bitonic.shader",
-		DSIZE(BITONIC_COMPARASION_SIZE));
+		DSIZE(BITONIC_BLOCK_SIZE));
 	Transposer = std::make_unique<Shader>("Resources/" + loc + "/Transposer.shader",
-		XSIZE(BITONIC_TRANSPOSE_SIZE) + "\n" + YSIZE(BITONIC_TRANSPOSE_SIZE));
+		XSIZE(TRANSPOSE_BLOCK_SIZE) + "\n" + YSIZE(TRANSPOSE_BLOCK_SIZE));
+	SecondaryIndexList = std::make_unique<SSBO>(nullptr, sizeof(uint) * 2 * 2 * MAX_PARTICLES);
 
 #endif
 	OffsetCalculator = std::make_unique<Shader>("Resources/" + loc + "/OffsetCalculator.shader"
@@ -43,12 +43,12 @@ CellSystem::~CellSystem() {
 
 }
 void CellSystem::Sort() {
+	Timer timer;
 	SortUnsorted();
 	SortBitonic();
  	GenOffsetList();
 }
 void CellSystem::SortUnsorted() {
-	//if nParticles > 1
 	UnsortedSorter->BindSSBO(particles, "Data", 0);
 	UnsortedSorter->BindSSBO(*IndexList, "List", 4);
 	UnsortedSorter->SetUniform1ui("height", height);
@@ -57,8 +57,7 @@ void CellSystem::SortUnsorted() {
 	UnsortedSorter->DispatchCompute(GetDX(nParticles,PARTICLE_DISPATCH_SIZE), 1, 1);
 	const uint N = GetMinPowOf2(nParticles);
 	IndexList->WriteVal1uiOffset(0xFFFFFFFF, sizeof(uint) * 2 * (N - nParticles), sizeof(uint) * 2 * nParticles);
-	//if (nParticles > 300)
-		//system("pause");
+
 }
 
 struct UnsortedList;
@@ -66,11 +65,6 @@ void bsort(UnsortedList* arr, const uint& N);
 void hsort(UnsortedList* arr, const uint& n);
 void bbsort(UnsortedList* arr, const uint& N);
 
-void CellSystem::setTransConstants(const uint& lvl, const uint& lvlmask, const uint& width, const uint& height) {
-	Transposer->Bind();
-	Transposer->SetUniform1ui("u_Width", width);
-	Transposer->SetUniform1ui("u_Height", height);
-}
 void CellSystem::SortBitonic() {
 	const int N = GetMinPowOf2(nParticles);
 	//Timer timer;
@@ -78,37 +72,52 @@ void CellSystem::SortBitonic() {
 
 
 
-	// The number of elements to sort is limited to an even power of 2
+// The number of elements to sort is limited to an even power of 2
 // At minimum 8,192 elements - BITONIC_BLOCK_SIZE * TRANSPOSE_BLOCK_SIZE
 // At maximum 262,144 elements - BITONIC_BLOCK_SIZE * BITONIC_BLOCK_SIZE
-	const uint MATRIX_WIDTH = BITONIC_COMPARASION_SIZE;
-	const uint MATRIX_HEIGHT = N / BITONIC_COMPARASION_SIZE;
+	const uint MATRIX_WIDTH = BITONIC_BLOCK_SIZE;
+	const uint MATRIX_HEIGHT = N / BITONIC_BLOCK_SIZE;
 
 	Bitonic->BindSSBO(*IndexList, "IndexList", 4);
-	for (uint level = 2; level <= BITONIC_COMPARASION_SIZE; level <<= 1)
-	{
-
+	for (uint level = 2; level <= BITONIC_BLOCK_SIZE; level <<= 1) {
 		Bitonic->SetUniform1ui("u_Level", level);
+		Bitonic->SetUniform1ui("u_LevelMask", level);
 
-		Bitonic->DispatchCompute(GetDX(N, BITONIC_COMPARASION_SIZE));
+		Bitonic->DispatchCompute(N / BITONIC_BLOCK_SIZE, 1, 1);
 	}
-	for (uint level = BITONIC_COMPARASION_SIZE << 1; level <= N; level <<= 1) {
-		Transposer->BindSSBO(*IndexList, "IndexList", 4);
-		setTransConstants(level / BITONIC_COMPARASION_SIZE, (level & ~N) /
-			BITONIC_COMPARASION_SIZE, MATRIX_WIDTH, MATRIX_HEIGHT);
-		Transposer->DispatchCompute(MATRIX_WIDTH / BITONIC_TRANSPOSE_SIZE, MATRIX_HEIGHT / BITONIC_TRANSPOSE_SIZE);
+	
+	for (uint level = BITONIC_BLOCK_SIZE << 1; level <= N; level <<= 1) {
+		// Transpose the data from buffer 1 into buffer 2
 
+		Transposer->BindSSBO(*IndexList, "InputBUF", 4);
+		Transposer->BindSSBO(*SecondaryIndexList, "OutputBUF", 5);
+		Transposer->SetUniform1ui("u_Width", MATRIX_WIDTH);
+		Transposer->SetUniform1ui("u_Height", MATRIX_HEIGHT);
+
+		Transposer->DispatchCompute(MATRIX_WIDTH / TRANSPOSE_BLOCK_SIZE, MATRIX_HEIGHT / TRANSPOSE_BLOCK_SIZE, 1);
+
+		// Sort the transposed column data
+		Bitonic->BindSSBO(*SecondaryIndexList, "IndexList", 4);
+		Bitonic->SetUniform1ui("u_Level", level / BITONIC_BLOCK_SIZE);
+		Bitonic->SetUniform1ui("u_LevelMask", (level & ~N)/BITONIC_BLOCK_SIZE);
+
+		Bitonic->DispatchCompute(N / BITONIC_BLOCK_SIZE, 1, 1);
+
+		// Transpose the data from buffer 2 back into buffer 1
+		Transposer->BindSSBO(*SecondaryIndexList, "InputBUF", 4);
+		Transposer->BindSSBO(*IndexList, "OutputBUF", 5);
+		Transposer->SetUniform1ui("u_Width", MATRIX_HEIGHT);
+		Transposer->SetUniform1ui("u_Height", MATRIX_WIDTH);
+
+		Transposer->DispatchCompute(MATRIX_HEIGHT / TRANSPOSE_BLOCK_SIZE, MATRIX_WIDTH / TRANSPOSE_BLOCK_SIZE, 1);
+
+		// Sort the row data
 		Bitonic->BindSSBO(*IndexList, "IndexList", 4);
-		Bitonic->SetUniform1ui("u_Level", level / BITONIC_COMPARASION_SIZE);
-		Bitonic->DispatchCompute(N / BITONIC_COMPARASION_SIZE);
+		Bitonic->SetUniform1ui("u_Level", BITONIC_BLOCK_SIZE);
+		Bitonic->SetUniform1ui("u_LevelMask", level);
 
-		Transposer->BindSSBO(*IndexList, "IndexList", 4);
-		setTransConstants(BITONIC_COMPARASION_SIZE, level, MATRIX_HEIGHT, MATRIX_WIDTH);
-		Transposer->DispatchCompute(MATRIX_HEIGHT / BITONIC_TRANSPOSE_SIZE, MATRIX_WIDTH / BITONIC_TRANSPOSE_SIZE);
+		Bitonic->DispatchCompute(N / BITONIC_BLOCK_SIZE, 1, 1);
 
-		Bitonic->BindSSBO(*IndexList, "IndexList", 4);
-		Bitonic->SetUniform1ui("u_Level", BITONIC_COMPARASION_SIZE);
-		Bitonic->DispatchCompute(N / BITONIC_COMPARASION_SIZE);
 	}
 	
 

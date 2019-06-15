@@ -14,46 +14,44 @@ layout(std430, binding = 4) buffer IndexList {
 	Elem es[];
 };
 
-
-
-
 /*
 Gid  : gl_WorkGroupID            //atm: -, 0...256, - in rows (Y)        --> current group index (dispatched by c++)
 DTid : gl_GlobalInvocationID   //atm: 0...256 in rows & columns (XY)   --> "global" thread id
 GTid : gl_LocalInovcationID    //atm: 0...256, -,- in columns (X)      --> current threadId in group / "local" threadId
 GI   : gl_LocalInovcationIndex         //atm: 0...256 in columns (X)           --> "flattened" index of a thread within a group
-
+*/
 #define GI gl_LocalInvocationIndex
 #define GTid gl_LocalInvocationID
 #define DTid gl_GlobalInvocationID
 
 
 uniform uint u_Level;
+uniform uint u_LevelMask;
+
 shared Elem shared_data[WORK_GROUP_SIZE];
 
 
 void main() {
 
-	shared_data[GI] = es[DTid.x];
+	// Load shared data
+	shared_data[gl_LocalInvocationIndex] = es[gl_GlobalInvocationID.x];
 	groupMemoryBarrier();
 	barrier();
 	
+	// Sort the shared data
 	for (uint j = u_Level >> 1; j > 0; j >>= 1) {
 
-			Elem result = ((shared_data[GI & ~j].c <= shared_data[GI | j].c) 
-				== bool(u_Level & DTid.x)) ? es[GI ^ j] : es[GI];
+			Elem result = ((shared_data[gl_LocalInvocationIndex & ~j].c <= shared_data[gl_LocalInvocationIndex | j].c) 
+				== bool(u_LevelMask & gl_GlobalInvocationID.x)) ? 
+				shared_data[gl_LocalInvocationIndex ^ j] : shared_data[gl_LocalInvocationIndex];
+			groupMemoryBarrier();	barrier();
 
+     		shared_data[gl_LocalInvocationIndex] = result;
 
-			groupMemoryBarrier();
-			barrier();
-
-     		shared_data[GI] = result;
-
-			groupMemoryBarrier();
-			barrier();
+			groupMemoryBarrier();	barrier();
 	}
 
-	es[DTid.x] = shared_data[GI];	
+	// Store shared data
+	es[gl_GlobalInvocationID.x] = shared_data[gl_LocalInvocationIndex];	
 }
 
-*/

@@ -10,16 +10,13 @@ struct Elem {
 	uint c;
 	uint p;
 };
-layout(std430, binding = 4) buffer IndexList {
-	Elem es[];
+layout(std430, binding = 4) buffer InputBUF {
+	Elem inputElem[];
+};
+layout(std430, binding = 5) buffer OutputBUF {
+	Elem outputElem[];
 };
 
-/*
-Gid  : gl_WorkGroupID            //atm: -, 0...256, - in rows (Y)        --> current group index (dispatched by c++)
-DTid : gl_GlobalInvocationID   //atm: 0...256 in rows & columns (XY)   --> "global" thread id
-GTid : gl_LocalInovcationID    //atm: 0...256, -,- in columns (X)      --> current threadId in group / "local" threadId
-GI   : gl_LocalInovcationIndex         //atm: 0...256 in columns (X)           --> "flattened" index of a thread within a group
-*/
 #define GI gl_LocalInvocationIndex
 #define GTid gl_LocalInvocationID
 #define DTid gl_GlobalInvocationID
@@ -30,9 +27,10 @@ uniform uint u_Height;
 shared Elem shared_data[XSIZE * YSIZE];
 
 void main() {
-	shared_data[GI] = es[DTid.y * u_Width + DTid.x];
-	groupMemoryBarrier();
-	barrier();
+	shared_data[gl_LocalInvocationIndex] = inputElem[gl_GlobalInvocationID.y * u_Width + gl_GlobalInvocationID.x];
+	
+	groupMemoryBarrier();	barrier();
+
 	uvec2 XY = DTid.yx - GTid.yx + GTid.xy;
-	es[XY.y * u_Height + XY.x] = shared_data[GTid.x * XSIZE + GTid.y];
+	outputElem[XY.y * u_Height + XY.x] = shared_data[gl_LocalInvocationID.x * XSIZE + gl_LocalInvocationID.y];
 }

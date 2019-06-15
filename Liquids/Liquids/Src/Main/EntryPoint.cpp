@@ -27,6 +27,8 @@
 
 #include "Tools/MyExternals.h"
 
+#define IMGUI_ENABLE
+
 double lastx, lasty; bool firstmouse = true; float xOffset, yOffset, fov, deltaTime; double currentTime,xPos,yPos;
 bool keys[350];
 bool mouseButtons[8];
@@ -141,13 +143,15 @@ int main(void)
 			renderer.Clear();
 			glfwGetWindowSize(window, &glfwWindowWidth, &glfwWindowHeight);
 			GLCall(glViewport(0, 0, glfwWindowWidth, glfwWindowHeight));
+#ifdef IMGUI_ENABLE
 			ImGui_ImplGlfwGL3_NewFrame();
-
+#endif
 			if (currentApplication)
 			{
 				currentApplication->OnUpdate();
 				xOffset = 0; yOffset = 0;
 				currentApplication->OnRender();
+#ifdef IMGUI_ENABLE
 				ImGui::Begin("Test");
 				if (currentApplication != applicationMenu && ImGui::Button("<--"))
 				{
@@ -158,9 +162,12 @@ int main(void)
 				currentApplication->OnImGuiRender();
 				ImGui::End();
 				currentApplication->FreeGuiRender();
+#endif
 			}
+#ifdef IMGUI_ENABLE
 			ImGui::Render();
 			ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
+#endif
 			glfwSwapBuffers(window);
 			glfwPollEvents();
 		}
