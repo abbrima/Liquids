@@ -24,8 +24,8 @@ namespace app
 		glm::mat4 projection;
 		Renderer renderer;
 
-		std::unique_ptr<SSBO> debug;
-
+		std::unique_ptr<Flow> flow;
+		float speedConstant;
 
 		void initParticles(), renderParticles();
 		std::unique_ptr<SSBO> particles;

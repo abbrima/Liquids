@@ -62,24 +62,24 @@ void AdvancedParticle::ImGuiRender() {
 void AdvancedParticle::SetType(AdvancedParticle& particle, const LiquidType& type) {
 	switch (type) {
 	case LiquidType::Water:
-		particle.mass = 0.02f;
-		particle.viscosity = 3000.f;
+		particle.mass = 0.05f;
+		particle.viscosity = 2500.f;
 		particle.k = 2000.f;
 		particle.pr = 1000.f;
 		particle.color = glm::vec4(0.0, 0.0, 1.0,1.0);
 		break;
 	case LiquidType::Oil:
-		particle.mass = 0.017f;
-		particle.viscosity = 3500.f;
+		particle.mass = 0.02f;
+		particle.viscosity = 3000.f;
 		particle.k = 3000.f;
-		particle.pr = 910.f;
+		particle.pr = 510.f;
 		particle.color = glm::vec4(1.0, 1.0, 0.0, 1.0);
 		break;
 	case LiquidType::Blood:
-		particle.mass = 0.02f;
+		particle.mass = 0.015f;
 		particle.viscosity = 3000.f;
-		particle.k = 2000.f;
-		particle.pr = 1000.f;
+		particle.k = 4000.f;
+		particle.pr = 300.f;
 		particle.color = glm::vec4(1.0, 0.0, 0.0, 1.0);
 	}
 }

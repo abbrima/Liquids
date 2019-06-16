@@ -74,3 +74,28 @@ template <> void Emitter3D::EmitIntoSSBO<Particle3D>(const unsigned int& n, unsi
 	ssbo.Append(particles, n * sizeof(Particle3D), sizeof(Particle3D)*nParticles);
 	nParticles += n;
 }
+
+Flow::Flow(const glm::vec2& pos) :pos(pos) {}
+Flow::~Flow() {}
+
+template <typename T> T* Flow::Emit(const unsigned int& n,const glm::vec2& vel) {
+	static_assert(false);
+}
+template <> NormalParticle* Flow::Emit<NormalParticle>(const unsigned int& n, const glm::vec2& vel) {
+	NormalParticle* particles;
+	particles = new NormalParticle[n];
+	for (int i = 0; i < n; i++)
+	{
+		particles[i].position = GenRandomPos(pos, 0.02f);
+		particles[i].velocity = vel;
+	}
+	return particles;
+}
+template <typename T> void Flow::EmitIntoSSBO(const unsigned int& n, unsigned int& nParticle, SSBO& particles, const glm::vec2& vel) {
+	static_assert(false);
+}
+template <> void Flow::EmitIntoSSBO<NormalParticle>(const unsigned int& n, unsigned int& nParticles, SSBO& ssbo,const glm::vec2& vel) {
+	NormalParticle* particles = Emit<NormalParticle>(n,vel);
+	ssbo.Append(particles, n * sizeof(NormalParticle), sizeof(NormalParticle)*nParticles);
+	nParticles += n;
+}

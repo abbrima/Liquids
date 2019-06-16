@@ -1,5 +1,5 @@
 #pragma once
-#define BITONIC
+//#define BITONIC
 #include "OpenGL/SSBO.h"
 #include "OpenGL/Shader.h"
 #include "LiquidTools/CellSystem.h"

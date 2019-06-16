@@ -4,7 +4,7 @@
 namespace app
 {
 	Liq::Liq() :
-		nParticles(0),nPipes(0),k(5000.f),pr(1000.f),mass(0.02f),
+		nParticles(0),nPipes(0),k(5000.f),pr(1000.f),mass(0.02f),speedConstant(1.f),
 		viscosity(3000.f),gravity(glm::vec2(0, -9806.65) ){
 		projection = glm::ortho(-1.f,1.f,-1.f,1.f);
 		glEnable(GL_PROGRAM_POINT_SIZE);
@@ -14,6 +14,7 @@ namespace app
 
 		test = std::make_unique<SSBO>(nullptr,MAX_PARTICLES * sizeof(uint) * 2);
 
+		flow = std::make_unique<Flow>(glm::vec2(-0.99f,0.218f));
 
 		initParticles();
 		initLines();
@@ -60,6 +61,9 @@ namespace app
 			Emitter emitter(pos); emitter.EmitIntoSSBO<NormalParticle>(200, nParticles, *particles);
 			mouseButtons[GLFW_MOUSE_BUTTON_RIGHT] = false;
 		}
+
+		flow->EmitIntoSSBO<NormalParticle>(12, nParticles, *particles,speedConstant*800*glm::vec2(0.091f, -0.298f));
+
 		cellsys->Sort();
 		
 		computeDP();
@@ -89,21 +93,10 @@ namespace app
 
 		glm::vec2 pos = getWorldPos();
 		ImGui::Text("x: %5.3f  y: %5.3f", pos.x, pos.y);
-	
+		ImGui::SliderFloat("Speed", &speedConstant, 1.f, 50.f);
 	}
 	void Liq::FreeGuiRender(){
-		/*ImGui::Begin("DATA");
-		//cellsys->GuiRender();
-
-		float* ptr = (float*)debug->GetData();
-		for (uint i = 0; i < nParticles; i++)
-		{
-			ImGui::Text("F(X) = %10.5f   Slope(X) = %10.5f", *ptr, *(ptr + 1));
-			ptr += 2;
-		}
-		debug->Unmap();
-
-		ImGui::End();*/
+		
 	}
 	void Liq::renderPipes()
 	{
@@ -163,7 +156,6 @@ namespace app
 		particles = std::make_unique<SSBO>(nullptr, sizeof(NormalParticle) * MAX_PARTICLES);
 		particles->SetLayout(NormalParticle::GetLayout());
 
-		debug = std::make_unique<SSBO>(nullptr, sizeof(float) * 2 * MAX_PARTICLES);
 
 		PR = std::make_unique<Shader>("Resources/PipeTest/Particle.shader");
 		DP = std::make_unique<Shader>("Resources/PipeTest/DP.shader", DSIZE(PARTICLE_DISPATCH_SIZE));
@@ -220,7 +212,6 @@ namespace app
 	}
 	void Liq::integrate() {
 		Integrator->BindSSBO(*particles, "Data", 0);
-		Integrator->BindSSBO(*debug, "DEBUG", 2);
 		Integrator->SetUniform1i("nPipes", nPipes);
 		Integrator->BindSSBO(*pipes, "Pipes", 1);
 		Integrator->DispatchCompute(getDX(), 1, 1);
