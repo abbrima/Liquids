@@ -1,14 +1,13 @@
 #shader compute
-#version 460 core
+#version 430 core
 
 #external
 
 layout(local_size_x = WORK_GROUP_SIZE) in;
 
 // constants
-
 #define TIME_STEP 0.0001f
-#define WALL_DAMPING 0.3f
+#define WALL_DAMPING 0.6f
 struct Particle {
 	vec2 position;
 	vec2 velocity;

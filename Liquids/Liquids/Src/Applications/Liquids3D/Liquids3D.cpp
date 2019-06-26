@@ -2,9 +2,20 @@
 #include <iostream>
 
 namespace app {
+
+	static void printVec3(const glm::vec3& v) {
+		printf("%10.5f   %10.5f   %10.5f\n", v.x, v.y, v.z);
+	}
+
+	static glm::vec4 calcNormal(const glm::vec3& p1,const glm::vec3& p2,const glm::vec3& p3) {
+		glm::vec3 v1 = p2 - p1;
+		glm::vec3 v2 = p3 - p2;
+		return glm::vec4(glm::normalize(glm::cross(v1, v2)),1.f);
+	}
+
+
 	Liquids3D::Liquids3D() :
 		view(glm::mat4(1.f)),
-		skyboxModel(glm::scale(glm::mat4(1.0f), glm::vec3(100, 100, 100))),
 		k(2000.f),
 		viscosity(3000.f),
 		pr(1000.f),
@@ -12,17 +23,14 @@ namespace app {
 		gravity(glm::vec3(0.f, -9806.65f,0.f))
 	{
 		GLCall(glEnable(GL_DEPTH_TEST));
-		GLCall(glEnable(GL_PROGRAM_POINT_SIZE));
-		GLCall(glEnable(GL_POINT_SMOOTH));
-		GLCall(glEnable(GL_LINE_SMOOTH));
 
-		skybox.ChooseBox(2);
+
 
 		Camera = std::make_unique <FPSCamera>();
-		Camera->SetCameraSpeed(200.0f);
+		Camera->SetCameraSpeed(10.f);
 		Camera->SetSensitivity(40.4f);
-		Camera->SetPitch(0.0f); Camera->SetYaw(-235.0f);
-		Camera->SetCameraPosition(0, 0, -10.f);
+		Camera->SetPitch(-16.1f); Camera->SetYaw(-22.f);
+		Camera->SetCameraPosition(-2.671100f, 0.9919f, 1.1386f);
 		CameraModel = glm::translate(glm::mat4(1.0f), Camera->GetCameraPosition());
 		Camera->SetCameraDirection(0, 0, 0);
 
@@ -34,10 +42,33 @@ namespace app {
 
 		constants = std::make_unique<UBO>(farr, sizeof(float) * 4);
 
+		{
+			using namespace glm;
+			const vec3 _zero = vec3(0.f, 0.f, 900.f * SPH_PARTICLE_RADIUS);
+			const vec3 _one = vec3(900.f * SPH_PARTICLE_RADIUS, 0.f, 0.f);
+			const vec3 _two = vec3(0.f, 0.f, -900.f * SPH_PARTICLE_RADIUS);
+			const vec3 _three = vec3(-900.f * SPH_PARTICLE_RADIUS, 0.f, 0.f);
+			const vec3 _four = vec3(0.f, 900.f * SPH_PARTICLE_RADIUS, 0.f);
+			const vec3 _five = vec3(0.f, -900.f * SPH_PARTICLE_RADIUS, 0.f);
+
+			vec4* normalss = new vec4[8];
+			normalss[0] = calcNormal(_zero, _one, _four);
+			normalss[1] = calcNormal(_one, _two, _four);
+			normalss[2] = calcNormal(_two, _three, _four);
+			normalss[3] = calcNormal(_three, _zero, _four);
+			normalss[4] = calcNormal(_five, _one, _zero);
+			normalss[5] = calcNormal(_five, _two, _one);
+			normalss[6] = calcNormal(_five, _three, _two);
+			normalss[7] = calcNormal(_five, _zero, _three);
+
+
+			normals = std::make_unique<UBO>(normalss, sizeof(vec4) * 8);
+		}
+		initCube();
 		initParticles();
 	}
 	Liquids3D::~Liquids3D() {
-
+		glDisable(GL_DEPTH_TEST);
 	}
 	void Liquids3D::OnUpdate() {
 		if (keys[GLFW_KEY_E]) {
@@ -50,7 +81,7 @@ namespace app {
 		Camera->Update(view);
 		if (fov <= 30.0f)
 			fov = 30.0f;
-		projection = glm::perspective(glm::radians(fov), (float)glfwWindowWidth / (float)glfwWindowHeight, 0.1f, 100000.0f);
+		projection = glm::perspective(glm::radians(fov), (float)glfwWindowWidth / (float)glfwWindowHeight, 0.01f, 10.0f);
 		CameraModel = glm::translate(glm::mat4(1.0f), Camera->GetCameraPosition());
 
 		pv = projection * view;
@@ -62,7 +93,9 @@ namespace app {
 		integrate();
 	}
 	void Liquids3D::OnRender() {
-		skybox.Render(pv * skyboxModel);
+		GLCall(glClearColor(0.07f, 0.07f, 0.07f, 1.0f));
+
+		renderCube();
 		renderParticles();
 	}
 	void Liquids3D::OnImGuiRender() {
@@ -89,10 +122,11 @@ namespace app {
 	}
 	void Liquids3D::renderParticles() {
 		PR->Bind();
-		PR->SetUniformMat4f("u_MVP", pv * glm::scale(glm::mat4(1.0f),glm::vec3(100,100,100)));
+		PR->SetUniformMat4f("u_MVP", pv );
 		PR->SetUniform1ui("nParticles", nParticles);
-		PR->SetUniform1f("radius", 2000.f * SPH_PARTICLE_RADIUS);
+		PR->SetUniform1f("radius",  3*SPH_PARTICLE_RADIUS);
 		PR->SetUniform3f("u_Color", 0.0f, 0.0f, 1.0f);
+		PR->BindUBO(*normals, "ubo_Normals", 3);
 
 		renderer.DrawPoints(*particles, *PR, nParticles);
 		PR->Unbind();
@@ -108,7 +142,6 @@ namespace app {
 		DP->SetUniform1ui("width", cellsys->GetWidth());
 		DP->SetUniform1ui("height", cellsys->GetHeight());
 		DP->SetUniform1ui("depth", cellsys->GetDepth());
-		DP->SetUniform1ui("nParticles", nParticles);
 		DP->DispatchCompute(getDX(), 1, 1);
 	}
 	void Liquids3D::computeForces() 
@@ -132,5 +165,38 @@ namespace app {
 	void Liquids3D::integrate() {
 		Integrator->BindSSBO(*particles, "Data", 0);
 		Integrator->DispatchCompute(getDX(), 1, 1);
+	}
+	void Liquids3D::initCube() {
+
+		cube_Model = glm::translate(glm::mat4(1.f),glm::vec3(0.4,0.4,-0.4));
+
+		std::vector<float> points;
+		for (float x = -0.075f ; x<=0.075f ; x+=0.15f)
+			for (float y = -0.075f; y <= 0.075f; y += 0.15f)
+				for (float z = -0.075f; z <= 0.075f; z += 0.15f)
+				{
+					points.push_back(x);
+					points.push_back(y);
+					points.push_back(z);
+				}
+		cube_VB = std::make_unique<VertexBuffer>(points.data(), points.size() * sizeof(float));
+		VertexBufferLayout layout;
+		layout.Push<float>(3);
+		cube_VA = std::make_unique<VertexArray>();
+		cube_VA->AddBuffer(*cube_VB, layout);
+
+		std::vector<uint> indicies = {
+			1,3,5,5,3,7,5,7,4,4,7,6,4,6,0,0,6,2,0,2,1,1,2,3,3,2,7,7,2,6,1,0,5,5,0,4
+		};
+		cube_IB = std::make_unique<IndexBuffer>(indicies.data(), indicies.size());
+		cube_Renderer = std::make_unique<Shader>("Resources/Shaders/Color.shader");
+	}
+	void Liquids3D::renderCube() {
+		cube_Renderer->Bind();
+
+		cube_Renderer->SetUniformMat4f("u_MVP", pv * cube_Model);
+		cube_Renderer->SetUniform4f("u_Color", 1.f, 1.f, 1.f, 1.f);
+
+		renderer.DrawTriangles(*cube_VA, *cube_IB, *cube_Renderer);
 	}
 }

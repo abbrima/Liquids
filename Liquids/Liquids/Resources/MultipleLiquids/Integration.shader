@@ -1,5 +1,5 @@
 #shader compute
-#version 460 core
+#version 430 core
 
 #external
 

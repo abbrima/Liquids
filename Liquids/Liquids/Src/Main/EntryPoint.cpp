@@ -3,6 +3,8 @@
 #include <iostream>
 #include <cstddef>
 #include <string>
+#include <chrono>
+#include <thread>
 
 #include "OpenGL/Renderer.h"
 #include "OpenGL/VertexBuffer.h"
@@ -50,6 +52,11 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 		fov = 1.0f;
 	if (fov >= 45.0f)
 		fov = 45.0f;
+}
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+	glfwGetWindowSize(window, &glfwWindowWidth, &glfwWindowHeight);
+	GLCall(glViewport(0, 0, glfwWindowWidth, glfwWindowHeight));
 }
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -105,6 +112,8 @@ int main(void)
 		GLCall(glEnable(GL_BLEND));
 		GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
+		glfwGetWindowSize(window, &glfwWindowWidth, &glfwWindowHeight);
+
 		Renderer renderer;
 		ImGui::CreateContext();
 		ImGui_ImplGlfwGL3_Init(window, true);
@@ -114,12 +123,13 @@ int main(void)
 		glfwSetCursorPosCallback(window, mouse_callback);
 		glfwSetScrollCallback(window, scroll_callback);
 		glfwSetMouseButtonCallback(window, mouse_button_callback);
-		
+		glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
 		app::Application* currentApplication = nullptr;
 		app::ApplicationMenu* applicationMenu = new app::ApplicationMenu(currentApplication);
 		
 		//currentApplication = applicationMenu;
-		currentApplication = new app::Liq();
+		currentApplication = new app::Liquids3D();
 
 		applicationMenu->RegisterApplication<app::WaterTest>("Water");
 		applicationMenu->RegisterApplication<app::Liq>("Pipe Test");
@@ -138,11 +148,7 @@ int main(void)
 				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 			}
 			UpdateDeltaTime();
-			GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
-			GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
 			renderer.Clear();
-			glfwGetWindowSize(window, &glfwWindowWidth, &glfwWindowHeight);
-			GLCall(glViewport(0, 0, glfwWindowWidth, glfwWindowHeight));
 #ifdef IMGUI_ENABLE
 			ImGui_ImplGlfwGL3_NewFrame();
 #endif
@@ -157,7 +163,6 @@ int main(void)
 				{
 					delete currentApplication;
 					currentApplication = applicationMenu;
-					GLCall(glDisable(GL_DEPTH_TEST));
 				}
 				currentApplication->OnImGuiRender();
 				ImGui::End();
@@ -168,6 +173,8 @@ int main(void)
 			ImGui::Render();
 			ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 #endif
+
+			
 			glfwSwapBuffers(window);
 			glfwPollEvents();
 		}

@@ -4,7 +4,7 @@
 namespace app
 {
 	Liq::Liq() :
-		nParticles(0),nPipes(0),k(5000.f),pr(1000.f),mass(0.02f),speedConstant(1.f),
+		nParticles(0),nPipes(0),k(3000.f),pr(1000.f),mass(0.02f),speedConstant(1.f),
 		viscosity(3000.f),gravity(glm::vec2(0, -9806.65) ){
 		projection = glm::ortho(-1.f,1.f,-1.f,1.f);
 		glEnable(GL_PROGRAM_POINT_SIZE);
@@ -14,7 +14,7 @@ namespace app
 
 		test = std::make_unique<SSBO>(nullptr,MAX_PARTICLES * sizeof(uint) * 2);
 
-		flow = std::make_unique<Flow>(glm::vec2(-0.99f,0.218f));
+		flow = std::make_unique<Flow>(glm::vec2(-0.99f,-0.218f));
 
 		initParticles();
 		initLines();
@@ -55,14 +55,9 @@ namespace app
 		LinesVB->Unbind();
 	}
 	void Liq::OnUpdate(){
-		if (mouseButtons[GLFW_MOUSE_BUTTON_RIGHT])
-		{
-			glm::vec2 pos = getWorldPos();
-			Emitter emitter(pos); emitter.EmitIntoSSBO<NormalParticle>(200, nParticles, *particles);
-			mouseButtons[GLFW_MOUSE_BUTTON_RIGHT] = false;
-		}
 
-		flow->EmitIntoSSBO<NormalParticle>(12, nParticles, *particles,speedConstant*800*glm::vec2(0.091f, -0.298f));
+		if (keys[GLFW_KEY_F] && nParticles < 5000)
+		flow->EmitIntoSSBO<NormalParticle>(12, nParticles, *particles,speedConstant*40*glm::vec2(0.091f, 0.298f));
 
 		cellsys->Sort();
 		
@@ -82,18 +77,11 @@ namespace app
 	
 
 		ImGui::Text("nParticles: %d", nParticles);
-		ImGui::InputFloat("Stiffness", &k);
-		ImGui::InputFloat("Resting Density", &pr);
-		ImGui::InputFloat("Mass", &mass);
-		ImGui::InputFloat("Viscosity", &viscosity);
 		if (ImGui::Button("Reset"))
 			initParticles();
-		ImGui::SliderFloat("Gravity X: ", &gravity.x, -10000.f, 10000.f);
-		ImGui::SliderFloat("Gravity Y: ", &gravity.y, -10000.f, 10000.f);
-
 		glm::vec2 pos = getWorldPos();
-		ImGui::Text("x: %5.3f  y: %5.3f", pos.x, pos.y);
-		ImGui::SliderFloat("Speed", &speedConstant, 1.f, 50.f);
+		ImGui::Text("%10.5f %10.5f", pos.x, pos.y);
+		ImGui::SliderFloat("Speed", &speedConstant, 1.f, 15.f);
 	}
 	void Liq::FreeGuiRender(){
 		
@@ -118,10 +106,10 @@ namespace app
 
 		pipeRenderer = std::make_unique<Shader>("Resources/Shaders/Color.shader");
 		SinusoidalPipe* arr[MAX_PIPES];
-		arr[nPipes] = new SinusoidalPipe(0.3333f, 3, 4.f, 0.f, -0.1f, 0.95f, false);
-		arr[nPipes++]->setConstraints(-1.2f, -0.45f, 0.8f, 0.24f); 
-		arr[nPipes] = new SinusoidalPipe(0.3333f, 3, 4.f, 0.f, 0.05f, 0.95f, true);
-		arr[nPipes++]->setConstraints(-1.2f, -0.29f, 1.f, 0.39f);
+		arr[nPipes] = new SinusoidalPipe(-0.3333f, 3, 4.f, 0.f, -0.1f, 0.99f, false);
+		arr[nPipes++]->setConstraints(-1.2f, -0.45f, 0.7f, 0.24f); 
+		arr[nPipes] = new SinusoidalPipe(-0.3333f, 3, 4.f, 0.f, 0.05f, 0.99f, true);
+		arr[nPipes++]->setConstraints(-1.2f, -0.29f, 0.7f, 0.39f);
 		for (uint i = 0; i < nPipes; i++)
 		{
 			pipes->Append(arr[i], sizeof(SinusoidalPipe), i * sizeof(SinusoidalPipe));
@@ -181,7 +169,7 @@ namespace app
 		PR->Bind();
 		PR->SetUniformMat4f("u_MVP", projection);
 		PR->SetUniform1f("radius", 2000.f * SPH_PARTICLE_RADIUS);
-		PR->SetUniform3f("u_Color", 1.f, 0.f, 0.0f);
+		PR->SetUniform3f("u_Color", 0.f, 1.f, 1.0f);
 		PR->SetUniform1ui("nParticles", nParticles);
 		renderer.DrawPoints(*particles, *PR, nParticles);	
 	}
@@ -196,7 +184,6 @@ namespace app
 		DP->SetUniform1ui("width", cellsys->GetWidth());
 		DP->SetUniform1ui("height", cellsys->GetHeight());
 		DP->DispatchCompute(getDX(), 1, 1);
-		
 	}
 	void Liq::computeForces() {
 		Force->BindSSBO(*particles, "Data", 0);

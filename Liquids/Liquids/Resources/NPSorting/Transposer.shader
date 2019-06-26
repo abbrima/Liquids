@@ -1,5 +1,5 @@
 #shader compute
-#version 460 core
+#version 430 core
 
 #external
 
@@ -31,6 +31,6 @@ void main() {
 	
 	barrier();
 
-	uvec2 XY = DTid.yx - GTid.yx + GTid.xy;
+	uvec2 XY = gl_GlobalInvocationID.yx - gl_LocalInvocationID.yx + gl_LocalInvocationID.xy;
 	outputElem[XY.y * u_Height + XY.x] = shared_data[gl_LocalInvocationID.x * XSIZE + gl_LocalInvocationID.y];
 }

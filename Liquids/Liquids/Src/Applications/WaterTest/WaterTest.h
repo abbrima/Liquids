@@ -23,6 +23,7 @@ namespace app
 	private:
 		glm::mat4 projection;
 		Renderer renderer;
+		glm::vec3 color;
 
 		std::unique_ptr<SSBO> particles; uint nParticles; void initParticles(), renderParticles();
 		std::unique_ptr<Shader> DP, Forces, Integrator, PR;

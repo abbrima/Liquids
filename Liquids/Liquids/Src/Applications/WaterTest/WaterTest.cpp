@@ -11,7 +11,8 @@ namespace app
 		pr(1000.f),
 		mass(0.02f),
 	    gravity(glm::vec2(0.f, -9806.65f)),
-		startingParticles(4000)
+		startingParticles(4000),
+		color(glm::vec3(0.f,0.f,1.f))
 
 	{
 		glEnable(GL_PROGRAM_POINT_SIZE);
@@ -57,15 +58,16 @@ namespace app
 	}
 	void WaterTest::OnImGuiRender() {
 		ImGui::Text("nParticles: %d", nParticles);
-		ImGui::InputFloat("Stiffness", &k);
-		ImGui::InputFloat("Resting Density", &pr);
-		ImGui::InputFloat("Mass", &mass);
-		ImGui::InputFloat("Viscosity", &viscosity);
+		ImGui::SliderFloat("Stiffness", &k,1000.f,5000.f);
+		ImGui::SliderFloat("Resting Density", &pr,1000.f,5000.f);
+		ImGui::SliderFloat("Mass", &mass,0.015f,0.03f);
+		ImGui::SliderFloat("Viscosity", &viscosity,2500.f,3500.f);
 		if (ImGui::Button("Reset"))
 			initParticles();
 		ImGui::InputInt("startingParticles", &startingParticles);
 		ImGui::SliderFloat("Gravity X: ", &gravity.x, -10000.f, 10000.f);
 		ImGui::SliderFloat("Gravity Y: ", &gravity.y, -10000.f, 10000.f);
+		ImGui::ColorPicker3("Liquid Color", (float*)(&color));
 	}
 	void WaterTest::FreeGuiRender() {
 		
@@ -106,7 +108,7 @@ namespace app
 		PR->SetUniformMat4f("u_MVP", projection);
 		PR->SetUniform1ui("nParticles", nParticles);
 		PR->SetUniform1f("radius", 2000.f * SPH_PARTICLE_RADIUS);
-		PR->SetUniform3f("u_Color", 0.0f, 0.0f, 1.0f);
+		PR->SetUniformVec3("u_Color", color);
 		
 		renderer.DrawPoints(*particles, *PR, nParticles);
 	}
@@ -132,7 +134,7 @@ namespace app
 		Forces->SetUniform1f("viscosity", viscosity);
 		Forces->SetUniform1f("mass", mass);
 		Forces->SetUniformVec2("gravity", gravity);
-		Forces->SetUniform1b("enableInteraction", mouseButtons[GLFW_MOUSE_BUTTON_LEFT]);
+		Forces->SetUniform1b("enableInteraction", keys[GLFW_KEY_P]);
 		Forces->SetUniformVec2("worldPos", getWorldPos());
 		Forces->SetUniform1f("interactionForce", 100000);
 		Forces->DispatchCompute(getDX(), 1, 1);

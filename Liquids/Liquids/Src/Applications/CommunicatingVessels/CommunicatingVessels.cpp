@@ -56,16 +56,8 @@ namespace app
 	}
 	void CommunicatingVessels::OnImGuiRender() {
 		ImGui::Text("nParticles: %d", nParticles);
-		ImGui::InputFloat("Stiffness", &k);
-		ImGui::InputFloat("Resting Density", &pr);
-		ImGui::InputFloat("Mass", &mass);
-		ImGui::InputFloat("Viscosity", &viscosity);
 		if (ImGui::Button("Reset"))
 			initParticles();
-		ImGui::InputInt("startingParticles", &startingParticles);
-		ImGui::SliderFloat("Gravity X: ", &gravity.x, -10000.f, 10000.f);
-		ImGui::SliderFloat("Gravity Y: ", &gravity.y, -10000.f, 10000.f);
-
 		if (ImGui::Button("OpenBarrier"))
 			initVerticalPipes(false);
 		if (ImGui::Button("CloseBarrier"))

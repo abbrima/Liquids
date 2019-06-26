@@ -7,7 +7,7 @@
 #include "OpenGL/Shader.h"
 
 #define ASSERT(x) if (!(x)) __debugbreak();
-#if DEBUG
+#if 0
 #define GLCall(x) GLClearError();\
 x;\
 ASSERT(GLLogCall(#x, __FILE__ , __LINE__ ))

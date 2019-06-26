@@ -1,5 +1,5 @@
 #shader vertex
-#version 460 core
+#version 430 core
 
 layout(location = 0) in vec2 position;
 layout(location = 1) in vec2 velocity;
@@ -22,7 +22,7 @@ void main()
 };
 
 #shader fragment
-#version 460 core
+#version 430 core
 
 layout(location = 0) out vec4 color;
 

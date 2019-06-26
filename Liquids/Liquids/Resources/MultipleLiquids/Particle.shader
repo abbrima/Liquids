@@ -1,5 +1,5 @@
 #shader vertex
-#version 460 core
+#version 430 core
 
 layout(location = 0) in vec2 position;
 layout(location = 1) in vec2 velocity;
@@ -20,12 +20,12 @@ out vec4 VertexColor;
 void main()
 {
 	gl_PointSize = radius;
-	VertexColor = vec4(color.xyz * gl_VertexID/nParticles , color.w);
+	VertexColor = vec4(color.xyz, color.w);
 	gl_Position = u_MVP * vec4(position,1.0,1.0);
 };
 
 #shader fragment
-#version 460 core
+#version 430 core
 
 layout(location = 0) out vec4 color;
 

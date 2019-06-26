@@ -16,6 +16,7 @@
 #include "Tools/MyExternals.h"
 #include "Tools/FPSCamera.h"
 #include "Tools/Skybox.h"
+#include "Tools/Lights.h"
 
 #include "LiquidTools/Particle.h"
 #include "LiquidTools/Pipe.h"
@@ -30,11 +31,17 @@ namespace app {
 
 		std::unique_ptr<FPSCamera> Camera; glm::mat4 CameraModel;
 
-		Skybox skybox; glm::mat4 skyboxModel;
 
 		Renderer renderer;
+		LightClass lights;
 
+		glm::mat4 cube_Model;
+		std::unique_ptr<VertexBuffer> cube_VB;
+		std::unique_ptr<VertexArray> cube_VA;
+		std::unique_ptr<IndexBuffer> cube_IB;
+		std::unique_ptr<Shader> cube_Renderer;
 
+		void initCube(), renderCube();
 
 
 	public:
@@ -76,5 +83,6 @@ namespace app {
 		void computeDP(), computeForces(), integrate();
 
 		std::unique_ptr<UBO> constants;
+		std::unique_ptr<UBO> normals;
 	};
 }

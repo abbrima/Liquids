@@ -40,12 +40,6 @@ namespace app {
 			Emitter emitter(pos); emitter.EmitLiquidIntoSSBO<AdvancedParticle>(200, nParticles, *particles, LiquidType::Oil);
 			keys[GLFW_KEY_O] = false;
 		}
-		if (keys[GLFW_KEY_B])
-		{
-			glm::vec2 pos = getWorldPos();
-			Emitter emitter(pos); emitter.EmitLiquidIntoSSBO<AdvancedParticle>(200, nParticles, *particles, LiquidType::Blood);
-			keys[GLFW_KEY_B] = false;
-		}
 		cellsys->Sort();
 
 		computeDP();
@@ -63,9 +57,6 @@ namespace app {
 		ImGui::Text("nParticles: %d", nParticles);
 		if (ImGui::Button("Reset"))
 			initParticles();
-		ImGui::InputInt("startingParticles", &startingParticles);
-		ImGui::SliderFloat("Gravity X: ", &gravity.x, -10000.f, 10000.f);
-		ImGui::SliderFloat("Gravity Y: ", &gravity.y, -10000.f, 10000.f);
 	}
 	void MultipleLiquids::FreeGuiRender() {
 

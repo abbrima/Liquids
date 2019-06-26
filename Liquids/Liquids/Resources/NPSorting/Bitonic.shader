@@ -14,16 +14,9 @@ layout(std430, binding = 4) buffer IndexList {
 	Elem es[];
 };
 
-/*
-Gid  : gl_WorkGroupID            //atm: -, 0...256, - in rows (Y)        --> current group index (dispatched by c++)
-DTid : gl_GlobalInvocationID   //atm: 0...256 in rows & columns (XY)   --> "global" thread id
-GTid : gl_LocalInovcationID    //atm: 0...256, -,- in columns (X)      --> current threadId in group / "local" threadId
-GI   : gl_LocalInovcationIndex         //atm: 0...256 in columns (X)           --> "flattened" index of a thread within a group
-*/
 #define GI gl_LocalInvocationIndex
 #define GTid gl_LocalInvocationID
 #define DTid gl_GlobalInvocationID
-
 
 uniform uint u_Level;
 uniform uint u_LevelMask;

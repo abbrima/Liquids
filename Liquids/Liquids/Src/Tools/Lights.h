@@ -53,7 +53,6 @@ struct Light{
 class LightClass {
 private:
 	std::unordered_map<std::string, std::pair<Light,bool>> lights;
-
 public:
 	void AddLight(Light light, std::string Identifier);
 	void DeleteLight(std::string Identifier);

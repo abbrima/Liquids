@@ -1,5 +1,5 @@
 #shader compute
-#version 460 core
+#version 430 core
 
 #external
 #define PI_FLOAT 3.1415927410125732421875f
@@ -36,6 +36,7 @@ layout(std430, binding = 0) buffer Data
 {
 	Particle particles[];
 };
+
 layout(std140, binding = 2) uniform Constants
 {
 float h;

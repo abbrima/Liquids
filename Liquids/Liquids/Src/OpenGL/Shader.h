@@ -14,12 +14,14 @@
 #define DSIZE(x) std::string("#define WORK_GROUP_SIZE ") + std::to_string(x)
 #define XSIZE(x) std::string("#define XSIZE ") + std::to_string(x)
 #define YSIZE(x) std::string("#define YSIZE ") + std::to_string(x)
+#define ZSIZE(x) std::string("#define ZSIZE ") + std::to_string(x)
 
 struct ShaderProgramSource
 {
 	std::string VertexSource;
 	std::string FragmentSource;
 	std::string ComputeSource;
+	std::string GeometrySource;
 };
 class Shader
 {
@@ -60,7 +62,8 @@ public:
 private:
 	ShaderProgramSource ParseShader(const std::string& filepath,const std::string& extra);
 	unsigned int CompileShader(unsigned int type, const std::string& source);
-	unsigned int CreateShader(const std::string& vertexshader, const std::string& fragmentshader, const std::string& computeshader);
+	unsigned int CreateShader(const std::string& vertexshader, const std::string& fragmentshader,
+		const std::string& computeshader, const std::string& geometryShader);
 	int GetUniformLocation(const std::string& name);
 	uint GetBlockLocation(const std::string& name);
 	uint GetUniformBlockLocation(const std::string& name);
