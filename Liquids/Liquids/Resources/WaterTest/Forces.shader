@@ -58,7 +58,6 @@ int _2to1(ivec2 pos);
 
 void main() {
 	ivec2 CellIndex2D = GetIndex2D(p.position);
-
 	vec2 pressureForce = vec2(0, 0), viscosityForce = vec2(0, 0);
 
 	for (int iii=-1;iii<=1;iii++)
@@ -74,6 +73,8 @@ void main() {
 				//resolve particles
 				if (ulist[j].pIndex == invodex)
 				{
+					//skip comparing particle to itself!
+					//normalizing a zero vector results in NAN 
 					j++;
 					continue;
 				}
@@ -96,8 +97,11 @@ void main() {
 
 
 	viscosityForce *= viscosity;
+	
+	//gravity force
 	vec2 externalForce1 = p.density * gravity;
 
+	//pulling force
 	vec2 externalForce2 = vec2(0, 0);
 	vec2 myvec = worldPos - p.position;
 	if (myvec != vec2(0, 0) && enableInteraction!=0) {
@@ -106,6 +110,8 @@ void main() {
 
 	p.force = pressureForce + viscosityForce + externalForce1 + externalForce2;
 }
+
+
 ivec2 GetIndex2D(vec2 position) {
 	position.x *= width / 2; position.y *= height / 2;
 	ivec2 pos = ivec2(position);
