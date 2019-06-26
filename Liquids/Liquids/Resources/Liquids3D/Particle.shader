@@ -6,17 +6,10 @@ layout(location = 1) in vec4 velocity;
 layout(location = 2) in vec4 forces;
 layout(location = 3) in vec4 dp;
 
-uniform uint nParticles;
-
-uniform mat4 u_MVP;
-uniform vec3 u_Color;
-
-out vec3 v_Color;
 
 void main()
 {
-	v_Color = u_Color;
-	gl_Position = u_MVP * vec4(position.xyz,1.f);
+	gl_Position = vec4(position.xyz,1.f);
 };
 
 
@@ -29,6 +22,8 @@ void main()
 layout(points) in;
 layout(triangle_strip, max_vertices = 24) out;
 
+uniform mat4 u_MVP;
+
 layout(std140, binding = 3) uniform ubo_Normals
 {
    vec4 normals[];
@@ -36,8 +31,6 @@ layout(std140, binding = 3) uniform ubo_Normals
 
 uniform float radius;
 
-in vec3 v_Color[];
-out vec3 g_Color;
 out vec3 g_Pos;
 out vec3 g_Normal;
 
@@ -50,20 +43,19 @@ const vec4 _five = gl_in[0].gl_Position + vec4(0.f, -radius, 0.f, 1.f);
 void e(vec4 p1, vec4 p2, vec4 p3 ,int id) {
 	g_Normal = normals[id].xyz;
 
-	gl_Position = p1;
+	gl_Position = u_MVP * p1;
 	g_Pos = p1.xyz;
 	EmitVertex();
-	gl_Position = p2;
+	gl_Position = u_MVP * p2;
 	g_Pos = p2.xyz;
 	EmitVertex();
-	gl_Position = p3;
+	gl_Position = u_MVP * p3;
 	g_Pos = p3.xyz;
 	EmitVertex();
 
 	EndPrimitive();
 }
 void main() {
-	g_Color = v_Color[0];
 	e(_zero,_one,_four, 0);
 	e(_one, _two,_four, 1);
 	e(_two, _three, _four, 2);
@@ -79,7 +71,6 @@ void main() {
 
 layout(location = 0) out vec4 color;
 
-in vec3 g_Color;
 in vec3 g_Pos;
 in vec3 g_Normal;
 
@@ -119,7 +110,7 @@ void main()
 		color += vec4(calculateLight(lights[i], norm, ViewDir), 0.0f);
 	color.w = material.opacity;
 
-	color = vec4(g_Color,1.f);
+	//color = vec4(g_Color,1.f);
 };
 
 

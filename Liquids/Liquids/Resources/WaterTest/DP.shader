@@ -50,19 +50,23 @@ ivec2 GetIndex2D(vec2 position);
 int _2to1(ivec2 pos);
 
 void main() {
+	//calculate Cell Index
 	ivec2 CellIndex2D = GetIndex2D(p.position);
 	float density_sum = 0.f;
 
+	//compare with particles in all 8 neighboring cells and the cell itself
 	for (int iii = -1; iii <= 1; iii++)
 		for (int jjj = -1; jjj <= 1; jjj++)
 		{
 			int CellIndex = _2to1(CellIndex2D + ivec2(iii, jjj));
+			//cell outside our borders
 			if (CellIndex == -1)
 				continue;
-			//loop through all particles
+			//get starting point from offset List
 			uint j = olist[CellIndex];
 			if (j == 0xFFFFFFFF)
 				continue;
+			//loop through all particles listed in the IndexList that have the same CellIndex
 			while (ulist[j].cIndex == CellIndex && j < nParticles) {
 				//resolve particles
 				vec2 delta = p.position - np.position;

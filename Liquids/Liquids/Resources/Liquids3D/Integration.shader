@@ -32,34 +32,34 @@ void main()
 	vec3 new_position = particles[i].position.xyz + TIME_STEP * new_velocity;
 
 	// boundary conditions
-	if (new_position.x < -0.3f)
+	if (new_position.x < -0.2f)
 	{
-		new_position.x = -0.3f;
+		new_position.x = -0.2f;
 		new_velocity.x *= -1 * WALL_DAMPING;
 	}
-	 if (new_position.x > 0.3f)
+	 if (new_position.x > 0.2f)
 	{
-		new_position.x = 0.3f;
+		new_position.x = 0.2f;
 		new_velocity.x *= -1 * WALL_DAMPING;
 	}
-	 if (new_position.y < -0.3f)
+	 if (new_position.y < -0.2f)
 	{
-		new_position.y = -0.3f;
+		new_position.y = -0.2f;
 		new_velocity.y *= -1 * WALL_DAMPING;
 	}
-	 if (new_position.y > 0.3f)
+	 if (new_position.y > 0.2f)
 	{
-		new_position.y = 0.3f;
+		new_position.y = 0.2f;
 		new_velocity.y *= -1 * WALL_DAMPING;
 	}
-	 if (new_position.z < -0.3f)
+	 if (new_position.z < -0.2f)
 	{
-		new_position.z = -0.3f;
+		new_position.z = -0.2f;
 		new_velocity.z *= -1 * WALL_DAMPING;
 	}
-	 if (new_position.z > 0.3f)
+	 if (new_position.z > 0.2f)
 	{
-		new_position.z = 0.3f;
+		new_position.z = 0.2f;
 		new_velocity.z *= -1 * WALL_DAMPING;
 	}
 	

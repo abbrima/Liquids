@@ -27,7 +27,7 @@ namespace app {
 
 
 		Camera = std::make_unique <FPSCamera>();
-		Camera->SetCameraSpeed(10.f);
+		Camera->SetCameraSpeed(1.f);
 		Camera->SetSensitivity(40.4f);
 		Camera->SetPitch(-16.1f); Camera->SetYaw(-22.f);
 		Camera->SetCameraPosition(-2.671100f, 0.9919f, 1.1386f);
@@ -64,6 +64,15 @@ namespace app {
 
 			normals = std::make_unique<UBO>(normalss, sizeof(vec4) * 8);
 		}
+
+		Light light;
+		light.setAmbient(0.2f, 0.2f, 0.2f);
+		light.setDiffuse(0.6f, 0.6f, 0.6f);
+		light.setSpecular(1.0f, 1.0f, 1.0f);
+		light.setSource(940.0f, 336.0f, -1450.0f, 1.0f);
+
+		lights.AddLight(light, "CUBE");
+
 		initCube();
 		initParticles();
 	}
@@ -77,7 +86,6 @@ namespace app {
 			emitter.EmitIntoSSBO<Particle3D>(200, nParticles, *particles);
 			keys[GLFW_KEY_E] = false;
 		}
-
 		Camera->Update(view);
 		if (fov <= 30.0f)
 			fov = 30.0f;
@@ -100,7 +108,6 @@ namespace app {
 	}
 	void Liquids3D::OnImGuiRender() {
 		ImGui::Text("nParticles: %d", nParticles);
-
 		Camera->OnImGuiRender();
 	}
 	void Liquids3D::FreeGuiRender() {
@@ -122,10 +129,11 @@ namespace app {
 	}
 	void Liquids3D::renderParticles() {
 		PR->Bind();
-		PR->SetUniformMat4f("u_MVP", pv );
-		PR->SetUniform1ui("nParticles", nParticles);
-		PR->SetUniform1f("radius",  3*SPH_PARTICLE_RADIUS);
-		PR->SetUniform3f("u_Color", 0.0f, 0.0f, 1.0f);
+		PR->SetUniformMat4f("u_MVP", pv);
+		PR->SetUniform1f("radius",  2*SPH_PARTICLE_RADIUS);
+		PR->SetUniformVec3("u_ViewPos", Camera->GetCameraPosition());
+		PR->SetUniformLightClass("lights", lights);
+		PR->SetUniformMaterial("material", BlueGlass);
 		PR->BindUBO(*normals, "ubo_Normals", 3);
 
 		renderer.DrawPoints(*particles, *PR, nParticles);
@@ -194,7 +202,7 @@ namespace app {
 	void Liquids3D::renderCube() {
 		cube_Renderer->Bind();
 
-		cube_Renderer->SetUniformMat4f("u_MVP", pv * cube_Model);
+		cube_Renderer->SetUniformMat4f("u_MVP",pv * cube_Model);
 		cube_Renderer->SetUniform4f("u_Color", 1.f, 1.f, 1.f, 1.f);
 
 		renderer.DrawTriangles(*cube_VA, *cube_IB, *cube_Renderer);
