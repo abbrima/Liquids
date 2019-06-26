@@ -17,7 +17,9 @@ out vec3 VertexColor;
 void main()
 {
 	gl_PointSize = radius;
+	//gradient color 
 	VertexColor = u_Color * gl_VertexID/nParticles;
+	//position u_MVP are the model view projection matricies
 	gl_Position = u_MVP * vec4(position,1.0,1.0);
 };
 

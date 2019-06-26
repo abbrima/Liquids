@@ -66,8 +66,8 @@ namespace app {
 		}
 
 		Light light;
-		light.setAmbient(0.2f, 0.2f, 0.2f);
-		light.setDiffuse(0.6f, 0.6f, 0.6f);
+		light.setAmbient(0.3f, 0.3f, 0.3f);
+		light.setDiffuse(1.f, 1.f, 1.f);
 		light.setSpecular(1.0f, 1.0f, 1.0f);
 		light.setSource(940.0f, 336.0f, -1450.0f, 1.0f);
 
@@ -133,7 +133,7 @@ namespace app {
 		PR->SetUniform1f("radius",  2*SPH_PARTICLE_RADIUS);
 		PR->SetUniformVec3("u_ViewPos", Camera->GetCameraPosition());
 		PR->SetUniformLightClass("lights", lights);
-		PR->SetUniformMaterial("material", BlueGlass);
+		PR->SetUniformMaterial("material", Liquid);
 		PR->BindUBO(*normals, "ubo_Normals", 3);
 
 		renderer.DrawPoints(*particles, *PR, nParticles);

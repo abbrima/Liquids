@@ -33,6 +33,13 @@ static Material BlueGlass =
 	25.6f,
 	0.2f
 };
+static Material Liquid =
+{
+	glm::vec3(0.0f, 0.0f, 0.729412f),
+	glm::vec3(0.9f,0.9f,0.9f),
+	25.6f,
+	0.7f
+};
 static Material RedGlass =
 {
 	glm::vec3(0.729412f, 0.0f, 0.0f),

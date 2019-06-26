@@ -6,7 +6,6 @@
 #define invo gl_GlobalInvocationID.x
 
 layout(local_size_x = WORK_GROUP_SIZE) in;
-//layout(binding = 3, offset=0) uniform atomic_uint CC;
 
 struct UnsortedList {
 	uint cIndex; uint pIndex;
