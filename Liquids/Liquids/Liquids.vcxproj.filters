@@ -78,9 +78,6 @@
     <ClCompile Include="Src\OpenGL\UBO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Tools\Bitonic.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Src\LiquidTools\CellSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -106,6 +103,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Src\LiquidTools\CellSystem3D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Tools\Sorting.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1385,11 +1385,5 @@
     <None Include="Resources\Liquids3D\DP.shader" />
     <None Include="Resources\Liquids3D\Forces.shader" />
     <None Include="Resources\Liquids3D\Integration.shader" />
-    <None Include="Resources\NPSorting\Bitonic.shader" />
-    <None Include="Resources\NPSorting\Transposer.shader" />
-    <None Include="Resources\APSorting\Bitonic.shader" />
-    <None Include="Resources\APSorting\Transposer.shader" />
-    <None Include="Resources\3DSorting\Bitonic.shader" />
-    <None Include="Resources\3DSorting\Transposer.shader" />
   </ItemGroup>
 </Project>

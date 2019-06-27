@@ -123,13 +123,14 @@ int main(void)
 		glfwSetCursorPosCallback(window, mouse_callback);
 		glfwSetScrollCallback(window, scroll_callback);
 		glfwSetMouseButtonCallback(window, mouse_button_callback);
-		glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+		glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
 
 		app::Application* currentApplication = nullptr;
 		app::ApplicationMenu* applicationMenu = new app::ApplicationMenu(currentApplication);
 		
 		//currentApplication = applicationMenu;
-		currentApplication = new app::Liquids3D();
+		currentApplication = new app::WaterTest();
 
 		applicationMenu->RegisterApplication<app::WaterTest>("Water");
 		applicationMenu->RegisterApplication<app::Liq>("Pipe Test");

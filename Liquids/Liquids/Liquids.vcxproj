@@ -32,6 +32,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 10.1.props" />
   </ImportGroup>
   <ImportGroup Label="Shared">
   </ImportGroup>
@@ -57,11 +58,11 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Liquids\Src\;$(SolutionDir)Liquids\Dep\ASSIMP\include;$(SolutionDir)Liquids\Dep\GLEW\include;$(SolutionDir)Liquids\Src\Vendor;$(SolutionDir)Liquids\Dep\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.1\include;$(SolutionDir)Liquids\Src\;$(SolutionDir)Liquids\Dep\ASSIMP\include;$(SolutionDir)Liquids\Dep\GLEW\include;$(SolutionDir)Liquids\Src\Vendor;$(SolutionDir)Liquids\Dep\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)Liquids\Dep\GLFW\lib;$(SolutionDir)Liquids\Dep\ASSIMP\lib;$(SolutionDir)Liquids\Dep\GLEW\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>assimp.lib;OpenGL32.lib;libglew32d.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.1\lib\x64;$(SolutionDir)Liquids\Dep\GLFW\lib;$(SolutionDir)Liquids\Dep\ASSIMP\lib;$(SolutionDir)Liquids\Dep\GLEW\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>cudart.lib;assimp.lib;OpenGL32.lib;libglew32d.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -72,14 +73,14 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Liquids\Src\;$(SolutionDir)Liquids\Dep\ASSIMP\include;$(SolutionDir)Liquids\Dep\GLEW\include;$(SolutionDir)Liquids\Src\Vendor;$(SolutionDir)Liquids\Dep\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.1\include;$(SolutionDir)Liquids\Src\;$(SolutionDir)Liquids\Dep\ASSIMP\include;$(SolutionDir)Liquids\Dep\GLEW\include;$(SolutionDir)Liquids\Src\Vendor;$(SolutionDir)Liquids\Dep\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>assimp.lib;OpenGL32.lib;libglew32d.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Liquids\Dep\GLFW\lib;$(SolutionDir)Liquids\Dep\ASSIMP\lib;$(SolutionDir)Liquids\Dep\GLEW\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>cudart.lib;assimp.lib;OpenGL32.lib;libglew32d.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.1\lib\x64;$(SolutionDir)Liquids\Dep\GLFW\lib;$(SolutionDir)Liquids\Dep\ASSIMP\lib;$(SolutionDir)Liquids\Dep\GLEW\lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -105,7 +106,7 @@
     <ClCompile Include="Src\OpenGL\UBO.cpp" />
     <ClCompile Include="Src\OpenGL\VertexArray.cpp" />
     <ClCompile Include="Src\OpenGL\VertexBuffer.cpp" />
-    <ClCompile Include="Src\Tools\Bitonic.cpp" />
+    <ClCompile Include="Src\Tools\Sorting.cpp" />
     <ClCompile Include="Src\Tools\FPSCamera.cpp" />
     <ClCompile Include="Src\Tools\Lights.cpp" />
     <ClCompile Include="Src\Tools\Skybox.cpp" />
@@ -400,13 +401,9 @@
     <ClInclude Include="Src\Vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\3DSorting\Bitonic.shader" />
     <None Include="Resources\3DSorting\OffsetCalculator.shader" />
-    <None Include="Resources\3DSorting\Transposer.shader" />
     <None Include="Resources\3DSorting\UnsortedSorter.shader" />
-    <None Include="Resources\APSorting\Bitonic.shader" />
     <None Include="Resources\APSorting\OffsetCalculator.shader" />
-    <None Include="Resources\APSorting\Transposer.shader" />
     <None Include="Resources\APSorting\UnsortedSorter.shader" />
     <None Include="Resources\CommunicatingVessels\DP.shader" />
     <None Include="Resources\CommunicatingVessels\Forces.shader" />
@@ -420,8 +417,6 @@
     <None Include="Resources\MultipleLiquids\Forces.shader" />
     <None Include="Resources\MultipleLiquids\Integration.shader" />
     <None Include="Resources\MultipleLiquids\Particle.shader" />
-    <None Include="Resources\NPSorting\Bitonic.shader" />
-    <None Include="Resources\NPSorting\Transposer.shader" />
     <None Include="Resources\PipeTest\DP.shader" />
     <None Include="Resources\PipeTest\Forces.shader" />
     <None Include="Resources\PipeTest\Integration.shader" />
@@ -574,5 +569,6 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 10.1.targets" />
   </ImportGroup>
 </Project>

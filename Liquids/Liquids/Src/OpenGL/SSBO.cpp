@@ -86,6 +86,7 @@ void* SSBO::GetData()
 
 void SSBO::Unmap() const
 {
+	Bind();
 	GLCall(glUnmapBuffer(GL_SHADER_STORAGE_BUFFER));
 	Unbind();
 }
