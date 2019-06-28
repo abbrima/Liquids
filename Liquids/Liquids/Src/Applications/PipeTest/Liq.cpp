@@ -4,7 +4,7 @@
 namespace app
 {
 	Liq::Liq() :
-		nParticles(0),nPipes(0),k(3000.f),pr(1000.f),mass(0.02f),speedConstant(1.f),
+		nParticles(0),nPipes(0),k(3000.f),pr(1000.f),mass(0.02f),speedConstant(15.f),
 		viscosity(3000.f),gravity(glm::vec2(0, -9806.65) ){
 		projection = glm::ortho(-1.f,1.f,-1.f,1.f);
 		glEnable(GL_PROGRAM_POINT_SIZE);
@@ -168,8 +168,8 @@ namespace app
 	void Liq::renderParticles(){
 		PR->Bind();
 		PR->SetUniformMat4f("u_MVP", projection);
-		PR->SetUniform1f("radius", 2000.f * SPH_PARTICLE_RADIUS);
-		PR->SetUniform3f("u_Color", 0.f, 1.f, 1.0f);
+		PR->SetUniform1f("radius", 2.f * SPH_PARTICLE_RADIUS);
+		PR->SetUniform3f("u_Color", 0.f, 0.f, 1.0f);
 		PR->SetUniform1ui("nParticles", nParticles);
 		renderer.DrawPoints(*particles, *PR, nParticles);	
 	}

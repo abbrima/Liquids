@@ -125,7 +125,9 @@ float slopeNormal(in Pipe pipe,in float x) {
 		* cos(pipe.xCo * pow(abs(x),pipe.xPower));
 	if (x<0.f)
 	   m = (pipe.xPower - 1) % 2 == 0 ? m : -m;
+	
 	m = -1 / m;
+	
 	return m;
 }
 vec2 getNormal(in vec2 velocity,in float m)

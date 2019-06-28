@@ -89,6 +89,9 @@
     <ClCompile Include="Src\Applications\Hello Triangle\HelloTriangle.cpp" />
     <ClCompile Include="Src\Applications\Liquids3D\Liquids3D.cpp" />
     <ClCompile Include="Src\Applications\MultipleLiquids\MultipleLiquids.cpp" />
+    <ClCompile Include="Src\Applications\test.cpp">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="Src\Applications\WaterTest\WaterTest.cpp" />
     <ClCompile Include="Src\LiquidTools\CellSystem.cpp" />
     <ClCompile Include="Src\LiquidTools\CellSystem3D.cpp" />
@@ -106,7 +109,7 @@
     <ClCompile Include="Src\OpenGL\UBO.cpp" />
     <ClCompile Include="Src\OpenGL\VertexArray.cpp" />
     <ClCompile Include="Src\OpenGL\VertexBuffer.cpp" />
-    <ClCompile Include="Src\Tools\Sorting.cpp" />
+    <ClCompile Include="Src\Tools\Bitonic.cpp" />
     <ClCompile Include="Src\Tools\FPSCamera.cpp" />
     <ClCompile Include="Src\Tools\Lights.cpp" />
     <ClCompile Include="Src\Tools\Skybox.cpp" />
@@ -128,6 +131,7 @@
     <ClInclude Include="Src\Applications\Hello Triangle\HelloTriangle.h" />
     <ClInclude Include="Src\Applications\Liquids3D\Liquids3D.h" />
     <ClInclude Include="Src\Applications\MultipleLiquids\MultipleLiquids.h" />
+    <ClInclude Include="Src\Applications\test.h" />
     <ClInclude Include="Src\Applications\WaterTest\WaterTest.h" />
     <ClInclude Include="Src\LiquidTools\CellSystem.h" />
     <ClInclude Include="Src\LiquidTools\CellSystem3D.h" />
@@ -421,7 +425,6 @@
     <None Include="Resources\PipeTest\Forces.shader" />
     <None Include="Resources\PipeTest\Integration.shader" />
     <None Include="Resources\NPSorting\OffsetCalculator.shader" />
-    <None Include="Resources\PipeTest\temp.shader" />
     <None Include="Resources\NPSorting\UnsortedSorter.shader" />
     <None Include="Resources\Shaders\Color.shader" />
     <None Include="Resources\Shaders\MaterialLighting.shader" />
@@ -566,6 +569,9 @@
     <None Include="Src\Vendor\glm\gtx\vector_angle.inl" />
     <None Include="Src\Vendor\glm\gtx\vector_query.inl" />
     <None Include="Src\Vendor\glm\gtx\wrap.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="Src\Applications\m_thrustSort.cu" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -21,15 +21,18 @@ layout(std430, binding = 0) buffer Data
 	Particle particles[];
 };
 
+shared Particle ps[WORK_GROUP_SIZE];
 
 void main()
 {
-	uint i = gl_GlobalInvocationID.x;
+	uint i = gl_LocalInvocationID.x;
+
+	ps[i] = particles[gl_GlobalInvocationID.x];
 
 	// integrate
-	vec3 acceleration = particles[i].force.xyz / particles[i].dp.x;
-	vec3 new_velocity = particles[i].velocity.xyz + TIME_STEP * acceleration;
-	vec3 new_position = particles[i].position.xyz + TIME_STEP * new_velocity;
+	vec3 acceleration = ps[i].force.xyz / ps[i].dp.x;
+	vec3 new_velocity = ps[i].velocity.xyz + TIME_STEP * acceleration;
+	vec3 new_position = ps[i].position.xyz + TIME_STEP * new_velocity;
 
 	// boundary conditions
 	if (new_position.x < -0.2f)
@@ -63,6 +66,8 @@ void main()
 		new_velocity.z *= -1 * WALL_DAMPING;
 	}
 	
-	particles[i].velocity = vec4(new_velocity,0);
-	particles[i].position = vec4(new_position,0);
+	ps[i].velocity = vec4(new_velocity,0);
+	ps[i].position = vec4(new_position,0);
+
+	particles[gl_GlobalInvocationID.x] = ps[i];
 }

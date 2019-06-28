@@ -8,6 +8,9 @@ struct Timer {
 	Timer() {
 		start = std::chrono::high_resolution_clock::now();
 	}
+	std::chrono::duration<float> GetDuration() {
+		return std::chrono::high_resolution_clock::now() - start;
+	}
 	~Timer() {
 		end = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<float> duration = end - start;

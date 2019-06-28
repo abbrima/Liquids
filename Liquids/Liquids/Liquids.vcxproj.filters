@@ -105,7 +105,10 @@
     <ClCompile Include="Src\LiquidTools\CellSystem3D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Tools\Sorting.cpp">
+    <ClCompile Include="Src\Tools\Bitonic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Applications\test.cu">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -956,6 +959,9 @@
     <ClInclude Include="Src\Tools\Timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Applications\test.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Vendor\glm\detail\func_common.inl">
@@ -1361,7 +1367,6 @@
     <None Include="Resources\PipeTest\DP.shader" />
     <None Include="Resources\PipeTest\Forces.shader" />
     <None Include="Resources\PipeTest\Integration.shader" />
-    <None Include="Resources\PipeTest\temp.shader" />
     <None Include="Resources\WaterTest\DP.shader" />
     <None Include="Resources\WaterTest\Forces.shader" />
     <None Include="Resources\WaterTest\Integration.shader" />
@@ -1385,5 +1390,8 @@
     <None Include="Resources\Liquids3D\DP.shader" />
     <None Include="Resources\Liquids3D\Forces.shader" />
     <None Include="Resources\Liquids3D\Integration.shader" />
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="Src\Applications\m_thrustSort.cu" />
   </ItemGroup>
 </Project>

@@ -26,6 +26,7 @@
 #include "Applications/CommunicatingVessels/CommunicatingVessels.h"
 #include "Applications/MultipleLiquids/MultipleLiquids.h"
 #include "Applications/Liquids3D/Liquids3D.h"
+#include "Applications/test.h"
 
 #include "Tools/MyExternals.h"
 
@@ -130,13 +131,14 @@ int main(void)
 		app::ApplicationMenu* applicationMenu = new app::ApplicationMenu(currentApplication);
 		
 		//currentApplication = applicationMenu;
-		currentApplication = new app::WaterTest();
+		currentApplication = new app::test();
 
 		applicationMenu->RegisterApplication<app::WaterTest>("Water");
 		applicationMenu->RegisterApplication<app::Liq>("Pipe Test");
 		applicationMenu->RegisterApplication<app::CommunicatingVessels>("Communicating Vessels");
 		applicationMenu->RegisterApplication<app::MultipleLiquids>("Multiple Liquids");
 		applicationMenu->RegisterApplication<app::Liquids3D>("3D Simulation");
+		applicationMenu->RegisterApplication<app::test>("Test");
 
 		while (!glfwWindowShouldClose(window))
 		{

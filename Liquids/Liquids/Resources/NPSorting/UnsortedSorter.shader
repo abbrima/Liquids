@@ -13,10 +13,12 @@ struct Particle {
 	float density;
 	float pressure;
 };
+
 struct UnsortedList {
 	uint cIndex;
 	uint pIndex;
 };
+
 layout(std430, binding = 0) buffer Data
 {
 	Particle particles[];

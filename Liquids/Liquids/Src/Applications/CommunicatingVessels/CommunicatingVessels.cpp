@@ -119,7 +119,7 @@ namespace app
 		PR->Bind();
 		PR->SetUniformMat4f("u_MVP", projection);
 		PR->SetUniform1ui("nParticles", nParticles);
-		PR->SetUniform1f("radius", 2000.f * SPH_PARTICLE_RADIUS);
+		PR->SetUniform1f("radius", 2.f * SPH_PARTICLE_RADIUS);
 		PR->SetUniform3f("u_Color", 0.0f, 0.0f, 1.0f);
 
 		renderer.DrawPoints(*particles, *PR, nParticles);
