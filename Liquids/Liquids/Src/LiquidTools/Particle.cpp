@@ -64,15 +64,15 @@ void AdvancedParticle::SetType(AdvancedParticle& particle, const LiquidType& typ
 	case LiquidType::Water:
 		particle.mass = 0.05f;
 		particle.viscosity = 2500.f;
-		particle.k = 2000.f;
-		particle.pr = 1000.f;
+		particle.k = 1500.f;
+		particle.pr = 4000.f;
 		particle.color = glm::vec4(0.0, 0.0, 1.0,1.0);
 		break;
 	case LiquidType::Oil:
 		particle.mass = 0.02f;
 		particle.viscosity = 3000.f;
-		particle.k = 3000.f;
-		particle.pr = 510.f;
+		particle.k = 2500.f;
+		particle.pr = 4000.f;
 		particle.color = glm::vec4(1.0, 1.0, 0.0, 1.0);
 		break;
 	case LiquidType::Blood:

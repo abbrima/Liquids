@@ -9,7 +9,7 @@ namespace app
 		k(2000.f),
 		viscosity(3000.f),
 		mass(0.02f),
-		pr(1000.f),
+		pr(4500.f),
 		gravity(glm::vec2(0.f, -9806.65f)),
 		nVerticalPipes(0),
 		startingParticles(10000)

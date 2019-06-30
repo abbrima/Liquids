@@ -4,7 +4,7 @@
 namespace app
 {
 	Liq::Liq() :
-		nParticles(0),nPipes(0),k(3000.f),pr(1000.f),mass(0.02f),speedConstant(15.f),
+		nParticles(0),nPipes(0),k(3000.f),pr(4000.f),mass(0.02f),speedConstant(15.f),
 		viscosity(3000.f),gravity(glm::vec2(0, -9806.65) ){
 		projection = glm::ortho(-1.f,1.f,-1.f,1.f);
 		glEnable(GL_PROGRAM_POINT_SIZE);
@@ -107,9 +107,9 @@ namespace app
 		pipeRenderer = std::make_unique<Shader>("Resources/Shaders/Color.shader");
 		SinusoidalPipe* arr[MAX_PIPES];
 		arr[nPipes] = new SinusoidalPipe(-0.3333f, 3, 4.f, 0.f, -0.1f, 0.99f, false);
-		arr[nPipes++]->setConstraints(-1.2f, -0.45f, 0.7f, 0.24f); 
+		arr[nPipes++]->setConstraints(-1.2f, -0.40f, 0.7f, 0.24f); 
 		arr[nPipes] = new SinusoidalPipe(-0.3333f, 3, 4.f, 0.f, 0.05f, 0.99f, true);
-		arr[nPipes++]->setConstraints(-1.2f, -0.29f, 0.7f, 0.39f);
+		arr[nPipes++]->setConstraints(-1.2f, -0.29f, 0.7f, 0.45f);
 		for (uint i = 0; i < nPipes; i++)
 		{
 			pipes->Append(arr[i], sizeof(SinusoidalPipe), i * sizeof(SinusoidalPipe));

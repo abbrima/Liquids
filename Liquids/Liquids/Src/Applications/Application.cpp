@@ -15,4 +15,8 @@ namespace app
 				m_CurrentApplication = app.second();
 		}
 	}
+	void ApplicationMenu::OnRender() {
+		glClearColor(0.7f, 0.7f, 0.7f, 1.f);
+		renderer.Clear();
+	}
 }

@@ -131,14 +131,14 @@ int main(void)
 		app::ApplicationMenu* applicationMenu = new app::ApplicationMenu(currentApplication);
 		
 		//currentApplication = applicationMenu;
-		currentApplication = new app::test();
+		currentApplication = applicationMenu;
 
 		applicationMenu->RegisterApplication<app::WaterTest>("Water");
 		applicationMenu->RegisterApplication<app::Liq>("Pipe Test");
 		applicationMenu->RegisterApplication<app::CommunicatingVessels>("Communicating Vessels");
 		applicationMenu->RegisterApplication<app::MultipleLiquids>("Multiple Liquids");
 		applicationMenu->RegisterApplication<app::Liquids3D>("3D Simulation");
-		applicationMenu->RegisterApplication<app::test>("Test");
+		applicationMenu->RegisterApplication<app::test>("GPU Performance");
 
 		while (!glfwWindowShouldClose(window))
 		{

@@ -6,7 +6,6 @@ layout(location = 1) in vec4 velocity;
 layout(location = 2) in vec4 forces;
 layout(location = 3) in vec4 dp;
 
-
 void main()
 {
 	gl_Position = vec4(position.xyz,1.f);
@@ -16,8 +15,6 @@ void main()
 
 #shader geometry
 #version 430 core
-
-
 
 layout(points) in;
 layout(triangle_strip, max_vertices = 24) out;

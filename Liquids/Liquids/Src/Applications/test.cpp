@@ -11,7 +11,10 @@ struct UnsortedList;
 void hsort(UnsortedList* arr, const uint& n);
 
 namespace app {
-
+	void test::OnRender() {
+		glClearColor(0.7f, 0.7f, 0.7f, 1.0f);
+		renderer.Clear();
+	}
 	test::test() {
 		ssbo = std::make_unique<SSBO>(nullptr, sizeof(uint)*mNumParticles);
 		keys_ssbo = std::make_unique<SSBO>(nullptr, sizeof(uint)*mNumParticles / 2);

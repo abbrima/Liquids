@@ -18,7 +18,7 @@ namespace app {
 		view(glm::mat4(1.f)),
 		k(2000.f),
 		viscosity(3000.f),
-		pr(1000.f),
+		pr(4500.f),
 		mass(0.02f),
 		gravity(glm::vec3(0.f, -9806.65f,0.f))
 	{
@@ -101,7 +101,7 @@ namespace app {
 		integrate();
 	}
 	void Liquids3D::OnRender() {
-		GLCall(glClearColor(0.07f, 0.07f, 0.07f, 1.0f));
+		GLCall(glClearColor(0.7f, 0.7f, 0.7f, 1.0f));
 
 		renderCube();
 		renderParticles();

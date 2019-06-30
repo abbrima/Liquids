@@ -8,7 +8,7 @@ namespace app
 		nParticles(0),
 		k(2000.f),
 		viscosity(3000.f),
-		pr(1000.f),
+		pr(4000.f),
 		mass(0.02f),
 	    gravity(glm::vec2(0.f, -9806.65f)),
 		startingParticles(4000),
@@ -58,8 +58,8 @@ namespace app
 	}
 	void WaterTest::OnImGuiRender() {
 		ImGui::Text("nParticles: %d", nParticles);
-		ImGui::SliderFloat("Stiffness", &k,1000.f,5000.f);
-		ImGui::SliderFloat("Resting Density", &pr,1000.f,5000.f);
+		ImGui::SliderFloat("Stiffness", &k,1000.f,3000.f);
+		ImGui::SliderFloat("Resting Density", &pr,3500.f,5000.f);
 		ImGui::SliderFloat("Mass", &mass,0.015f,0.03f);
 		ImGui::SliderFloat("Viscosity", &viscosity,2500.f,3500.f);
 		if (ImGui::Button("Reset"))

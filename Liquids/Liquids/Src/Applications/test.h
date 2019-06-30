@@ -1,6 +1,7 @@
 #pragma once
 #include "Applications/Application.h"
 #include <gl/glew.h> 
+#include "OpenGL/Renderer.h"
 #include "OpenGL/SSBO.h"
 #include "imgui/imgui.h"
 
@@ -14,6 +15,7 @@
 namespace app {
 	class test :public Application {
 	private:
+		Renderer renderer;
 		std::string log = std::to_string(mNumParticles) + " Elements\n";
 		bool sortable = true;
 		std::unique_ptr<SSBO> ssbo;
@@ -30,6 +32,7 @@ namespace app {
 
 		void FreeGuiRender() override;
 		void OnUpdate() override;
+		void OnRender() override;
 		void OnImGuiRender() override;
 
 	};

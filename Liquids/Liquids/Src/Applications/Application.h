@@ -2,6 +2,7 @@
 
 #include <functional>
 #include <vector>
+#include "OpenGL/Renderer.h"
 namespace app {
 
 	class Application
@@ -20,6 +21,7 @@ namespace app {
 	public:
 		ApplicationMenu(Application*& currentApplicationPointer);
 		void OnImGuiRender() override;
+		void OnRender() override;
 		template<typename T> 
 		void RegisterApplication(const std::string& name)
 		{
@@ -27,6 +29,7 @@ namespace app {
 			m_Applications.push_back(std::make_pair(name, []() {return new T(); }));
 		}
 	private:
+		Renderer renderer;
 		Application*& m_CurrentApplication;
 		std::vector < std::pair <std::string, std::function <Application*()> > > m_Applications;
 	};
