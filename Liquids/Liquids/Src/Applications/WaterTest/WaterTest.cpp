@@ -3,6 +3,38 @@
 
 namespace app
 {
+
+	void WaterTest::initLines() {
+		std::vector<glm::vec2> linePoints;
+		for (float x = -1.f; x <= 1.f; x += 0.02f)
+		{
+			linePoints.emplace_back(glm::vec2(x, -1.f));
+			linePoints.emplace_back(glm::vec2(x, 1.f));
+		}
+		for (float x = -1.f; x <= 1.f; x += 0.02f)
+		{
+			linePoints.emplace_back(glm::vec2(-1.f, x));
+			linePoints.emplace_back(glm::vec2(1.f, x));
+		}
+		LinesVB = std::make_unique<VertexBuffer>(linePoints.data(), linePoints.size() * sizeof(glm::vec2));
+		LinesVA = std::make_unique<VertexArray>();
+		VertexBufferLayout layout;
+		layout.Push<float>(2);
+		LinesVA->AddBuffer(*LinesVB, layout);
+		LinesSH = std::make_unique<Shader>("Resources/Shaders/Color.shader");
+		LinesVB->Unbind();
+		LinesVA->Unbind();
+	}
+	void WaterTest::renderLines() {
+		LinesSH->Bind();
+		GLCall(glLineWidth(1.f));
+		LinesSH->SetUniformMat4f("u_MVP", projection);
+		LinesSH->SetUniform4f("u_Color", 0.0f, 0.0f, 0.0f, 1.0f);
+
+		renderer.DrawLines(*LinesVA, *LinesSH, LinesVB->GetSize() / sizeof(glm::vec2));
+		LinesVA->Unbind();
+		LinesVB->Unbind();
+	}
 	WaterTest::WaterTest()
 		:projection(glm::ortho(-1.f, 1.f, -1.f, 1.f)),
 		nParticles(0),
@@ -27,7 +59,7 @@ namespace app
 
 		constants = std::make_unique<UBO>(farr, sizeof(float) * 4);
 
-
+		initLines();
 		initParticles();
 	}
 	WaterTest::~WaterTest() {
@@ -54,6 +86,8 @@ namespace app
 		GLCall(glClearColor(0.6f, 0.6f, 0.6f, 1.0f));
 		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
+		if (linesrender)
+			renderLines();
 		renderParticles();
 	}
 	void WaterTest::OnImGuiRender() {
@@ -67,6 +101,7 @@ namespace app
 		ImGui::InputInt("startingParticles", &startingParticles);
 		ImGui::SliderFloat("Gravity X: ", &gravity.x, -10000.f, 10000.f);
 		ImGui::SliderFloat("Gravity Y: ", &gravity.y, -10000.f, 10000.f);
+		ImGui::Checkbox("Render Lines", &linesrender);
 		ImGui::ColorPicker3("Liquid Color", (float*)(&color));
 	}
 	void WaterTest::FreeGuiRender() {

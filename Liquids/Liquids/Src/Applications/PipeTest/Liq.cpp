@@ -17,7 +17,7 @@ namespace app
 		flow = std::make_unique<Flow>(glm::vec2(-0.99f,-0.218f));
 
 		initParticles();
-		initLines();
+		//initLines();
 		initPipes();
 	}
 	Liq::~Liq(){
@@ -70,7 +70,7 @@ namespace app
 		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 		glLineWidth(1.0f);
 		renderParticles();
-		//renderLines();
+	//	renderLines();
 		renderPipes();
 	}
 	void Liq::OnImGuiRender(){

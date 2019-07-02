@@ -18,12 +18,9 @@ static uint GetDX(uint total, const uint& dsize){
 	return ret;
 }
 CellSystem::CellSystem(const uint& width,const uint& height,const float& h,SSBO& particles,uint& nParticles,const std::string& loc)
-	:width(width),height(height),h(h),particles(particles),nParticles(nParticles){
-	
+	:width(width),height(height),h(h),particles(particles),nParticles(nParticles){	
 	UnsortedSorter = std::make_unique<Shader>("Resources/"+loc+"/UnsortedSorter.shader"
 		, DSIZE(PARTICLE_DISPATCH_SIZE));
-
-
 #ifdef BITONIC
 
 	Bitonic = std::make_unique<Shader>("Resources/" + loc + "/Bitonic.shader",
@@ -54,18 +51,14 @@ void CellSystem::SortUnsorted() {
 	UnsortedSorter->SetUniform1ui("width", width);
 
 	UnsortedSorter->DispatchCompute(GetDX(nParticles,PARTICLE_DISPATCH_SIZE), 1, 1);
-	const uint N = GetMinPowOf2(nParticles);
-	IndexList->WriteVal1uiOffset(0xFFFFFFFF, sizeof(uint) * 2 * (N - nParticles), sizeof(uint) * 2 * nParticles);
-
+	//const uint N = GetMinPowOf2(nParticles);
+	//IndexList->WriteVal1uiOffset(0xFFFFFFFF, sizeof(uint) * 2 * (N - nParticles), sizeof(uint) * 2 * nParticles);
 }
 
 struct UnsortedList;
-void bsort(UnsortedList* arr, const uint& N);
 void hsort(UnsortedList* arr, const uint& n);
-void bbsort(UnsortedList* arr, const uint& N);
 
 void CellSystem::SortBitonic() {
-	const int N = GetMinPowOf2(nParticles);
 	//Timer timer;
 #ifdef BITONIC
 
@@ -121,16 +114,13 @@ void CellSystem::SortBitonic() {
 	
 
 #else
-	uint* ptr = (uint*)IndexList->GetData();
-
+	void* ptr = IndexList->GetData();
 	hsort((UnsortedList*)ptr, nParticles);
-
 	IndexList->Unmap();
 #endif
 }
 void CellSystem::GenOffsetList() {
 	OffsetList->WriteVal1ui(0xFFFFFFFF, height*width * sizeof(uint));
-
 	OffsetCalculator->BindSSBO(*IndexList, "IndexList", 4);
 	OffsetCalculator->BindSSBO(*OffsetList, "OffsetList", 5);
     OffsetCalculator->DispatchCompute(GetDX(nParticles, PARTICLE_DISPATCH_SIZE), 1, 1);

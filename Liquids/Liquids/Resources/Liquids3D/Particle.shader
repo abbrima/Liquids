@@ -137,6 +137,3 @@ vec3 calculateLight(Light light, vec3 norm, vec3 ViewDir)
 	}
 	return ambient + diffuse + specular;
 }
-
-
-

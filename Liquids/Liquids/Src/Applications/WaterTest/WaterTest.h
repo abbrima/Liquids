@@ -21,6 +21,14 @@ namespace app
 	class WaterTest : public Application
 	{
 	private:
+		void initLines();
+		void renderLines();
+		std::unique_ptr<VertexBuffer> LinesVB;
+		std::unique_ptr<VertexArray>  LinesVA;
+		std::unique_ptr<Shader> LinesSH;
+
+		bool linesrender = false;
+
 		glm::mat4 projection;
 		Renderer renderer;
 		glm::vec3 color;
